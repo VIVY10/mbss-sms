@@ -1,0 +1,16 @@
+<%- include("../partials/sidebar") %>
+
+  <div class="form-container">
+    <form action="/createDepartment" method="post" id="form1">        
+      <h3 class="mb-5 text-uppercase">Create School Department</h3>                      
+     <input type="text" name="departmentname" placeholder="Department Name" required/>
+
+     <div class="btn-box">
+      <button type="submit" id="submit">Submit</button>
+    </div>
+ </form>
+</div>   
+
+  <script src="/scripts/adminScripts.js"></script>
+</body>
+</html>

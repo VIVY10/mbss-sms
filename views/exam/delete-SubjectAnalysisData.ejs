@@ -1,0 +1,34 @@
+<%- include("../partials/teacherDashboardSidebar.ejs") %>
+    <div class="form-container">
+        <form action="/analysis" method="post" id="subjectAnalysisForm">          
+                <% if(locals.foundClass && locals.examType){ %>                  
+                  <select class="form-control form-control-lg" name="subjectcode" id="subjectcode" onchange="findSubjectAnalysisData()" required>
+                      <option selected disabled value="" >Class...</option>
+                      <% foundClass.forEach(element => { %>
+                        <option value=<%= element.subjectcodeid %>><%= element.grade %><%= element.class %> --------- <%= element.subjectname %></option>                              
+                      <% }); %>
+                    </select>   
+                    
+                    <span id="subject">
+                      <input class="form-control form-control-lg" placeholder="" id="classid2" hidden readonly/>
+                      <input type="number" name="classid" value="" placeholder="" id="classid" hidden/>
+                    </span>
+                    
+                        <select class="form-control form-control-lg" name="examtype" id="examtype" hidden required>
+                            <option selected disabled value="" >Exam type...</option>
+                            <% examType.forEach(element => { %>
+                              <option value=<%= element.examid %>><%= element.exam_title %></option>                              
+                            <% }); %>
+                          </select>
+
+                          <% } %>
+            <div class="btn-box">
+                <button type="submit" id="submit6" class="btn-primary" hidden>Next</button>
+            </div>
+        </form>
+    </div>    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="/scripts/adminScripts.js"></script> 
+    <script src="/scripts/scripts.js"></script>   
+</body>

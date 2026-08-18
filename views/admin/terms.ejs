@@ -1,0 +1,56 @@
+<%- include("../partials/sidebar.ejs") %>
+<title>student subjects</title>
+  <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
+  <div class="container">
+    <div class="card mt-3">
+      <div class="card-body">
+        <h4>Registered Terms</h4>
+        <table class="table table-bordered table-hover" id="table">
+            <div style="float: right;">
+                <a href="/addTerm">
+                    <button type="submit" class="btn btn-success">create term</button>
+                </a>
+            </div>
+          <thead class="thead-light">
+            <tr>
+              <th>termid</th>
+              <th>year</th>
+              <td>termnumber</td>
+              <td>startdate</td>
+              <td>enddate</td>
+              <th colspan="2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (locals.results && results.length > 0) { %>
+              <% results.forEach(element => { %>
+                <tr>
+                  <td><%= element.termid %></td>
+                  <td><%= element.yearname %></td>
+                  <td><%= element.termnumber %></td>
+                  <td><%= element.startdate.toISOString().split('T')[0] %></td>
+                  <td><%= element.enddate.toISOString().split('T')[0] %></td>
+                  <td>
+                    <form action="/deleteTerm" method="POST" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                      <input type="hidden" name="termid" value="<%= element.termid %>">
+                      <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="4" class="text-center"><h5>No term Registered in this year</h5></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>         
+  </div>
+  <!-- Include Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script src="/scripts/adminScripts.js"></script>
+</body>
+</html>

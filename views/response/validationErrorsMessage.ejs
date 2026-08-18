@@ -1,0 +1,28 @@
+<style>
+    .alert-danger {
+    color: #a94442;
+    text-align: center;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-danger ul {
+    margin: 50px;
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+</style>
+<% if (errors.length > 0) { %>
+    <div class="alert alert-danger">
+        <ul>
+            <% errors.forEach(function(error) { %>
+                <li><%= error.msg %> a</li>
+            <% }); %>
+        </ul>
+    </div>
+<% } %>

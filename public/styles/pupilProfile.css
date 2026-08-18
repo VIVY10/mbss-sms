@@ -1,0 +1,123 @@
+    .id-card-body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .id-card {
+        width: 500px;
+        max-width: 100%;
+        background: white;
+        border: 2px solid rgb(21, 84, 35);
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        padding: 30px;
+        position: relative;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .id-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .header {
+        text-transform: uppercase;
+        color: hsl(207, 19%, 9%);
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .header h1 {
+        font-size: 1.6em;
+        margin: 0;
+        font-weight: bold;
+        color: hsl(207, 19%, 9%);
+        font-weight: bold;
+    }
+
+    .header h2 {
+        font-size: 1.2em;
+        margin: 5px 0;
+        font-weight: bold;
+        color: hsl(207, 19%, 9%);
+    }
+
+    .photo {
+        margin: 20px 0;
+    }
+
+    .student-photo {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #007bff;
+    }
+
+    .student-info {
+        margin: 10px 0;
+        text-align: left;
+    }
+
+    .student-info h1 {
+        font-size: 1.5em;
+        color: hsla(352, 93%, 44%, 0.66);;
+        margin-bottom: 10px;
+        text-align: left;
+        font-weight: bold;
+    }
+
+    .student-info h2 {
+        font-size: 1.5em;
+        color: hsl(207, 19%, 9%);;
+        margin-bottom: 10px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .student-info p {
+        margin: 5px 0;
+        font-size: 0.95em;
+        color: #555;
+    }
+
+    .button-container {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .button-container button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 14px;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease;
+    }
+
+    .button-container button:hover {
+        background-color: #0056b3;
+    }
+
+    @media (max-width: 768px) {
+        .id-card {
+            width: 90%;
+        }
+
+        .student-photo {
+            width: 100px;
+            height: 100px;
+        }
+
+        .student-info p {
+            font-size: 0.85em;
+        }
+    }

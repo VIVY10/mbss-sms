@@ -1,0 +1,126 @@
+.slider {
+    position: relative;
+    width: 100%; /* Ensure it covers the full width */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: 100%; /* Ensure slides cover full width */
+}
+
+.slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.slide img {
+    width: 100%; /* Cover full width */
+    height: auto;
+    object-fit: cover;
+    max-height: 500px;
+}
+
+/* Caption and Animation Styles remain the same as previously provided */
+
+
+.caption {
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards, slideUp 1s ease-out;
+    animation-delay: 0.5s;
+}
+
+.caption h2 {
+    font-size: 2.5em;
+    margin: 0;
+    animation: slideInLeft 1s ease-out;
+    animation-delay: 1s;
+}
+
+.caption p {
+    font-size: 1.2em;
+    animation: slideInRight 1.5s ease-out;
+    animation-delay: 1.5s;
+}
+
+/* Navigation Buttons */
+.nav {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+}
+
+.nav span {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 10px;
+    font-size: 30px;
+    user-select: none;
+}
+
+.nav span:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Keyframe Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive Design */
+@media only screen and (max-width: 768px) {
+    .caption h2 {
+        font-size: 1.8em;
+    }
+    
+    .caption p {
+        font-size: 1em;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .caption {
+        bottom: 5px;
+        position: relative;
+    }
+    
+    .caption h2 {
+        font-size: 1em;
+        font-weight: bold;
+    }
+    
+    .caption p {
+        font-size: .5em;
+    }
+}
+

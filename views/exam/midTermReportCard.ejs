@@ -1,0 +1,167 @@
+<%- include("../partials/sidebar.ejs") %>
+      <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
+    
+  <div class="container" id="reportCard" onload="printPdf()">
+    <div class="card">
+      <div class="card-body">
+        <div class="container text-center" style="border: 2px solid rgba(51, 48, 46, 0.869);">
+            <div id="heading">
+              <h2>Milenge Boarding Secondry School</h2>
+              <h4>Ministry Of General Education</h4>
+              <h2>School Report Card</h2>
+            </div>
+            <div id="school-logo">
+              <img src="/images/logo.png" alt="logo">
+            </div>
+            <div id="ministry-logo">
+              <img src="/images/ministryLogo.png" alt="logo">
+            </div>
+            <% if(locals.results){ %>
+              <div style="margin-bottom: 40px;">
+                <h4>Results Of: <%= results[0].exam_title %> <%= results[0].termnumber %> Test</h4>
+              </div>
+              <div id="StudentDetails">
+                <div id="school-class">
+                  <h5>Class: <span id="class-m"><%= results[0].grade%><%= results[0].class%></span > </h5> 
+                </div>                 
+                <div>
+                  <h5 id="examno">Exam Number: <span id="name"><%= results[0].examno%></span></h5>
+                </div>  
+              </div>
+              <div id="name-year">
+                <div id="name">
+                <h5>Student Name: <span id="name"><%= results[0].lname%> <%= results[0].fname%></span></h5>
+              </div>
+              <div id="year">
+                <h5 id="year">Year: <span id="year"><%= results[0].yearname%></span></h5>
+              </div> 
+              </div>
+              
+                                                     
+          </tr>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="table table-light">
+                <tr>
+                  <!-- <th>Subject Code</th> -->
+                  <th>Subjects</th>
+                  <th>Marks Scored</th>
+                  <th>Total Marks</th>
+                  <th>Grade</th>
+                  <th>Remarks</th>
+                <tr>  
+              </thead>
+              <tbody>
+                <% var totalMarks = 0 %>
+                <% var total =  0 %>
+                <% var finalPercentage = 100 %>
+
+                <% results.forEach(element => { %> 
+                  <% var score = element.score %>
+                  <% var grade; %>
+                  <% var remarks; %>
+                  <% totalMarks += element.score %> 
+                  <% total += finalPercentage %>                 
+
+                    <% if ( score>= 85) { %>
+                          <% grade = "A+"  %>
+                          <% remarks = "Excellent" %>
+                        <% } else if  (score >= 75 ) {  %>
+                            <% grade = "A" %> 
+                            <% remarks = "Excellent" %>
+                        <% } else if  (score >= 65 ) {  %>
+                                    <% grade = "B+" %> 
+                                    <% remarks = "Very Good" %>
+                          <% } else if  (score >= 60 ) {  %>
+                                     <% grade = "B" %>
+                                     <% remarks = "Good" %>
+                            <% } else if  (score >= 50 ) {  %>
+                              <% grade = "C+" %>
+                              <% remarks = "fair" %>
+                            <% }else if  (score >= 40 ) {  %>
+                              <% grade = "C" %>
+                              <% remarks = "fair" %>
+                            <% }else{ %>
+                              <% grade = 'FAIL'  %>
+                              <% remarks = "Work Hard" %>
+                          <% } %>                    
+                <tr>
+                  <td><%= element.subjectname%></td>
+                  <td><div id="score"><%= element.score %></div></td>
+                  <td><%= finalPercentage %></td>
+                  <td><%= grade %></td>   
+                  <td><%= remarks %></td>                  
+                </tr>
+                <% }) %>
+                <tr> 
+                  <td><b>Total</b></td>
+                  <td><%= totalMarks %></td>
+                  <td><%= total %></td>
+                  <td colspan="2" style="text-align: left; color: darkblue;"><b>GPA:</b></td>
+                  </tr>
+              </tbody>
+              <tfoot style="border: 0px solid white;">  
+                <tr>
+                  <td colspan="5"></td>
+                </tr>
+                <tr>
+                  <td colspan="5"></td>
+                </tr>         
+                <tr>
+                  <td><b>Subjects Passed: </b> 6</td>
+                  <td colspan="3"><b>School will reopen on <br> </b>08-01-2024</td>
+                  <td><b>Position: </b> 18</td>
+                </tr>
+                <tr>
+                  <td colspan="5"></td>
+                </tr>
+                <tr>
+                  <td colspan="5"></td>
+                </tr>
+              </tfoot>              
+            </table>
+          </div>
+            <div id="bottom-data">
+              <div>
+                Overall Comment: <b>Needs to work hard </b> 
+              </div>
+              <div>
+                Status:  <b>Repeat</b>
+              </div>
+            </div>
+            <div id="bottom-data">
+              <div>
+                ........................................................................ <br>
+                <b>Class Teacher's signature </b>
+              </div>
+              <div>
+                ........................................................................ <br>
+                <b>HeadTeacher's signature</b>
+              </div>
+            </div>
+            <% }else{ %>
+                <h3>No Results</h3>
+           <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="/scripts/adminScripts.js"></script>
+<!-- <script>         
+  function printPdf(){
+            var divContents = $("#reportCard").html();
+            var printWindow = window.open('', '', 'height=400,width=800');
+            printWindow.document.write('<html><head><title>DIV Contents</title>');
+            printWindow.document.write('</head><body >');
+            printWindow.document.write(divContents);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        };
+</script> -->
+
+</html>

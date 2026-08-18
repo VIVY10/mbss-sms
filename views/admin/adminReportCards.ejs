@@ -1,0 +1,67 @@
+<%- include("../partials/sidebar.ejs") %>
+<% if(locals.schoolyear && locals.term && locals.yearlevel) { %>  
+<div class="container">
+  <form action="/adminReportCards" method="post" class="h-100 bg-white">
+    <div class="row g-2">
+      <div class="col-md">        
+        <div class="form-floating">
+          <select class="form-select" name="schoolyear" id="schoolyear" aria-label="Floating label select example" required>
+            <option selected disabled value=""></option>
+            <% schoolyear.forEach(element => { %>
+                <option value="<%= element.schoolyearid %>">
+                    <%= element.yearname %>
+                </option>  
+            <% }); %>
+        </select> 
+        <label for="schoolyear">school year</label>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="form-floating">
+          <select class="form-select" name="term" id="term" required>
+            <option selected disabled value=""></option>
+            <% term.forEach(element => { %>
+                <option value="<%= element.termid %>">
+                    <%= element.termnumber %>
+                </option>  
+            <% }); %>
+        </select> 
+        <label for="term">term</label>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="form-floating">
+          <select class="form-select" name="yearlevel" id="yearlevel" required>
+            <option selected disabled value=""></option>
+            <% yearlevel.forEach(element => { %>
+                <option value="<%= element.levelorder %>">
+                    <%= element.levelname %>
+                </option>  
+            <% }); %>              
+        </select> 
+        <label for="yearlevel">Grade</label>
+        </div>
+      </div>
+
+      <div class="col-md">
+        <div class="form-floating">
+          <select class="form-select" name="examid" id="examid" required>
+            <option selected disabled value=""></option>
+            <% exam.forEach(element => { %>
+                <option value="<%= element.examid %>">
+                    <%= element.exam_title %>
+                </option>  
+            <% }); %>
+        </select> 
+        <label for="examid">exam</label>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end pt-3">
+      <button type="submit" class="btn btn-warning btn-md ms-2">Search</button>
+    </div>                                          
+  </form>
+</div>
+<% } %>
+<script src="/scripts/adminScripts.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

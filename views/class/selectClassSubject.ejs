@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <title>Subj_Class</title>
+</head>
+<body>
+    <form action="enterMarks1" method="post" class="h-100 bg-white">
+        <div class="container py-5 h-100">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+              <div class="card card-registration my-4">
+                <div class="row g-0">
+                  <div class="col-xl-6 d-none d-xl-block">
+                    <img src="/images/bench1.jpg"
+                      alt="Mbss School" class="img-fluid"
+                      style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
+                  </div>                    
+                    <div class="col-xl-6">
+                        <div class="card-body p-md-5 text-black">
+                          <h3 class="mb-5 text-uppercase">Details</h3>
+                          
+                          <% if(locals.foundclass){ %>
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                  <label class="form-check-label" for="classid">Class</label>
+                                  <select class="select" name="classid">
+                                    <option selected disabled value="">Choose...</option>
+                                    <% foundclass.forEach(element => { %>
+                                      <option value="<%= element.id %>"> <%= element.grade %><%= element.class %></option>                              
+                                    <% }); %>
+                                  </select>
+                                </div>
+                              </div> 
+                              <% } %>
+                              <div class="row">
+                                <div class="col-md-6 mb-4">
+                                  <label class="form-check-label" for="class">Class</label>
+                                  <select class="select" name="subject">
+                                    <option selected disabled value="">Choose...</option>
+                                      <option value="Mathematics">Mathematics</option>                              
+                                  </select>
+                                </div>
+                              </div> 
+
+                          <div class="d-flex justify-content-end pt-3">
+                            <button type="submit" class="btn btn-warning btn-md ms-2">save</button>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </form>
+</body>
+</html>

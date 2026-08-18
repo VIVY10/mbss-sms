@@ -1,0 +1,37 @@
+<%- include("../partials/sidebar") %>
+    <form action="addGuardianType" method="post" class="h-100 bg-white">
+        <div class="container py-5 h-60">
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+              <div class="card card-registration my-4">
+                <div class="row g-0">
+                  <div class="col-xl-6 d-none d-xl-block">
+                    <img src="/images/logo.png"
+                      alt="Mbss School" class="img-fluid"
+                      style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
+                  </div>                    
+                    <div class="col-xl-6">
+                        <div class="card-body p-md-5 text-black">
+                          <h3>GUARDIAN TYPE DETAILS</h3>
+                          <div class="row">
+                            <div class="col-md-12 mb-4">
+                              <div class="form-outline">
+                                <input type="text" name="guardianType" placeholder="father" required/>
+                              </div>
+                            </div>
+                          </div>    
+                          <div class="btn-box">
+                            <button type="submit" id="submit">Submit</button>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </form>
+    <script src="/scripts/adminScripts.js"></script>
+</body>
+</html>

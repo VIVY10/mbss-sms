@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+ <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700,900|Work+Sans:300" rel="stylesheet">
+   <link rel="icon" href="/images/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="/styles/contactus.css" /> 
+ <title>Contact Us</title>
+</head>
+<body>
+
+<div class="contact-container">
+  <div class="contact-inner-container">
+    <div class="contact-info-container">
+      <h1 class="contact-heading">Contact Us</h1>
+      <p class="contact-description">
+        We're open for any suggestion.
+      </p>
+      <div class="line"></div>
+
+      <div class="contact-details">
+        <h3><i class="fa fa-map-marker icon"></i> Address</h3>
+        <p>Milenge Boma, Milenge, Luapula, Zambia</p>
+      </div>
+      <hr />
+
+      <div class="contact-details">
+        <h3><i class="fa fa-envelope"></i> Email</h3>
+        <p><strong>Email:</strong> <a href="mailto:support@milengesecodary.com" style="color: #fff; text-decoration: none;">support@milengesecodary.com</a></p>
+      </div>
+      <hr />
+
+      <div class="contact-details">
+        <h3><i class="fa fa-phone"></i> Lets Talk</h3>
+        <p>+260 974446548</p>
+      </div>
+      <hr />
+
+      <div class="social-link-container">
+        <i class="fa fa-instagram"></i>
+        <i class="fa fa-facebook"></i>
+        <i class="fa fa-twitter"></i>
+        <i class="fa fa-linkedin"></i>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <form class="form" action="/contactUs" method="post">
+        <div class="form-group">
+          <input type="text" name="senderName" class="input-field form-input" placeholder="Name" required>
+        </div>
+        <div class="form-group">
+          <input type="email" name="emailAddress" class="input-field form-input" placeholder="Email" required>
+        </div>
+        <div id="job-title">
+            <input type="text" name="jobtitle" class="input-field form-input">
+        </div>
+        <div class="form-group">
+          <textarea name="emailMessage" rows="5" class="input-field form-input" placeholder="Message" required></textarea>
+        </div>
+        <div class="form-group">
+          <input type="submit" class="input-field submit-btn" value="Submit" >
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/gsap.min.js"></script>
+<script src="/scripts/contactUsScript.js"></script>
+</body>
+</html>

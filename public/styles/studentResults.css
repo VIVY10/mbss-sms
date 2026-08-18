@@ -1,0 +1,38 @@
+.material-icons {
+    color: #17085d; /* Initial color */
+    background-color: #f0f0f0; /* Light grey background */
+    border-radius: 50%; /* Rounded icon */
+    padding: 8px; /* Add padding inside the icon */
+    
+}
+
+
+.material-icons:hover {
+    color: #0056b3; /* Change color on hover */
+    transform: scale(1.2); /* Enlarge icon on hover */
+    cursor: pointer;
+    transform: scale(1.2); /* Enlarge icon on hover */
+    transition: transform 0.2s ease-in-out; /* Smooth transition */
+}
+#selectedClassDisplay{
+    margin-top: 10px; 
+    margin-bottom: 30px;
+    font-weight: bold;
+    color: green;
+    text-transform: uppercase;
+  }
+
+  #submit2{
+    margin-top: 10px; 
+    margin-bottom: 50px;
+  }
+
+  #resultsTable{
+    display: none 
+  }
+  
+  
+
+  #subjectRegistration{
+    display: none;
+  }

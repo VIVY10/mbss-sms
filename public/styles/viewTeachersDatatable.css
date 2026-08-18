@@ -1,0 +1,131 @@
+ /* Table Header Styling */
+  .table-dark th {
+    background-color: #2a2b47; /* Dark background */
+    color: white; /* White text */
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    padding: 12px 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+  }
+
+  .table-dark th:hover {
+    background-color: #1c1c2f; /* Darker shade on hover */
+  }
+
+  /* Table Row Styling */
+  .table tbody td {
+    font-family: 'Calibri', sans-serif;
+    font-size: 16px;
+    color: #333;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  /* Hover effect for rows */
+  .table tbody tr:hover {
+    background-color: #f0f8ff;
+  }
+
+  .action-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; /* Set a fixed width for uniformity */
+  height: 30px; /* Set a fixed height */
+  line-height: 1; /* Minimize inner spacing */
+}
+
+.action-btn i {
+  font-size: 18px; /* Slightly reduce icon size */
+  line-height: 1;
+  color: inherit; /* Use the button's text color */
+}
+
+
+
+  .action-btn:hover {
+    color: #0056b3;
+    text-decoration: underline;
+    transform: scale(1.1); /* Slightly enlarge on hover */
+  }
+
+  .text-danger {
+    color: #dc3545 !important; /* Red color for delete action */
+  }
+
+  /* Button alignment */
+  .btn-container {
+    text-align: right;
+    margin-bottom: 10px;
+  }
+
+  .action-btn:hover::after {
+  content: attr(data-title);
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8); /* Adjust background opacity */
+  color: #fff;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 12px;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  visibility: visible;
+  opacity: 1; /* Ensure visibility */
+  transition: opacity 0.3s ease-in-out;
+  z-index: 10;
+}
+
+.table tbody tr td[colspan="9"] {
+  text-align: center;
+  font-style: italic;
+  color: #888;
+  padding: 20px;
+}
+
+.btn-container {
+  margin-bottom: 20px;
+}
+
+
+.table-responsive::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background-color: #2a2b47;
+  border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background-color: #1c1c2f;
+}
+
+
+
+  .dataTables_length {
+    margin-bottom: 15px; /* Adjust as needed */
+  }
+
+  @media (max-width: 768px) {
+    /* Make table scrollable on smaller screens */
+    .table-responsive {
+      overflow-x: auto;
+    }
+
+    /* Stack the action buttons vertically on smaller screens */
+    .table tbody td .action-btn {
+      display: block;
+      margin-bottom: 10px;
+    }
+  }

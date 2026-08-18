@@ -1,0 +1,145 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+  }
+  
+  .blog-post {
+    margin-bottom: 2rem;
+  }
+  
+  .blog-post-meta {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+  
+  .link-body-emphasis {
+    color: #0d6efd;
+    text-decoration: none;
+  }
+  
+  .link-body-emphasis:hover {
+    text-decoration: underline;
+  }
+  
+  .bg-light {
+    background-color: #f8f9fa !important;
+  }
+  
+
+
+  .fst-italic {
+    font-weight: bold; /* Medium font weight for better visibility */
+    color: #2c076c; /* Darker color for stronger contrast */
+  }
+
+
+ .blog-post h2:hover {
+  text-decoration: none !important;
+  color: #0c033b !important;
+  cursor: pointer !important;
+}
+
+
+/* For larger screens */
+.bd-placeholder-img {
+    width: 100%;   /* Ensures the image takes up 100% of the container */
+    height: 95px;  /* Maintains the aspect ratio */
+    object-fit: cover; /* Ensures the image covers the area without distortion */
+}
+
+
+
+/* General styles for larger screens */
+.hammerMill, .solaPower, .careersDay, .worldTeachersDay, .merryXmas, .schoolWebsite, .freeEducation {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff; /* Optional: Adjust text color for better readability */
+}
+
+/* Hammer Mill background */
+.hammerMill {
+    background-image: url('/images/gallery/hammerMill.jpg');
+}
+
+/* Solar Power background */
+.solaPower {
+    background-image: url('/images/gallery/solar.jpg');
+}
+
+/* Careers Day background */
+.careersDay {
+    background-image: url('/images/gallery/20.jpg');
+}
+
+/* World Teachers Day background */
+.worldTeachersDay {
+    background-image: url('/images/gallery/25.jpg');
+}
+
+/* Merry Xmas background */
+.merryXmas {
+    background-image: url('/images/gallery/2.jpg');
+}
+
+/* School Website background */
+.schoolWebsite {
+    background-image: url('/images/website.jpg');
+}
+
+/* Free Education background */
+.freeEducation {
+    background-image: url('/images/gallery/7.jpg');
+}
+
+
+
+.header, .highlight{
+    color: #fff; /* Optional: Adjust text color for better readability */
+}
+
+.schoolWebsiteheader, .schoolWebsitehighlight{
+    color: rgb(0, 41, 128); /* Optional: Adjust text color for better readability */
+}
+
+
+.blog-post a{
+    text-decoration: none !important;
+}
+
+
+.blog-post a:hover{
+    text-decoration: underline !important;
+    color: #0c033b !important;
+    cursor: pointer !important;
+}
+
+
+/* External CSS for responsive images */
+@media (max-width: 768px) {
+    .bd-placeholder-img {
+        width: 100%; /* Ensures the image takes up 100% of the container */
+        height: auto; /* Maintains the aspect ratio */
+    }
+}
+
+
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+    /* Adjust background size for smaller screens */
+    .hammerMill, .solaPower, .careersDay, .worldTeachersDay, .merryXmas, .schoolWebsite, .freeEducation {
+        background-size: contain; /* Adjust image to fit the container */
+    }
+
+    /* Remove text from the background sections */
+    .header, .highlight, .schoolWebsiteheader, .schoolWebsitehighlight {
+        color: transparent !important;; /* Hide text by making it transparent */
+    }
+}
+
+
+
+
+  
+  

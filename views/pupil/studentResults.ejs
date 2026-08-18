@@ -1,0 +1,52 @@
+<%- include("../partials/studentSideBar") %>
+<title>Student Results</title>             
+<div class="container">
+  <form action="/studentResults" method="post" class="h-100 bg-white">
+    <div class="row g-2">
+      <div class="col-md">        
+        <div class="form-floating">
+          <select class="form-select" name="year" required>
+            <option selected disabled value=""></option>
+            <% if (locals.year) { %>
+              <% year.forEach(element => { %>
+                <option value="<%= element.schoolyearid %>"><%= element.yearname %></option>                              
+              <% }); %>
+            <% } %>
+          </select> 
+          <label for="year">Academic Year</label>
+        </div>
+      </div>
+
+      <div class="col-md">
+        <div class="form-floating">
+          <select name="term" class="form-select" required>
+            <option selected disabled value=""></option>
+            <% if (locals.term) { %>
+              <% term.forEach(element => { %>
+                <option value="<%= element.termid %>"><%= element.termnumber %>---<%= element.yearname %></option>                              
+              <% }); %>
+            <% } %>
+          </select> 
+          <label for="term">School Term</label>
+        </div>
+      </div>
+      <div class="col-md">
+        <div class="form-floating">
+          <select name="exam" class="form-select" required>
+            <option selected disabled value=""></option>
+            <% if (locals.exam) { %>
+              <% exam.forEach(element => { %>
+                <option value="<%= element.examid %>"><%= element.exam_title %></option>                              
+              <% }); %>
+            <% } %>
+          </select> 
+          <label for="exam">Exam Type</label>
+        </div>
+      </div>
+    </div>
+    <div class="btn-box">
+      <button type="submit">Submit</button>
+    </div>                                         
+  </form>
+</div>
+<script src="/scripts/adminScripts.js"></script>

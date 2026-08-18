@@ -1,0 +1,205 @@
+/* General Styling */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.logo img,
+.govt-logo img {
+    max-width: 100px;
+    border-radius: 50%;
+}
+
+.header-text {
+    text-align: center;
+}
+
+header h1 {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+
+header h2 {
+    font-size: 14px;
+}
+
+.student-info table, 
+.marks table,
+.results table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.student-info table td,
+.marks table th, 
+.marks table td, 
+.results table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+thead th {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px;
+    text-align: left;
+}
+
+tbody td, .summary-table td, .table2 td, .table2 th {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.black {
+    font-weight: bold;
+    float: right;
+}
+
+.subjects {
+    font-weight: bold;
+}
+
+.grandtot, .inwords, .subinwords {
+    background-color: #f9f9f9;
+    font-weight: bold;
+    padding: 15px 10px;
+    text-align: center;
+}
+
+
+.month-year {
+    text-align: center;
+}
+
+.table2 th, .table2 td {
+    text-align: center;
+    padding: 12px;
+}
+
+.table2 th {
+    background-color: #e9e9e9;
+}
+
+
+
+/* footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+footer a {
+    color: red;
+    font-weight: bold;
+} */
+
+.disclaimer {
+    font-size: 12px;
+    font-style: italic;
+    color: #555;
+    margin: 10px;
+}
+
+.visit {
+    text-decoration: none;
+}
+
+.download-btn {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.download-btn button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.download-btn button:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+/* Responsive Styling */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo img, 
+    .govt-logo img {
+        margin-bottom: 10px;
+    }
+    table, thead, tbody, th, td, tr {
+        display: block;
+        width: 100%;
+    }
+
+    thead {
+        display: none;
+    }
+
+    tr {
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 10px;
+        font-weight: bold;
+        text-align: left;
+    }
+}

@@ -1,0 +1,70 @@
+<%- include("../partials/sidebar.ejs") %>
+      <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
+<div class="table-responsive">
+      <div style="float: right;">
+        <a href="/register">
+            <button type="submit" class="btn btn-success">Add Pupil</button>
+        </a>
+      </div>
+      <table class="table table-bordered">
+        <h3>Registered Pupils</h3>
+        <thead class="table-dark">
+          <tr>         
+            <th>examNumber</th>
+            <th>studentName</th>
+            <th>DOB</th>
+            <th>Gender</th>
+            <th>Grade</th>
+            <th>Regist_Status</th>
+            <th>OVC_Reg_Status</th>
+            <th>sponsor</th>
+            <th>GuardianID</th>
+            <th>GuardianName</th>
+            <th>Contact</th>
+            <th>status</th>
+            <th>RegisteredDate</th>
+            <th colspan="2" style="text-align: center;">Action</th>
+          </tr>
+        </thead>
+      <% if(locals.results){ %>
+        <% results.forEach(element => { %>          
+            <tbody>
+              <tr>
+                <td><%= element.id %></td>
+                <td><%= element.fname %> <%= element.lname %></td>
+                <td><%= element.dob.toLocaleDateString() %></td>
+                <td><%= element.gender %></td>
+                <td><%= element.grade %> <%= element.class %></td>
+                <td><%= element.studentstatus %></td>
+                <td><%= element.ovcstatus %></td>
+                <td><%= element.sponsor %></td>
+                <td><%= element.nrc_no %></td>
+                <td><%= element.guardianFname %> <%= element.guardianLname %></td>
+                <td><%= element.phonenumber %></td>
+                <td><%= element.status %></td>
+                <td>
+                  <%= new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(element.enrollmentdate) %>
+                </td>                
+                <td  style="text-align: center;" >
+                  <a href="/updatePupilRecord/<%= element.id %>"><i class="material-icons">edit</i></a>
+                  
+                </td>  
+                <td>
+                  <a href="/deletePupilRecord/<%= element.id %>"><i class="material-icons">delete</i></a>
+                </td>             
+              </tr>
+            </tbody>        
+        <% }); %>        
+        <% } else{%>
+              <h3>No Records found</h3>
+          <% } %>
+      </table>      
+      </div>
+    </main>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="/scripts/adminScripts.js"></script>
+</body>
+
+</html>

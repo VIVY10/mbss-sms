@@ -1,0 +1,184 @@
+<%- include("../partials/teacherDashboardSidebar.ejs") %>
+<style>
+    .material-icons {
+    color: #17085d; /* Initial color */
+    background-color: #f0f0f0; /* Light grey background */
+    border-radius: 50%; /* Rounded icon */
+    padding: 8px; /* Add padding inside the icon */
+    
+}
+
+
+.material-icons:hover {
+    color: #0056b3; /* Change color on hover */
+    transform: scale(1.2); /* Enlarge icon on hover */
+    cursor: pointer;
+    transform: scale(1.2); /* Enlarge icon on hover */
+    transition: transform 0.2s ease-in-out; /* Smooth transition */
+}
+#selectedClassDisplay{
+    margin-top: 10px; 
+    margin-bottom: 30px;
+    font-weight: bold;
+    color: green;
+    text-transform: uppercase;
+  }
+
+  #submit2{
+    margin-top: 10px; 
+    margin-bottom: 50px;
+  }
+</style>
+      <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
+  <div class="container">
+        <!-- Div to display the selected class -->    
+        <div class="col-auto" id="selectedClassDisplay">
+        </div>
+    <form class="row g-3" id="classInfo">      
+        <% if(locals.foundClass && locals.examType && locals.term){ %>   
+      <div class="col-auto">
+        <select class="form-control form-control-lg" name="subjectcode" id="selectSubjectcode" required>
+          <option selected disabled value="">Class...</option>
+          <% foundClass.forEach(element => { %>
+              <option value="<%= element.subjectcode %>" 
+                      data-classid="<%= element.classid %>" 
+                      data-grade="<%= element.grade %>" 
+                      data-section="<%= element.class %>">
+                  <%= element.grade %><%= element.class %> --------- <%= element.subjectname %>
+              </option>  
+          <% }); %>
+      </select> 
+    </div>
+     <div class="col-auto">
+      <div>
+        <input type="number" name="selectClassid" value="" id="selectClassid" hidden readonly/> 
+        <input type="number" name="year" value="" id="selectYear" hidden readonly/>                     
+      </div>  
+     </div>
+      <div class="col-auto">        
+        <select class="select form-control" name="examtype" required>
+          <option selected disabled value="" >Exam type...</option>
+          <% examType.forEach(element => { %>
+            <option value=<%= element.examid %>><%= element.exam_title %></option>                              
+          <% }); %>
+        </select>
+      </div>
+
+      <div class="col-auto">        
+        <select class="select form-control" name="term" id="term" required>
+          <option selected disabled value="" >term...</option>
+          <% term.forEach(element => { %>
+            <option value="<%= element.termid %>" 
+              data-year="<%= element.schoolyearid %>">
+              <%= element.termnumber%> --- <%= element.yearname%>
+            </option>                              
+          <% }); %>
+        </select>
+      </div>
+
+
+      <% } %>
+      <div class="col-auto">
+          <button type="button" id="submit2" class="btn-primary">Get Results</button>
+      </div>
+    </form>
+  </div>
+  
+  <div style="margin-bottom: 50px;">
+
+  </div>
+    <div class="table-responsive">
+    <table id="example" class="display" style="width:100%">
+      <thead>
+          <tr>
+              <th>lname</th>
+              <th>fname</th>              
+              <th>gender</th>
+              <th>examno</th>
+              <th>grade</th>
+              <th>class</th>
+              <th>examType</th>
+              <th>Term</th>
+              <th>score</th>
+              <th>Edit</th> 
+              <th>Delete</th> 
+          </tr>
+      </thead>
+      <!-- <tfoot>
+          <tr>
+            <th>fname</th>
+            <th>lname</th>
+            <th>gender</th>
+            <th>examno</th>
+            <th>class</th>
+            <th>subjectname</th>
+            <th>exam_title</th>
+            <th>score</th>
+          </tr>
+      </tfoot> -->
+  </table>
+</div>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <form id="editForm">
+                  <div class="col-md-12 mb-4">
+                    <table class="table">
+                      <thead class="table-light">
+                        <tr>
+                          <th>fname</th>
+                          <th>lname</th>
+                          <th>examno</th>
+                          <th>score</th>
+                        </tr>
+                      </thead>                         
+                    <tbody>
+                      <tr >
+                        <td id="fname"></td>
+                        <td id="lname"></td>
+                        <td id="examno"></td>                        
+                        <td><input type="number" name="score" min="0" max="100" placeholder="0" id="score" style="text-align: center; width: 100px;"/></td>
+                        <input type="number" name="examid" id="examid" hidden>
+                        <input type="number" name="examno" id="examno"  hidden>
+                        <input type="number"  name="subjectcode" id="subjectcode" hidden>
+
+                        <input type="number"  name="grade" id="grade" hidden>
+                        <input type="text"  name="gender" id="gender" hidden>
+                        <input type="text"  name="section" id="section" hidden>
+                        <input type="text"  name="subjectname" id="subjectname" hidden>
+                        <input type="text"  name="exam_title" id="exam_title" hidden>
+                        <input type="number"  name="term" id="term" hidden>
+                        <input type="number"  name="id" id="id" hidden>
+                      </tr>
+                    </tbody>                           
+                    </div>                                             
+                  </div>
+                </div> 
+                <td><button type="submit" class="btn btn-success btn-md ms-2" id="editMarkBtn">Save</button></td>                                    
+              </form>
+          
+        </div>
+      </div>
+</div>
+  <script src="/scripts/adminScripts.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>  
+  <script src="/scripts/scripts.js"></script>
+  <script src="/scripts/studentResults.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<%- include("../partials/teacherDashboardSidebar.ejs") %>
+<title>student subjects</title>
+  <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
+  <div class="container">
+    <div class="card mt-3">
+      <div class="card-body">
+        <h4>Registered Pupils</h4>
+        <table class="table table-bordered table-hover" id="table">
+          <thead class="thead-light">
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Exam Number</th>
+              <th colspan="2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (results && results.length > 0) { %>
+              <% results.forEach(element => { %>
+                <tr>
+                  <td><%= element.fname %></td>
+                  <td><%= element.lname %></td>
+                  <td><%= element.examno %></td>
+                  <td>
+                    <form action="/deleteRegisteredPupils" method="POST" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                      <input type="hidden" name="examno" value="<%= element.examno %>">
+                      <input type="hidden" name="subjectcode" value="<%= element.subjectcode %>">
+                      <input type="hidden" name="studentsubjectid" value="<%= element.studentsubjectid %>">
+                      <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="4" class="text-center"><h5>No Pupils Registered in this Subject</h5></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>         
+  </div>
+
+  <!-- Include Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script src="/scripts/adminScripts.js"></script>
+</body>
+</html>

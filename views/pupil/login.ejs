@@ -1,0 +1,35 @@
+<%- include("../partials/header.ejs") %>
+    <div class="row my-5 ">
+        <div class="col-md-4"></div>
+        <div class="col-md-3 shadow bg-white text-secondary rounded">
+                       
+            <form action="/studentLogin" method="POST">
+                <center><img  class="row my-3"   src="/images/logo.png" alt="" width="72" height="57"></center>
+                <center><h1 class="h3 mb-3 fw-normal"> sign in</h1></center>
+            
+                <div class="form-floating">
+                  <% if(messages) { %>
+                      <div style="color: red;"><%= messages.error %></div>
+                  <%}%>
+                  <input type="username" name="username" class="form-control"  placeholder="exam number" required>
+                  <label for="username">Username</label>
+                </div>
+                <div class="form-floating">
+                  <input type="password" name="password" class="form-control"  placeholder="Password" required>
+                  <label for="password">Password</label>
+                </div>
+            
+                <!-- <div class="form-check text-start my-3">
+                  <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Remember me
+                  </label>
+                </div> -->
+                <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+                <p class="mt-5 mb-3 text-body-secondary">© <% const year = new Date().getFullYear() %> <%= year %> </p>
+              </form>
+
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <%- include("../partials/footer.ejs") %>

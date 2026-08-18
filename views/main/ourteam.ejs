@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/images/logo.png" type="image/x-icon">
+  <title>ourteam</title>
+</head>
+<%- include("../partials/header.ejs") %>
+    <div class="container">
+      <!-- Images Filter Buttons Section -->
+      <div class="row mt-5" id="filter-buttons">
+        <div class="col-12">
+          <button class="btn mb-2 me-1 active" data-filter="all">Show all</button>
+          <button class="btn mb-2 mx-1" data-filter="admin">Admin</button>
+          <button class="btn mb-2 mx-1" data-filter="hod">HODs</button>
+          <button class="btn mb-2 mx-1" data-filter="teacher">Teachers</button>
+        </div>
+      </div>
+
+      <div class="row px-2 mt-5 gap-5" id="filterable-cards">
+        
+        <div class="profilecard" data-name="admin">
+            <div class="img">
+                <img src="/images/website.jpg" alt="staff-member">
+            </div>
+            <div class="caption">
+                <h3>Bornwell Chama</h3>
+                <p>School Manager</p>
+                <div class="social-links">
+                    <i class="fa-brands fa-facebook"></i>
+                    <i class="fa-brands fa-twitter"></i>
+                    <i class="fa-brands fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="profilecard" data-name="admin">
+            <div class="img">
+                <img src="/images/website.jpg" alt="staff-member">
+            </div>
+            <div class="caption">
+                <h3>Mulemba Christopher</h3>
+                <p>Dep. School Manager</p>
+                <div class="social-links">
+                    <i class="fa-brands fa-facebook"></i>
+                    <i class="fa-brands fa-twitter"></i>
+                    <i class="fa-brands fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="profilecard" data-name="hod">
+            <div class="img">
+                <img src="/images/website.jpg" alt="staff-member">
+            </div>
+            <div class="caption">
+                <h3>Chitundu Mashumba</h3>
+                <p>HOD Mathematics</p>
+                <div class="social-links">
+                    <i class="fa-brands fa-facebook"></i>
+                    <i class="fa-brands fa-twitter"></i>
+                    <i class="fa-brands fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="profilecard" data-name="hod">
+            <div class="img">
+                <img src="/images/website.jpg" alt="staff-member">
+            </div>
+            <div class="caption">
+                <h3>Mumba Wisdom</h3>
+                <p>HOD Languages</p>
+                <div class="social-links">
+                    <i class="fa-brands fa-facebook"></i>
+                    <i class="fa-brands fa-twitter"></i>
+                    <i class="fa-brands fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="profilecard" data-name="hod">
+            <div class="img">
+                <img src="/images/website.jpg" alt="staff-member">
+            </div>
+            <div class="caption">
+                <h3>Chansa Evaristo</h3>
+                <p>HOD Natural Sciences</p>
+                <div class="social-links">
+                    <i class="fa-brands fa-facebook"></i>
+                    <i class="fa-brands fa-twitter"></i>
+                    <i class="fa-brands fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="profilecard" data-name="hod">
+            <div class="img">
+                <img src="/images/website.jpg" alt="staff-member">
+            </div>
+            <div class="caption">
+                <h3>Mukanda Benson</h3>
+                <p>HOD Social Sciences</p>
+                <div class="social-links">
+                    <i class="fa-brands fa-facebook"></i>
+                    <i class="fa-brands fa-twitter"></i>
+                    <i class="fa-brands fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="profilecard" data-name="teacher">
+            <div class="img">
+                <img src="/images/website.jpg" alt="staff-member">
+            </div>
+            <div class="caption">
+                <h3>Mwila Vivy</h3>
+                <p>ICT Teacher</p>
+                <div class="social-links">
+                    <i class="fa-brands fa-facebook"></i>
+                    <i class="fa-brands fa-twitter"></i>
+                    <i class="fa-brands fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+          integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script src="/scripts/ourteam.js"></script>
+  </body>
+</html>

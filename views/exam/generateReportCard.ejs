@@ -1,0 +1,27 @@
+<%- include("../partials/sidebar.ejs") %>
+      <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
+      <div class="card">
+        <div class="card-body">
+          <table class="table table-white" id="table">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th colspan="2">Action</th>
+              </tr>
+            </thead>
+            <% if(locals.foundClass) { %>
+                <% foundClass.forEach(element => { %>
+                    <tbody>
+                      <tr>
+                        <td><%= element.grade %><%= element.class %></th>
+                        <td ><a href="/classResultsData?classid=<%= element.classid %>">Get Report Cards</a></td>
+                      </tr>
+                    </tbody>
+                    <% }) %> 
+                <% } else { %> 
+                        <h1>No Classes Found</h1>
+                    <% } %>
+        </div>
+      </div>         
+      </div>
+</html>

@@ -1,0 +1,39 @@
+<%- include("../partials/sidebar.ejs") %>
+<div class="table-responsive">
+    <table class="table">
+      <div style="float: right;">
+        <a href="/AddClassSubjects">
+            <button type="submit" class="btn btn-success">Add Class Subject</button>
+        </a>
+    </div>
+      <thead class="table-light">
+        <tr>
+          <th>SubjectCode</th>
+          <th>SubjectName</th>
+          <th>Class</th>
+          <th>Department</th>
+        </tr>
+      </thead>
+    <% if(locals.results){ %>
+      <% results.forEach(element => { %>
+          <tbody>
+            <tr>
+              <td><%= element.subjectcode %></th>
+              <td><%= element.subjectname %></td>
+              <td><%= element.grade %><%= element.section %></th>
+                <td><%= element.departmentname %></td>             
+              </th>                  
+            </tr>
+          </tbody>        
+        <% }); %>        
+      <% } %>
+    </table>    
+    </div>
+  </main>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="/scripts/adminScripts.js"></script>
+</body>
+
+</html>

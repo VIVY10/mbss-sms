@@ -1,0 +1,57 @@
+<!-- //////////////////////////////////////////////////////// -->
+<%- include("../partials/sidebar.ejs") %>
+      <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
+      <div class="card mb-3" style="max-width: 900px;">        
+        <div class="row g-0 ">
+          <div class="col-md-6">
+            <img src="/images/logo.png" class="img-fluid rounded-start" alt="form logo">
+          </div>
+          <div class="col-md-5">
+            <div class="card-body">
+              <form class="row g-0" action="/allocateDepartment" method="post">
+                <h3>Department Allocation</h3>
+              <% if(locals.foundTeacher && locals.foundDepartment){ %>
+                          <div class="row">
+                              <div class="col-md-12 mb-4">
+                                <label class="form-check-label" for="teacher">Teacher</label>
+                                <select class="select" name="teacher" required>
+                                  <option selected disabled value="">Choose...</option>
+                                  <% foundTeacher.forEach(element => { %>
+                                    <option value=<%= element.id %>><%= element.lname %> <%= element.fname %></option>                              
+                                  <% }); %>
+                                </select>
+                              </div>
+                            </div> 
+
+                            <div class="row">
+                              <div class="col-md-12 mb-4">
+                                <label class="form-check-label" for="department">Department</label>
+                                <select class="select" name="department" required>
+                                  <option selected disabled value="">Choose...</option>
+                                  <% foundDepartment.forEach(element => { %>
+                                    <option value=<%= element.departmentid %>> <%= element.departmentname %></option>                              
+                                  <% }); %>
+                                </select>
+                              </div>
+                            </div>
+                            <% } %>
+                      </div>
+                <div class="col-12">
+                  <button class="btn btn-primary" type="submit">Create</button>
+                </div>
+              </form>
+    
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      </div>
+    </main>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="/scripts/adminScripts.js"></script>
+</body>
+
+</html>

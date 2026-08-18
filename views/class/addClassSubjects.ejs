@@ -1,0 +1,43 @@
+<%- include("../partials/sidebar.ejs") %>
+
+      <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
+
+      <div class="card mb-3" style="max-width: 900px;">
+        <div class="row g-0 ">
+          <div class="col-md-6">
+            <img src="/images/logo.png" class="img-fluid rounded-start" alt="form logo">
+          </div>
+          <div class="col-md-5">
+            <div class="card-body">
+              <form class="row g-0" action="addClassSubjects" method="post" id="form1">
+                <h3>Subject Allocation</h3>
+              <% if(locals.foundClass && locals.foundSubject){ %>
+                                <select class="select" name="subjectcode" required>
+                                  <option selected disabled value="">Subject...</option>
+                                  <% foundSubject.forEach(element => { %>
+                                    <option value=<%= element.subjectcode %>><%= element.subjectcode %> <%= element.subjectname %></option>                              
+                                  <% }); %>
+                                </select>
+
+                                <select class="select" name="classid" required>
+                                  <option selected disabled value="">Class...</option>
+                                  <% foundClass.forEach(element => { %>
+                                    <option value=<%= element.classid %>> <%= element.grade %><%= element.class %></option>                              
+                                  <% }); %>
+                                </select>
+                            <% } %>
+                            <div class="btn-box">
+                              <button type="submit" id="submit">Submit</button>
+                            </div>
+              </form>    
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="/scripts/adminScripts.js"></script>
+</body>
+
+</html>

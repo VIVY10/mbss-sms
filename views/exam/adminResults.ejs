@@ -1,0 +1,243 @@
+<%- include("../partials/sidebar.ejs") %>
+<% if(locals.foundClass && locals.examType){ %>   
+  <style>
+    #selectedClassDisplay{
+    margin-top: 10px; 
+    margin-bottom: 30px;
+    font-weight: bold;
+    color: green;
+    text-transform: uppercase;
+  }
+  </style>
+ <div class="container" style="margin-bottom: 50px;">
+  <form class="h-100 bg-white" id="adminResultsForm">  
+    <div class="row">
+      <div class="col-md"> 
+        <div class="form-floating">
+           <select class="form-select" name="subjectcode" id="selectSubjectcode" aria-label="Floating label select example" required>
+            <option selected disabled value=""></option>
+              <% foundClass.forEach(element => { %>
+              <option value="<%= element.subjectcode %>" 
+                      data-classid="<%= element.classid %>" 
+                      data-grade="<%= element.grade %>" 
+                      data-fname="<%= element.fname %>"
+                      data-lname="<%= element.lname %>"
+                      data-subjectname="<%= element.subjectname %>"
+                      data-class="<%= element.class %>">
+                  <%= element.grade %><%= element.class %> --- <%= element.subjectname %>
+              </option>  
+              <% }); %>
+          </select> 
+          <label for="selectSubjectcode">class</label>
+        </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <select class="form-select"  name="examtype" id="examtype" aria-label="Floating label select example" required>
+              <option selected disabled value="" ></option>
+              <% examType.forEach(element => { %>
+                <option value=<%= element.examid %>><%= element.exam_title %></option>                              
+              <% }); %>
+            </select>
+            <label for="examtype">exam</label>
+          </div>
+        </div>
+
+      <div class="col-md">
+        <div class="form-floating">      
+        <select class="form-select" name="term" id="term" aria-label="Floating label select example" required>
+          <option selected disabled value="" ></option>
+          <% term.forEach(element => { %>
+            <option value="<%= element.termid %>" 
+              data-year="<%= element.schoolyearid %>">
+              <%= element.termnumber%> --- <%= element.yearname%>
+            </option>                              
+          <% }); %>
+        </select>
+        <label for="term">term</label>
+      </div>
+    </div>
+  <div class="col-auto">
+    <button type="button" id="adminResults" class="btn-primary">Get Results</button>
+</div>
+<div class="col-md">
+  <div class="form-floating">
+    <!-- Div to display the selected class -->    
+    <div class="col-auto" id="selectedClassDisplay"></div>
+    <input type="number" name="selectClassid" value="" id="classid" hidden readonly/>  
+    <input type="number" name="year" value="" id="selectYear" hidden readonly/>   
+  </div>
+</div>
+</div>
+</form>
+</div>
+<% } %>
+<!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->     
+<div class="table-responsive">
+  <table id="resultsTable" class="display table-responsive" style="width:100%">
+    <thead>
+        <tr>
+            <th>lname</th>
+            <th>fname</th>              
+            <th>gender</th>
+            <th>examno</th>
+            <th>grade</th>
+            <th>class</th>
+            <th>Term</th>
+            <th>score</th>
+        </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <th>lname</th>
+        <th>fname</th>              
+        <th>gender</th>
+        <th>examno</th>
+        <th>grade</th>
+        <th>class</th>
+        <th>Term</th>
+        <th>score</th>
+    </tr>
+    </tfoot>
+</table>
+</div>
+<script src="/scripts/adminScripts.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="/scripts/scripts.js"></script>
+<script>
+  document.getElementById('selectSubjectcode').addEventListener('change', function() {
+      // Get the selected option
+      var selectedOption = this.options[this.selectedIndex];
+      // Get the classid, grade, and section from the data attributes
+      var classid = selectedOption.getAttribute('data-classid');
+      var grade = selectedOption.getAttribute('data-grade');
+      var section = selectedOption.getAttribute('data-class');
+      var fname = selectedOption.getAttribute('data-fname')
+      var lname = selectedOption.getAttribute('data-lname')
+      var subjectname = selectedOption.getAttribute('data-subjectname')
+      var teacherid = selectedOption.getAttribute('data-teacherid')
+
+      // Set the value of the hidden classid input field
+      document.getElementById('classid').value = classid;
+
+      // Display the selected class in the div
+      document.getElementById('selectedClassDisplay').textContent = `TR: ${lname} ${fname} - ${grade}${section}`;
+  });
+
+  document.getElementById('term').addEventListener('change', function() {
+        // Get the selected option
+        var selectedOption = this.options[this.selectedIndex];
+        // Get the classid, grade, and section from the data attributes
+        var year = selectedOption.getAttribute('data-year');
+        // Set the value of the hidden classid input field
+        document.getElementById('selectYear').value = year;
+    });
+</script>
+<script>
+  // let formData = {}; // Global variable for form data
+  var data = []; // Global variable for form data
+  $(document).ready(function() {
+  // Initial DataTable setup if needed
+  var table = $('#resultsTable').DataTable({
+              dom: 'Bfrtip',
+              buttons: [
+                  {
+                      extend: 'copy',
+                      title: function() {
+                          return `Grade ${data[0].grade}${data[0].class}_${data[0].subjectname || 'Subject'}_${data[0].exam_title || 'Exam'}_Results`;
+                      },
+                      filename: function() {
+                          return `Grade ${data[0].grade} ${data[0].class}_${data[0].subjectname || 'Subject'}_${data[0].exam_title || 'Exam'}_Results`;
+                      },
+                      exportOptions: {
+                          columns: ':not(:nth-last-child(-n+2))' // Exclude the last two columns (Edit and Delete buttons)
+                      }
+                  },
+                  {
+                      extend: 'excel',
+                      title: function() {
+                          return `Grade ${data[0].grade} ${data[0].class} ${data[0].subjectname || 'Subject'}`;
+                      },
+                      filename: function() {
+                          return `Grade ${data[0].grade} ${data[0].class}_${data[0].subjectname || 'Subject'}_${data[0].exam_title || 'Exam'}_Results`;
+                      },
+                      exportOptions: {
+                          columns: ':not(:nth-last-child(-n+2))'
+                      }
+                  },
+                  {
+                      extend: 'pdf',
+                      title: function() {
+                          return `Grade ${data[0].grade} ${data[0].class} ${data[0].subjectname || 'Subject'}`;
+                      },
+                      filename: function() {
+                          return `Grade ${data[0].grade} ${data[0].class}_${data[0].subjectname || 'Subject'}_${data[0].exam_title || 'Exam'}_Results`;
+                      },                      
+                      exportOptions: {
+                          columns: ':not(:nth-last-child(-n+2))'
+                      }
+                  },
+                  {
+                      extend: 'print',
+                      title: function() {
+                          return `Grade ${data[0].grade} ${data[0].class} ${data[0].subjectname || 'Subject'}`;
+                      },
+                      exportOptions: {
+                          columns: ':not(:nth-last-child(-n+2))'
+                      }
+                  }
+              ],
+              // data: [], // Initialize with empty data
+              columns: [
+                  { data: 'fname' },
+                  { data: 'lname' },
+                  { data: 'gender' },
+                  { data: 'id' },
+                  { data: 'grade' },
+                  { data: 'class' },
+                  { data: 'term' },
+                  { data: 'score' }
+              ]
+          });
+
+
+  // Handle form submission
+  $("#adminResults").click(function(e) {
+      e.preventDefault();
+      
+      const classData = $("#adminResultsForm")[0];
+      console.log(classData)
+      const formData = Object.fromEntries(new FormData(classData).entries());
+
+      console.log(formData)
+
+      var xmlhttp = new XMLHttpRequest();
+      var url = "/adminCheckResults";
+      xmlhttp.open("post", url, true);
+      xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      xmlhttp.send(JSON.stringify(formData));
+      
+      xmlhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+              data = JSON.parse(this.responseText);
+              // Clear the existing data and add new data
+              table.clear().rows.add(data).draw();
+          }
+      }
+  });
+
+ 
+
+});
+
+</script>
+</body>
+
+</html>

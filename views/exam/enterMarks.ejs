@@ -1,0 +1,85 @@
+<%- include("../partials/teacherDashboardSidebar.ejs") %>
+<style>
+  #selectedClassDisplay{
+    margin-top: 30px; 
+    margin-bottom: 30px;
+    font-weight: bold;
+    color: green;
+    text-transform: uppercase;
+  }
+</style>
+<div class="form-container">
+  <form action="/getDetails" method="post" id="resultsform">          
+      <% if(locals.foundClass && locals.examType){ %>                  
+          <select class="form-control form-control-lg" name="subjectcode" id="subjectcode" required>
+              <option selected disabled value="">Class...</option>
+              <% foundClass.forEach(element => { %>
+                  <option value="<%= element.subjectcode %>" 
+                          data-classid="<%= element.classid %>" 
+                          data-grade="<%= element.grade %>" 
+                          data-section="<%= element.section %>">
+                      <%= element.grade %><%= element.class %> --------- <%= element.subjectname %>
+                  </option>  
+              <% }); %>
+          </select>                  
+          <span id="subject">
+              <input type="number" name="classid" value="" id="classid" hidden readonly/>                     
+          </span>
+          
+          <!-- Div to display the selected class -->    
+          <div id="selectedClassDisplay">
+          </div>
+                  
+          <select class="form-control form-control-lg" name="examtype" id="examtype" required>
+              <option selected disabled value="">Exam type...</option>
+              <% examType.forEach(element => { %>
+                  <option value="<%= element.examid %>"><%= element.exam_title %></option>                              
+              <% }); %>
+          </select>
+
+            <select class="form-control form-control-lg" name="termid" id="termid" required>
+              <option selected disabled value="">Term...</option>
+              <% foundClass.forEach(element => { %>
+                  <option value="<%= element.termid %>">
+                      <%= element.termnumber %>
+                  </option>  
+              <% }); %>
+          </select> 
+          <select class="form-control form-control-lg" name="yearid" id="yearid" required>
+              <option selected disabled value="">Year...</option>
+              <% foundClass.forEach(element => { %>
+                  <option value="<%= element.schoolyearid %>">
+                      <%= element.yearname %>
+                  </option>  
+              <% }); %>
+          </select> 
+      <% } %>
+      
+
+      <div class="btn-box">
+          <button type="submit" class="btn-primary">Next</button>
+      </div>
+  </form>
+</div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="/scripts/adminScripts.js"></script> 
+    <script src="/scripts/scripts.js"></script>   
+
+    <script>
+      document.getElementById('subjectcode').addEventListener('change', function() {
+          // Get the selected option
+          var selectedOption = this.options[this.selectedIndex];
+          // Get the classid, grade, and section from the data attributes
+          var classid = selectedOption.getAttribute('data-classid');
+          var grade = selectedOption.getAttribute('data-grade');
+          var section = selectedOption.getAttribute('data-section');
+  
+          // Set the value of the hidden classid input field
+          document.getElementById('classid').value = classid;
+  
+          // Display the selected class in the div
+          document.getElementById('selectedClassDisplay').textContent = `Selected Class: ${grade}${section}`;
+      });
+</script>
+</html>

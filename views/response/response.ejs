@@ -1,0 +1,61 @@
+<!-- <style>
+    .alert-danger {
+    color: #14562c;
+    text-align: center;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 30px;
+}
+
+.alert-danger ul {
+    margin: 0;
+    padding-left: 20px;
+    list-style-type: none;
+}
+
+</style>
+<% if (message.length > 0) { %>
+    <div class="alert alert-danger">
+        <ul>
+            <li><%= message %></li>
+        </ul>
+    </div>
+<% } %> -->
+
+<style>
+    .alert-danger {
+        color: #14562c;
+        text-align: center;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        font-size: 30px;
+    }
+
+    .alert-danger ul {
+        margin: 0;
+        padding-left: 20px;
+        list-style-type: none;
+    }
+
+    .alert-danger li {
+        margin-bottom: 8px;
+    }
+</style>
+
+<% if (message && message.length > 0) { %>
+    <div class="alert alert-danger">
+        <ul>
+            <% message.split('\n').forEach(error => { %>
+                <li><%= error %></li>
+            <% }); %>
+        </ul>
+    </div>
+<% } %>

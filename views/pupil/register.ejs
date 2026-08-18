@@ -1,0 +1,140 @@
+<%- include("../partials/sidebar") %>
+<div class="container">
+    <form id="studentReg" enctype="multipart/form-data">
+        <!---Personal details section-->
+        <h4>Personal Details</h4>
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6">
+              <input type="number" class="form-control form-control-md" name="examno" placeholder="Exam No" aria-label="Exam No" id="examno" minlength="4" oninput="checkExamno()" required>
+              <span id="check-examno"></span>
+            </div>
+            <div class="col-sm-6">
+              <input input type="password" class="form-control" name="password" placeholder="Password" minlength="8" aria-label="password" required>
+              <small class="form-text text-muted">must be Alphanumeric & at least 8 characters</small>
+            </div>
+          </div>
+          <div class="row g-3 mb-4">
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="fname" placeholder="First name" aria-label="First name" required>
+            </div>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="lname" placeholder="Last name" aria-label="Last name" required>
+            </div>
+            <div class="col-sm-4">
+                <select class="select form-control" name="gender" aria-label="gender" required>
+                    <option selected disabled value="" >Gender...</option>
+                    <option value="male">Male</option>   
+                    <option value="female">Female</option>    
+                    <option value="other">Other</option>                    
+              </select>
+            </div>
+          </div>
+          <div class="row g-3 mb-4">   
+            <div class="col-sm-4">
+                <input type="date" class="form-control" name="dob" placeholder="Date of Birth" aria-label="date of birth" required>
+            </div>   
+            <div class="col-sm-4">
+              <% if(locals.foundClass){ %>
+                      <select class="select form-control" name="classid" id="selectedClass" aria-label="Grade" required>
+                          <option selected disabled value="" >grade...</option>        
+                          <% foundClass.forEach(element => { %>
+                              <option value="<%= element.classid %>"  
+                                      data-grade="<%= element.grade %>">
+                                  <%= element.grade %><%= element.class %>
+                              </option>  
+                          <% }); %>
+                        </select>
+                      <% } %>
+              <input type="number" name="yearlevel" value="" id="yearlevel" hidden/>     
+            </div>
+            <div class="col-sm-4">
+              <% if(locals.schoolyear){ %>
+                      <select class="select form-control" name="schoolyear" aria-label="school year" required>
+                          <option selected disabled value="" >Academic Year...</option>
+                          <% schoolyear.forEach(element => { %>
+                            <option value=<%= element.schoolyearid %>><%= element.yearname %></option>                              
+                          <% }); %>
+                        </select>
+               <% } %>
+            </div>                  
+          </div>
+          <div class="row g-3 mb-4">
+            <div class="col-sm-4">
+                <% if(locals.studentstatus){ %>
+                        <select class="select form-control" name="studentstatus" aria-label="student status" required>
+                            <option selected disabled value="" >student status...</option>
+                            <% studentstatus.forEach(element => { %>
+                              <option value=<%= element.studentStatusID %>><%= element.studentStatus %></option>                              
+                            <% }); %>
+                          </select>
+                 <% } %>
+            </div>
+            <div class="col-sm-4">
+                <% if(locals.sponsor){ %>
+                        <select class="select form-control" name="sponsor" aria-label="sponsored by" required>
+                            <option selected disabled value="" >sponsor...</option>
+                            <% sponsor.forEach(element => { %>
+                              <option value=<%= element.sponsorID %>><%= element.sponsorName %></option>                              
+                            <% }); %>
+                          </select>
+                 <% } %>
+            </div>
+            <div class="col-sm-4">
+                <% if(locals.ovcstatus){ %>
+                        <select class="select form-control" name="ovcstatus" aria-label="ovc status" required>
+                            <option selected disabled value="" >ovc status...</option>
+                            <% ovcstatus.forEach(element => { %>
+                              <option value=<%= element.ovcstatusid %>><%= element.ovcstatus %></option>                              
+                            <% }); %>
+                          </select>
+                 <% } %>
+            </div>
+          </div>                      
+          <div class="row g-3 mb-4">
+            <div class="col-sm-6">
+                <input type="file" name="file" id="file" accept="images/*" required>
+            </div>            
+          </div>
+          <!-- Parent/Guardian Details -->
+          <div class="row my-4">
+            <h4>Parent/Guardian Details</h4>
+          </div>
+          <div class="row g-3 mb-4">
+            <div class="col-sm-4">
+                <input type="number" class="form-control" name="nrcno" placeholder="NRC Number" minlength="9" aria-label="Parent NRC No." required>
+                <small>must be at least 9 digits</small>
+            </div>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="guardianFname" placeholder="First Name" aria-label="Parent First Name" required>
+            </div>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="guardianLname" placeholder="First Name" aria-label="Parent Last Name" required>
+            </div>
+          </div>
+          <div class="row g-3 mb-4">
+            <div class="col-sm-4">                           
+               <input type="tel" class="form-control" name="phoneNumber" id="phoneNumber" placeholder="Phone number" minlength="9" aria-label=" Phone Number" required>
+            </div>
+            <!-- <div class="col-sm-4">
+                <input type="email" class="form-control" name="email" id="email" placeholder="Parent Email Address" aria-label="parent email" required>
+            </div> -->
+            <div class="col-sm-4">
+                <% if(locals.guardiantype){ %>
+                    <select class="select form-control" name="relationship" aria-label="Relationship" required>
+                        <option selected disabled value="" >Relationship...</option>
+                        <% guardiantype.forEach(element => { %>
+                          <option value=<%= element.guardiantypeid %>><%= element.relationship %></option>                              
+                        <% }); %>
+                      </select>
+                        <% } %>
+            </div>
+          </div>
+        <button type="button" id="studentInfoBtn">Submit</button>
+    </form>
+</div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- <script src="/scripts/scripts.js"></script>    -->
+    <script src="/scripts/adminScripts.js"></script>
+    <script src="/scripts/studentAdmission.js"></script>    
+</body>
+</html>

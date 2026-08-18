@@ -1,0 +1,114 @@
+<%- include("../partials/teacherDashboardSidebar.ejs") %>
+<style>
+ #selectedClassDisplay{
+    font-weight: bold;
+    color: green;
+    text-transform: uppercase;
+  }
+</style>
+<!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
+<body>
+    <!-- Div to display the selected class -->    
+    <div class="col-auto" id="selectedClassDisplay">
+    </div>
+  <div class="container">
+    <div class="row g-3">
+    <h6><i><span id="msg"></span></i></h6>
+    <% if(locals.foundClass && locals.foundSubject){ %>   
+      <!-- <div class="col-auto">         
+      <select class="select form-control" name="classid" id="classid" required>
+          <option selected disabled value="" >Class...</option>
+          <% foundClass.forEach(element => { %>
+            <option value=<%= element.classid %> ><%= element.grade %><%= element.class %></option>                              
+          <% }); %>
+        </select>
+      </div> -->
+  <div class="col-auto">
+    <div>
+      <input type="number" name="classid" value="" id="classid" hidden readonly/>                     
+    </div>
+
+</div>
+
+<div class="col-auto">
+  <select class="form-control form-control-lg" name="subjectcode" id="subjectcode" required>
+    <option selected disabled value="">select Class...</option>
+    <% foundClass.forEach(element => { %>
+        <option value="<%= element.subjectcode %>" 
+                data-classid="<%= element.classid %>" 
+                data-grade="<%= element.grade %>" 
+                data-section="<%= element.class %>"
+                data-subjectname="<%= element.subjectname %>">
+            <%= element.grade %><%= element.class %> --- <%= element.subjectname %>
+        </option>  
+    <% }); %>
+</select> 
+</div>
+      <div class="col-auto">        
+        <div>
+          <button type="button" class="btn btn-success btn-md ms-2" id="submit5" onclick="checkPupils()">Submit</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+<% } %>
+
+
+
+          <form id="subjectRegistration">
+            <!-- Message area for showing feedback -->
+            <div id="msg"></div>            
+            <!-- Table to display student data -->
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h5 id="title"></h5>
+                    </div>
+                    <div class="col-md-12 mb-4">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Exam Number</th>
+                                    <th>Select</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentSubjectTable">
+                                <!-- Table rows will be inserted here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="btn-box">
+                      <button type="button" class="btn btn-danger" onClick="checkPupilData()">Save</button>
+                    </div>   
+                </div>
+            </div>
+        </form>        
+  <script src="/scripts/adminScripts.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script  src="/scripts/scripts.js"></script>
+
+  <script>
+    document.getElementById('subjectcode').addEventListener('change', function() {
+      // Get the selected option
+      var selectedOption = this.options[this.selectedIndex];
+      // Get the classid, grade, and section from the data attributes
+      var classid = selectedOption.getAttribute('data-classid');
+      var grade = selectedOption.getAttribute('data-grade');
+      var section = selectedOption.getAttribute('data-section');
+      var subjectname = selectedOption.getAttribute('data-subjectname');
+
+      // Set the value of the hidden classid input field
+      document.getElementById('classid').value = classid;
+
+      // Display the selected class in the div
+      document.getElementById('selectedClassDisplay').textContent = `${subjectname} - ${grade}${section}`;
+  });
+</script>
+
+
+</body>
+
+</html>

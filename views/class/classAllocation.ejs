@@ -1,0 +1,172 @@
+<!-- //////////////////////////////////////////////////////// -->
+<%- include("../partials/sidebar.ejs") %>
+<!-- <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="/dashboard">DASHBOARD</a>
+</header>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+      <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="sidebarMenuLabel">Admin Dashboard</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button>
+        </div> -->
+
+        <!-- sidebar -->
+        <!-- <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="/">
+                Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="/addClass">
+                add class
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="/about">
+                about
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="/createSubject">
+                Create Subject
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="/registerTeacher">
+                register Teacher
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="/viewUsers">
+                View Reg Pupils
+              </a>
+            </li>
+          </ul>
+
+          <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-body-secondary text-uppercase">
+            <span>Saved reports</span>
+            <a class="link-secondary" href="#" aria-label="Add a new report">
+            </a>
+          </h6>
+          <ul class="nav flex-column mb-auto">
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="/">
+                Current month
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="/">
+                Last quarter
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="/">
+                Social engagement
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="/">
+                Year-end sale
+              </a>
+            </li>
+          </ul>
+
+          <hr class="my-3">
+
+          <ul class="nav flex-column mb-auto">
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="/">
+                Settings
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center gap-2" href="/logout">
+                Sign out
+              </a>
+            </li>
+          </ul>
+        </div> -->
+
+        <!-- /sidebar -->
+      <!-- </div>
+    </div>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Admin Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-2">
+          <div class="btn-group me-2"> -->
+            <!-- <button type="button" class="btn btn-sm btn-outline-secondary">
+                <a class="nav-link d-flex align-items-center gap-2" href="/login">
+                    Login
+                  </a>
+            </button> -->
+            <!--<button type="button" class="btn btn-sm btn-outline-secondary">
+                <a class="nav-link d-flex align-items-center gap-2" href="/logout">
+                    Logout
+                  </a>
+            </button>
+          </div>
+        </div>
+      </div> -->
+      <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
+
+      <div class="card mb-3" style="max-width: 900px;">
+        <div style="text-align: center; margin-top: 5px; padding-top: 10px;"><h2>Class Data</h2></div>
+        <div class="row g-0 ">
+          <div class="col-md-6">
+            <img src="/images/logo.png" class="img-fluid rounded-start" alt="form logo">
+          </div>
+          <div class="col-md-5">
+            <div class="card-body">
+              <form class="row g-0" action="allocateClass" method="post">
+              <% if(locals.foundStudent && locals.foundClass){ %>
+                          <div class="row">
+                              <div class="col-md-12 mb-4">
+                                <label class="form-check-label" for="examno">Student Name</label>
+                                <select class="select" name="examno">
+                                  <option selected disabled value="">Choose...</option>
+                                  <% foundStudent.forEach(element => { %>
+                                    <option value="<%= element.id %>"><%= element.lname %> <%= element.fname %></option>                              
+                                  <% }); %>
+                                </select>
+                              </div>
+                            </div> 
+
+                            <div class="row">
+                              <div class="col-md-12 mb-4">
+                                <label class="form-check-label" for="classid">Class</label>
+                                <select class="select" name="classid">
+                                  <option selected disabled value="">Choose...</option>
+                                  <% foundClass.forEach(element => { %>
+                                    <option value="<%= element.classid %>"> <%= element.grade %><%= element.class %></option>                              
+                                  <% }); %>
+                                </select>
+                              </div>
+                            </div>
+                            <% } %>
+                      </div>
+                <div class="col-12">
+                  <button class="btn btn-primary" type="submit">Save</button>
+                </div>
+              </form>
+    
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      </div>
+    </main>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<%- include("../partials/sidebar") %>
+<div class="form-container">
+    <form action="createSubject" method="post" id="form1">  
+          <h3>Subject Details</h3>    
+              <input type="number" name="subjectcode" placeholder="Subject Code" required/>
+              <input type="text" name="subjectname" placeholder="Subject Name" required/>
+                <% if(locals.results){ %>
+                    <select class="select" name="department">
+                      <option selected disabled value="">Department...</option>
+                        <% results.forEach(element => { %>
+                          <option value="<%= element.departmentid %>"> <%= element.departmentname %></option>                              
+                            <% }); %>
+                    </select>
+                        <% } 
+                          else{%>
+                                <h3>No Department available</h3>
+                          <% } %>
+                          <div class="btn-box">
+                            <button type="submit" id="submit">Submit</button>
+                          </div>
+    </form>
+    </div>
+
+    <script src="/scripts/adminScripts.js"></script>
+</main>
+</html>

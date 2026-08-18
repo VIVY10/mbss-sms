@@ -1,0 +1,501 @@
+const { matchedData } = require('express-validator');
+
+const model = require('../models/adminModel.js');
+const subjectModel = require('../models/subjectModel.js');
+const service = require('../services/adminService.js');
+
+const response = (res, message) => {
+  res.render('./response/response', { message });
+};
+
+
+// ==================== SCHOOL YEARS ====================
+
+exports.schoolYears = async (req, res) => {
+  const results = await model.getSchoolYears();
+
+  res.render('./admin/schoolyears', {
+    results,
+    user: req.user
+  });
+};
+
+exports.schoolYearPage = (req, res) => {
+  res.render('./admin/schoolYear', {
+    user: req.user
+  });
+};
+
+exports.createSchoolYear = async (req, res) => {
+  try {
+    await service.createSchoolYear(matchedData(req));
+    res.redirect('./schoolYear');
+  } catch (e) {
+    res.redirect('./schoolYear');
+  }
+};
+
+exports.deleteYear = async (req, res) => {
+  try {
+    await model.deleteSchoolYear(req.body.schoolyearid);
+    res.redirect('/schoolYears');
+  } catch(err) {
+    
+    response(res, 'Database error.');
+  }
+};
+
+
+// ==================== TERMS ====================
+
+exports.terms = async (req, res) => {
+  const results = await model.getTerms();
+
+  res.render('./admin/terms', {
+    results,
+    user: req.user
+  });
+};
+
+exports.addTermPage = async (req, res) => {
+  const results = await model.getSchoolYearsBasic();
+
+  res.render('./admin/addTerm', {
+    results,
+    user: req.user
+  });
+};
+
+exports.addTerm = async (req, res) => {
+
+  try {
+    await service.createTerm(matchedData(req));
+    res.redirect('/terms');
+  } catch (e) {
+    response(res, e.message || 'Database error.');
+  }
+};
+
+exports.deleteTerm = async (req, res) => {
+  try {
+    await model.deleteTerm(req.body.termid);
+    res.redirect('/terms');
+  } catch {
+    response(res, 'Database error.');
+  }
+};
+
+
+// ==================== CLASSES ====================
+
+exports.classes = async (req, res) => {
+  const results = await model.getClasses();
+
+  res.render('./class/class', {
+    results,
+    user: req.user
+  });
+};
+
+exports.addClassPage = async (req, res) => {
+  const [termData, yearLevelData] =
+    await model.getClassOptions();
+
+  if (!termData.length) {
+    return response(
+      res,
+      'No School Term Registered. Create school term to create a class.'
+    );
+  }
+
+  if (!yearLevelData.length) {
+    return response(
+      res,
+      'Register School Year level First'
+    );
+  }
+
+  res.render('./class/createClass', {
+    termData,
+    yearLevelData,
+    user: req.user
+  });
+};
+
+exports.addClass = async (req, res) => {
+  try {
+    await service.createClass(matchedData(req));
+    res.redirect('/get_class');
+  } catch (e) {
+    response(res, e.message || 'Database error.');
+  }
+};
+
+exports.deleteClass = async (req, res) => {
+  try {
+    await model.deleteClass(req.body.classid);
+    res.redirect('/get_class');
+  } catch {
+    response(res, 'Database error.');
+  }
+};
+
+
+// ==================== SUBJECTS ====================
+
+exports.createSubjectPage = async (req, res) => {
+  const results = await model.getDepartments();
+
+  if (!results.length) {
+    return res.send('There are no available departments.');
+  }
+
+  res.render('./admin/createSubject', {
+    results,
+    user: req.user
+  });
+};
+
+exports.createSubject = async (req, res) => {
+  try {
+    await service.createSubject(matchedData(req));
+    res.redirect('/viewSubjects');
+  } catch (e) {
+    response(res, e.message || 'Database error.');
+  }
+};
+
+exports.viewSubjects = async (req, res) => {
+  const results = await subjectModel.getAll();
+
+  if (!results.length) {
+    return res.send('No subjects found');
+  }
+
+  res.render('./admin/viewSubjects', {
+    results,
+    user: req.user
+  });
+};
+
+exports.deleteSubject = async (req, res) => {
+  try {
+    await subjectModel.deleteByCode(req.body.subjectcode);
+    res.redirect('/viewSubjects');
+  } catch {
+    response(res, 'Database error.');
+  }
+};
+
+
+// ==================== DEPARTMENTS ====================
+
+exports.createDepartmentPage = (req, res) => {
+  res.render('./admin/createDepartment', {
+    user: req.user
+  });
+};
+
+exports.createDepartment = async (req, res) => {
+  try {
+    await service.createDepartment(
+      matchedData(req).departmentname
+    );
+
+    res.redirect('/viewDepartment');
+  } catch (e) {
+    response(res, e.message || 'Database error.');
+  }
+};
+
+exports.deleteDepartment = async (req, res) => {
+  try {
+    await model.deleteDepartment(req.body.departmentid);
+    res.redirect('/viewDepartment');
+  } catch {
+    response(res, 'Database error.');
+  }
+};
+
+exports.viewDepartment = async (req, res) => {
+  const results = await model.getDepartments();
+
+  res.render('./admin/viewDepartment', {
+    results,
+    user: req.user
+  });
+};
+
+
+// ==================== HOD ====================
+
+exports.createHodPage = async (req, res) => {
+  const [hod, department] =
+    await model.getHodOptions();
+
+  if (!hod.length || !department.length) {
+    return res.redirect('/Dashboard');
+  }
+
+  res.render('./hod/createHod', {
+    hod,
+    department,
+    user: req.user
+  });
+};
+
+exports.createHod = async (req, res) => {
+  // const data = matchedData(req);
+  const data = req.body;
+
+  try {
+    await service.createHod(
+      data.hod,
+      data.department
+    );
+
+    res.redirect('/Dashboard');
+  } catch {
+    res.redirect('/Dashboard');
+  }
+};
+
+exports.viewHod = async (req, res) => {
+  const results = await model.getHods();
+
+  if (!results.length) {
+    return res.redirect('/Dashboard');
+  }
+
+  res.render('./hod/viewHod', {
+    results,
+    user: req.user
+  });
+};
+
+
+// ==================== DEPARTMENT ALLOCATION ====================
+
+exports.allocateDepartmentPage = async (req, res) => {
+  const [
+    foundTeacher,
+    foundDepartment
+  ] = await model.getTeacherAllocationOptions();
+
+  if (!foundTeacher.length) {
+    return res.send('No Teachers in the system');
+  }
+
+  if (!foundDepartment.length) {
+    return res.redirect('/Dashboard');
+  }
+
+  res.render('./admin/allocateTrDepartment', {
+    foundTeacher,
+    foundDepartment,
+    user: req.user
+  });
+};
+
+exports.allocateDepartment = async (req, res) => {
+  // const data = matchedData(req);
+  const data = req.body;
+
+  try {
+    await service.allocateDepartment(
+      data.teacher,
+      data.department
+    );
+
+    res.redirect('/allocateDepartment');
+  } catch {
+    res.redirect('/allocateDepartment');
+  }
+};
+
+exports.viewDepartmentTeachers = async (req, res) => {
+  const departments =
+    await model.getDepartmentTeachers(req.user.id);
+
+  if (!departments.length) {
+    return response(
+      res,
+      'You have not been allocated to a department.'
+    );
+  }
+
+  const results =
+    await model.getTeachersInDepartment(
+      departments[0].departmentname
+    );
+
+  if (!results.length) {
+    return res.send(
+      'No Teachers allocated to your department. Contact your system Admin.'
+    );
+  }
+
+  res.render('./hod/viewHod', {
+    results,
+    user: req.user
+  });
+};
+
+
+// ==================== GUARDIAN TYPES ====================
+
+exports.addGuardianTypePage = (req, res) => {
+  res.render('./admin/createGuardianType', {
+    user: req.user
+  });
+};
+
+exports.addGuardianType = async (req, res) => {
+  const { guardianType } = matchedData(req);
+
+  if (
+    (await model.findGuardianType(guardianType)).length
+  ) {
+    return response(res, 'Guardian Type exists.');
+  }
+
+  try {
+    await model.createGuardianType(guardianType);
+    res.redirect('/viewGuardianType');
+  } catch {
+    response(res, 'Database error.');
+  }
+};
+
+exports.viewGuardianType = async (req, res) => {
+  try {
+    const results = await model.getGuardianTypes();
+
+    res.render('./admin/guardianType', {
+      results,
+      user: req.user
+    });
+  } catch {
+    response(res, 'Database error.');
+  }
+};
+
+exports.deleteGuardianType = async (req, res) => {
+  try {
+    await model.deleteGuardianType(
+      req.body.guardiantypeid
+    );
+
+    res.redirect('/viewGuardianType');
+  } catch {
+    response(res, 'Database error.');
+  }
+};
+
+
+// ==================== CLASS SUBJECTS ====================
+
+exports.addClassSubjectsPage = async (req, res) => {
+  const [
+    foundClass,
+    foundSubject
+  ] = await subjectModel.getClassSubjectOptions();
+
+  if (!foundClass.length) {
+    return response(
+      res,
+      'No class record found'
+    );
+  }
+
+  if (!foundSubject.length) {
+    return response(
+      res,
+      'Subject Record not found'
+    );
+  }
+
+  res.render('./class/addClassSubjects', {
+    foundClass,
+    foundSubject,
+    user: req.user
+  });
+};
+
+exports.addClassSubjects = async (req, res) => {
+  const data = req.body;
+
+  try {
+    await service.addClassSubject(
+      data.classid,
+      data.subjectcode
+    );
+
+    res.redirect('/viewClassSubjects');
+  } catch (e) {
+    response(
+      res,
+      e.message || 'Insertion database error'
+    );
+  }
+};
+
+exports.viewClassSubjects = async (req, res) => {
+  try {
+    const results =
+      await subjectModel.getClassSubjects();
+
+    res.render('./admin/viewClassSubjects', {
+      results,
+      user: req.user
+    });
+  } catch {
+    response(res, 'Database error');
+  }
+};
+
+exports.unallocatedSubjects = async (req, res) => {
+  const results =
+    await subjectModel.getUnallocatedClassSubjects();
+
+  if (!results.length) {
+    return response(
+      res,
+      'Subjects not allocated to Classes yet. Add Subjects to respective classes'
+    );
+  }
+
+  res.render('./admin/unallocatedClassSubjects', {
+    results,
+    user: req.user
+  });
+};
+
+exports.classAllocation = async (req, res) => {
+  const results =
+    await subjectModel.getAllocatedClassSubjects();
+
+  if (!results.length) {
+    return response(
+      res,
+      'Subjects not allocated to teachers yet. Consult HODs'
+    );
+  }
+
+  res.render('./admin/subjectAllocation', {
+    results,
+    user: req.user
+  });
+};
+
+exports.deleteClassSubject = async (req, res) => {
+  try {
+    await subjectModel.deleteClassSubject(
+      req.body.class_subjectsid
+    );
+
+    res.redirect('/viewClassSubjects');
+  } catch {
+    response(res, 'Database error.');
+  }
+};

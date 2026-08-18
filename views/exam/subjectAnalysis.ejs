@@ -1,0 +1,284 @@
+<%- include("../partials/teacherDashboardSidebar.ejs") %>
+
+<style>
+  #selectedanalysisClassDisplay{
+    margin-top: 10px; 
+    margin-bottom: 30px;
+    font-weight: bold;
+    color: green;
+    text-transform: uppercase;
+  }
+</style>
+      <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->     
+<body>
+  <div class="container">
+    <!-- Div to display the selected class -->    
+    <div class="col-auto" id="selectedanalysisClassDisplay">
+      </div>  
+       <form form class="row g-3" id="subjectAnalysisForm">    
+        <% if(locals.foundClass && locals.examType){ %>   
+      <div class="col-auto">
+        <select class="form-control form-control-lg" name="subjectcode" id="selectanalysisSubjectcode" required>
+          <option selected disabled value="">Class...</option>
+          <% foundClass.forEach(element => { %>
+              <option value="<%= element.subjectcode %>" 
+                      data-classid="<%= element.classid %>" 
+                      data-grade="<%= element.grade %>" 
+                      data-section="<%= element.section %>">
+                  <%= element.grade %><%= element.class %> --- <%= element.subjectname %>
+              </option>  
+          <% }); %>
+      </select> 
+    </div>
+    
+    <div class="col-auto">
+      <div>
+        <input type="number" name="classid" value="" id="selectanalysisClassid" hidden readonly/>  
+        <input type="number" name="grade" value="" id="selectanalysisGrade" hidden readonly/>  
+        <input type="number" name="year" value="" id="selectYear" hidden readonly/>                   
+      </div>
+  
+    <!-- Div to display the selected class -->    
+      <!-- <div class="col-auto" id="selectedanalysisClassDisplay">
+      </div> -->
+    </div>
+
+      <div class="col-auto">        
+        <select class="select form-control" name="examtype" required>
+          <option selected disabled value="" >Exam type...</option>
+          <% examType.forEach(element => { %>
+            <option value=<%= element.examid %>><%= element.exam_title %></option>                              
+          <% }); %>
+        </select>
+      </div>
+
+      <div class="col-auto">        
+        <select class="select form-control" name="term" id="term" required>
+          <option selected disabled value="" >term...</option>
+          <% term.forEach(element => { %>
+            <option value="<%= element.termid %>" 
+              data-year="<%= element.schoolyearid %>">
+              <%= element.termnumber%> --- <%= element.yearname%>
+            </option>                              
+          <% }); %>
+        </select>
+      </div>
+      <% } %>
+      <div class="col-auto">
+          <button type="button" id="submit6" class="btn-primary">Get Results</button>
+      </div>
+    </form>
+
+    <div style="margin-bottom: 50px;"></div>
+
+    <div class="card text-dark bg-light mb-3" id="card" hidden>
+      <div class="card-header"><h3><span id="title"></span></h3></div>
+      <div class="card-body">
+        <div class="table-responsive" id="juniorTable" hidden>
+          <table id="g9analysisTable" class="table table-bordered" cellspacing="0" width="auto">      
+            <thead class="table-light">
+                <tr >
+                    <th rowspan="2">Subject</th>
+                    <th colspan="3">No. Reg</th>
+                    <th colspan="3">No. Sat</th>
+                    <th colspan="3">No. Absent</th>
+                    <th colspan="3">One</th>
+                    <th colspan="3">Two</th>
+                    <th colspan="3">Three</th>
+                    <th colspan="3">Four</th>
+                    <th colspan="3">Fail</th>
+                    <th colspan="3">Pass</th>
+                    <th colspan="3">Fail %</th>
+                    <th colspan="3">Pass %</th>
+                </tr>
+                <tr>
+                    <th>B</th>
+                    <th>G</th>
+                    <th>T</th>
+
+                    <th>B</th>
+                    <th>G</th>
+                    <th>T</th>
+
+                    <th>B</th>
+                    <th>G</th>
+                    <th>T</th>
+
+                    <th>B</th>
+                    <th>G</th>
+                    <th>T</th>
+                    
+                    <th>B</th>
+                    <th>G</th>
+                    <th>T</th>
+
+                    <th>B</th>
+                    <th>G</th>
+                    <th>T</th>
+
+                    <th>B</th>
+                    <th>G</th>
+                    <th>T</th>
+
+                    <th>B</th>
+                    <th>G</th>
+                    <th>T</th>
+
+                    <th>B</th>
+                    <th>G</th>
+                    <th>T</th>
+
+                    <th>B</th>
+                    <th>G</th>
+                    <th>T</th>
+                    
+                    <th>B</th>
+                    <th>G</th>
+                    <th>T</th>
+            
+                </tr>
+            </thead>
+        </table>
+      </div>   
+      
+      
+      <div class="table-responsive" id="seniorTable" hidden>
+        <table id="g12analysisTable" class="table table-bordered" cellspacing="0" width="auto">      
+          <thead class="table-light">
+              <tr >
+                  <th rowspan="2">Subject</th>
+                  <th colspan="3">No. Reg</th>
+                  <th colspan="3">No. Sat</th>
+                  <th colspan="3">No. Absent</th>
+                  <th colspan="3">One</th>
+                  <th colspan="3">Two</th>
+                  <th colspan="3">Three</th>
+                  <th colspan="3">Four</th>
+                  <th colspan="3">Five</th>
+                  <th colspan="3">Six</th>
+                  <th colspan="3">Seven</th>
+                  <th colspan="3">Eight</th>
+                  <th colspan="3">Nine</th>
+                  <th colspan="3">Fail</th>
+                  <th colspan="3">Pass</th>
+                  <th colspan="3">Fail %</th>
+                  <th colspan="3">Pass %</th>
+              </tr>
+              <tr>
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+                  
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+                  
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>
+
+                  <th>B</th>
+                  <th>G</th>
+                  <th>T</th>             
+              </tr>
+          </thead>
+      </table>
+    </div>  
+      </div>
+    </div>
+</div>
+<script src="/scripts/adminScripts.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="/scripts/scripts.js"></script>
+<script>
+      document.getElementById('selectanalysisSubjectcode').addEventListener('change', function() {
+        // Get the selected option
+        var selectedOption = this.options[this.selectedIndex];
+        // Get the classid, grade, and section from the data attributes
+        var classid = selectedOption.getAttribute('data-classid');
+        var grade = selectedOption.getAttribute('data-grade');
+        var section = selectedOption.getAttribute('data-section');
+
+        // Set the value of the hidden classid input field
+        document.getElementById('selectanalysisClassid').value = classid; 
+
+        // Set the value of the hidden grade input field
+        document.getElementById('selectanalysisGrade').value = grade;
+
+        // Display the selected class in the div
+        document.getElementById('selectedanalysisClassDisplay').textContent = `Selected Class: ${grade}${section}`;
+    });
+
+      document.getElementById('term').addEventListener('change', function() {
+          // Get the selected option
+          var selectedOption = this.options[this.selectedIndex];
+          // Get the classid, grade, and section from the data attributes
+          var year = selectedOption.getAttribute('data-year');
+          // Set the value of the hidden classid input field
+          document.getElementById('selectYear').value = year;
+      });
+</script>
+
+<script>
+  $(document).ready(function() {
+			$('#analysisTable').DataTable();
+});
+</script>
+</body>
+
+</html>
