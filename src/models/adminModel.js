@@ -41,7 +41,8 @@ exports.getTerms = () =>
     SELECT
       tm.termid,
       sy.yearname,
-      tm.termnumber,
+      tm.termname,
+      tm.status,
       tm.startdate,
       tm.enddate
     FROM terms AS tm
@@ -97,12 +98,14 @@ exports.getClasses = () =>
   query(`
     SELECT
       c.classid,
-      tm.termnumber,
-      c.grade,
-      c.section
+      c.class,
+      yl.levelorder,
+      yl.levelname,
+      yl.nextlevelorder,
+      c.status
     FROM class AS c
-    JOIN terms AS tm
-      ON tm.termid = c.termid
+    JOIN yearlevel AS yl
+      ON c.levelid = yl.levelorder
   `);
 
 

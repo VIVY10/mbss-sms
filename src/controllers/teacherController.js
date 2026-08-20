@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
     file: req.file
   });
 
-  res.redirect('/viewTeachers');
+  res.redirect('/registerTeacher');
 };
 
 
@@ -227,7 +227,7 @@ exports.updateTeacher = (req, res) => {
     return res
       .status(501)
       .send(
-        'Teacher update is not implemented in the supplied codebase.'
+        'Teacher update is not implemented.'
       );
   }
 

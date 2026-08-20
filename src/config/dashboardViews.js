@@ -1,10 +1,10 @@
 module.exports = {
-    Admin: {
+    ADMIN: {
         view: "admin/adminDashboard",
         dataKey: "user"
     },
 
-    Teacher: {
+    TEACHER: {
         view: "teacher/teacherDashboard",
         dataKey: "user"
     },
@@ -14,7 +14,7 @@ module.exports = {
         dataKey: "user"
     },
 
-    pupil: {
+    Student: {
         view: "pupil/pupilDashboard",
         dataKey: "pupil"
     }

@@ -9,13 +9,19 @@
                     <div class="card-body p-md-5 text-black">
                       <h3 class="mb-5 text-uppercase">Teacher registration form</h3>
                       <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                           <div class="form-outline">
-                            <label class="form-label" for="username">username</label>
+                            <label class="form-label" for="username">Username</label>
                             <input type="text" name="username" class="form-control form-control-lg text-lowercase" required/>
                           </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
+                          <div class="form-outline">
+                            <label class="form-label" for="username">Employee No.</label>
+                            <input type="number" name="employee_no" class="form-control form-control-lg text-lowercase" required/>
+                          </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
                           <div class="form-outline">
                             <label class="form-label" for="email">Email</label>
                             <input type="email" name="email" class="form-control form-control-lg text-lowercase" required/>
@@ -23,17 +29,24 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                           <div class="form-outline">
                             <label class="form-label" for="Fname">First name</label>
-                            <input type="text" name="Fname" class="form-control form-control-lg text-uppercase" required/>
+                            <input type="text" name="Fname" class="form-control form-control-lg text-lowercase" required/>
                           </div>
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                           <div class="form-outline">
                             <label class="form-label" for="Lname">Last name</label>
-                            <input type="text" name="Lname" class="form-control form-control-lg text-uppercase" required/>
+                            <input type="text" name="Lname" class="form-control form-control-lg text-lowercase" required/>
+                          </div>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                          <div class="form-outline">
+                            <label class="form-label" for="Fname">Other Names</label>
+                            <input type="text" name="otherNames" class="form-control form-control-lg text-lowercase"/>
                           </div>
                         </div>
                       </div>
@@ -64,18 +77,31 @@
                             </select>
                           </div>
                         </div>  
-
                         <div class="col-md-6 mb-3">
                           <div class="form-outline">
                             <label class="form-label" for="usertype">Usertype</label>
                             <select name="usertype" class="form-control form-control-lg" required>
                               <option value=""></option>
-                              <option value="Admin">Admin</option>
-                              <option value="Teacher">Teacher</option>
-                              <option value="HOD">HOD</option>
+                              <option value="ADMIN">ADMIN</option>
+                              <option value="TEACHER">TEACHER</option>
                             </select> 
                           </div>
                         </div>                 
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6 mb-3">
+                          <div class="form-outline">
+                            <label class="form-label" for="phoneNumber">Phone Number</label>
+                            <input type="phone" name="phoneNumber" class="form-control form-control-lg" required/>
+                          </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <div class="form-outline">
+                            <label class="form-label" for="employmentDate">Employment Date</label>
+                            <input type="date" name="employmentDate" class="form-control form-control-lg" required>
+                          </div>
+                        </div>
                       </div>
                       <div class="btn-box">
                         <button type="submit" id="submit">Submit</button>

@@ -21,7 +21,7 @@ router.get('/studentLogin', controller.showStudentLogin);
 router.post(
     '/studentLogin',
     passport.authenticate('pupil', {
-        successRedirect: '/studentDashboard',
+        successRedirect: '/Dashboard',
         failureRedirect: '/studentLogin',
         failureFlash: true
     })

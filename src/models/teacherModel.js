@@ -1,5 +1,4 @@
-const { query } = require('../utils/db.js');
-
+const { query } = require("../utils/db.js");
 
 // ==================== FIND TEACHER ====================
 
@@ -12,9 +11,34 @@ exports.findByUsername = (username) =>
     FROM teachers
     WHERE username = ?
     `,
-    [username]
+    [username],
   );
 
+exports.findByEmail = (email) =>
+  query(
+    `
+    SELECT
+      usertype,
+      username,
+      email
+    FROM teachers
+    WHERE email = ?
+    `,
+    [email],
+  );
+
+exports.findByEmployeeNo = (employee_no) =>
+  query(
+    `
+    SELECT
+      usertype,
+      username,
+      email
+    FROM teachers
+    WHERE employee_no = ?
+    `,
+    [employee_no],
+  );
 
 // ==================== CREATE TEACHER ====================
 
@@ -28,11 +52,15 @@ exports.create = (data) =>
         Fname,
         Lname,
         email,
-        password,
+        password, 
         gender,
-        profilePicture
+        profilePicture,
+        employee_no,
+        middlename,
+        phone,
+        employment_date
       )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
     [
       data.usertype,
@@ -42,10 +70,13 @@ exports.create = (data) =>
       data.email,
       data.password,
       data.gender,
-      data.profilePicture
-    ]
+      data.profilePicture,
+      data.employee_no,
+      data.middlename,
+      data.phone,
+      data.employment_date,
+    ],
   );
-
 
 // ==================== GET ALL TEACHERS ====================
 exports.getAll = () =>
@@ -61,9 +92,8 @@ exports.getAll = () =>
       email,
       time_created
     FROM teachers
-    `
+    `,
   );
-
 
 // ==================== SUBJECTS TAUGHT ====================
 
@@ -87,9 +117,8 @@ exports.getSubjectsTaught = (teacherId) =>
 
     WHERE cs.teacherid = ?
     `,
-    [teacherId]
+    [teacherId],
   );
-
 
 // ==================== GET TEACHER DEPARTMENT ====================
 
@@ -108,9 +137,8 @@ exports.getDepartment = (teacherId) =>
 
     WHERE td.teacherid = ?
     `,
-    [teacherId]
+    [teacherId],
   );
-
 
 // ==================== UNALLOCATED SUBJECTS ====================
 
@@ -142,9 +170,8 @@ exports.getUnallocatedByDepartment = (departmentId) =>
     WHERE cs.teacherid IS NULL
       AND s.departmentid = ?
     `,
-    [departmentId]
+    [departmentId],
   );
-
 
 // ==================== ALLOCATED SUBJECTS ====================
 
@@ -181,16 +208,12 @@ exports.getAllocatedByDepartment = (departmentId) =>
     WHERE cs.teacherid IS NOT NULL
       AND s.departmentid = ?
     `,
-    [departmentId]
+    [departmentId],
   );
-
 
 // ==================== ALLOCATION DETAILS ====================
 
-exports.getAllocationDetails = (
-  classSubjectId,
-  departmentId
-) =>
+exports.getAllocationDetails = (classSubjectId, departmentId) =>
   Promise.all([
     query(
       `
@@ -210,7 +233,7 @@ exports.getAllocationDetails = (
 
       WHERE cs.class_subjectsid = ?
       `,
-      [classSubjectId]
+      [classSubjectId],
     ),
 
     query(
@@ -228,39 +251,25 @@ exports.getAllocationDetails = (
       WHERE td.departmentid = ?
         AND t.usertype = ?
       `,
-      [
-        departmentId,
-        'Teacher'
-      ]
-    )
+      [departmentId, "Teacher"],
+    ),
   ]);
-
 
 // ==================== ALLOCATE SUBJECT ====================
 
-exports.allocateSubject = (
-  teacher,
-  subjectId
-) =>
+exports.allocateSubject = (teacher, subjectId) =>
   query(
     `
     UPDATE class_subjects
     SET teacherid = ?
     WHERE class_subjectsid = ?
     `,
-    [
-      teacher,
-      subjectId
-    ]
+    [teacher, subjectId],
   );
-
 
 // ==================== REGISTERED PUPILS ====================
 
-exports.getRegisteredPupils = (
-  subjectcode,
-  classid
-) =>
+exports.getRegisteredPupils = (subjectcode, classid) =>
   query(
     `
     SELECT DISTINCT
@@ -285,12 +294,8 @@ exports.getRegisteredPupils = (
     WHERE ss.subjectcode = ?
       AND sc.classid = ?
     `,
-    [
-      subjectcode,
-      classid
-    ]
+    [subjectcode, classid],
   );
-
 
 // ==================== COUNT ADMINS ====================
 
@@ -301,9 +306,8 @@ exports.countAdmins = () =>
     FROM teachers
     WHERE usertype = ?
     `,
-    ['Admin']
+    ["ADMIN"],
   );
-
 
 // ==================== DELETE TEACHER ====================
 
@@ -313,5 +317,5 @@ exports.deleteByUsername = (username) =>
     DELETE FROM teachers
     WHERE username = ?
     `,
-    [username]
+    [username],
   );

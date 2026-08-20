@@ -14,10 +14,11 @@ const {
 const controller = require('../controllers/examController.js');
 
 const router = express.Router();
+const adminOnly = [authChecker, ensureRole('ADMIN')];
 
-router.get('/createExam', authChecker, ensureRole, controller.showCreateExam);
-router.post('/createExam', authChecker, ensureRole, createExamValidationRules(), validate, controller.createExam);
-router.get('/exams', authChecker, controller.listExams);
-router.post('/deleteExam', authChecker, ensureRole, controller.deleteExam);
+router.get('/createExam', adminOnly, controller.showCreateExam);
+router.post('/createExam', adminOnly, createExamValidationRules(), validate, controller.createExam);
+router.get('/exams', adminOnly, controller.listExams);
+router.post('/deleteExam', adminOnly, controller.deleteExam);
 
 module.exports = router;

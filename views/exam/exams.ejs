@@ -13,8 +13,8 @@
             </div>
           <thead class="thead-light">
             <tr>
-              <th>examid</th>
-              <th>exam_title</th>
+              <th>Sequence</th>
+              <th>Exam Title</th>
               <th colspan="2">Action</th>
             </tr>
           </thead>
@@ -22,7 +22,7 @@
             <% if (locals.results && results.length > 0) { %>
               <% results.forEach(element => { %>
                 <tr>
-                  <td><%= element.examid %></td>
+                  <td><%= element.sequence_no %></td>
                   <td><%= element.exam_title %></td>
                   <td>
                     <form action="/deleteExam" method="POST" onsubmit="return confirm('Are you sure you want to delete this record?');">

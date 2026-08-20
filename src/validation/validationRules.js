@@ -28,6 +28,20 @@ const nameValidator = (field, label) =>
     )
     .escape();
 
+const otherNameValidator = (field, label) =>
+  body(field)
+    .optional()
+    .trim()
+    .escape();
+
+const dateValidator = (field = "date") =>
+  body(field)
+    .trim()
+    .notEmpty()
+    .withMessage("date is required.")
+    .isISO8601({ strict: true })
+    .withMessage("date must be a valid date in YYYY-MM-DD format.")
+
 const phoneValidator = (field = "phoneNumber") =>
   body(field)
     .trim()
@@ -258,14 +272,20 @@ const registerTeacherValidationRules = () => [
     .isEmail()
     .withMessage("Enter a valid email address.")
     .normalizeEmail(),
+  
+  phoneValidator(),
 
   nameValidator("Fname", "First name"),
   nameValidator("Lname", "Last name"),
+  otherNameValidator("otherNames", "Other Names"),
 
   passwordValidator("password"),
 
   requiredText("gender", "Gender is required."),
   requiredText("usertype", "User type is required."),
+  requiredInt('employee_no'),
+
+  dateValidator("employmentDate")
 ];
 
 /*

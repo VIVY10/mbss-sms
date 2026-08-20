@@ -1,11 +1,19 @@
-const { query } = require('../utils/db.js');
-
+const { query } = require("../utils/db.js");
 
 // ==================== SUBJECTS ====================
 
 exports.getAll = () =>
-  query('SELECT * FROM subjects');
-
+  query(`
+        SELECT 
+        s.subjectcode,
+        s.subjectname,
+        s.status AS subject_status,
+        d.departmentname,
+        d.status AS department_status
+      FROM subjects AS s
+      JOIN department AS d
+        ON d.departmentid = s.departmentid
+    `);
 
 // ==================== DEPARTMENTS ====================
 
@@ -14,18 +22,13 @@ exports.getDepartments = () =>
     `SELECT
        departmentid,
        departmentname
-     FROM department`
+     FROM department`,
   );
-
 
 // ==================== FIND SUBJECT BY CODE ====================
 
 exports.findByCode = (subjectcode) =>
-  query(
-    'SELECT * FROM subjects WHERE subjectcode = ?',
-    [subjectcode]
-  );
-
+  query("SELECT * FROM subjects WHERE subjectcode = ?", [subjectcode]);
 
 // ==================== CREATE SUBJECT ====================
 
@@ -36,22 +39,13 @@ exports.create = (data) =>
       (subjectcode, departmentid, subjectname)
     VALUES (?, ?, ?)
     `,
-    [
-      data.subjectcode,
-      data.department,
-      data.subjectname
-    ]
+    [data.subjectcode, data.department, data.subjectname],
   );
-
 
 // ==================== DELETE SUBJECT ====================
 
 exports.deleteByCode = (subjectcode) =>
-  query(
-    'DELETE FROM subjects WHERE subjectcode = ?',
-    [subjectcode]
-  );
-
+  query("DELETE FROM subjects WHERE subjectcode = ?", [subjectcode]);
 
 // ==================== CLASS SUBJECT OPTIONS ====================
 
@@ -66,7 +60,7 @@ exports.getClassSubjectOptions = () =>
       FROM class AS c
       GROUP BY c.classid
       ASC
-      `
+      `,
     ),
 
     query(
@@ -76,17 +70,13 @@ exports.getClassSubjectOptions = () =>
         s.subjectname
       FROM subjects AS s
       ORDER BY s.subjectcode ASC
-      `
-    )
+      `,
+    ),
   ]);
-
 
 // ==================== FIND CLASS SUBJECT ====================
 
-exports.findClassSubject = (
-  classid,
-  subjectcode
-) =>
+exports.findClassSubject = (classid, subjectcode) =>
   query(
     `
     SELECT
@@ -96,31 +86,20 @@ exports.findClassSubject = (
     WHERE classid = ?
       AND subjectcode = ?
     `,
-    [
-      classid,
-      subjectcode
-    ]
+    [classid, subjectcode],
   );
-
 
 // ==================== ADD CLASS SUBJECT ====================
 
-exports.addClassSubject = (
-  classid,
-  subjectcode
-) =>
+exports.addClassSubject = (classid, subjectcode) =>
   query(
     `
     INSERT INTO class_subjects
       (classid, subjectcode)
     VALUES (?, ?)
     `,
-    [
-      classid,
-      subjectcode
-    ]
+    [classid, subjectcode],
   );
-
 
 // ==================== GET CLASS SUBJECTS ====================
 
@@ -144,9 +123,8 @@ exports.getClassSubjects = () =>
       ON cs.classid = c.classid
 
     ORDER BY s.subjectname
-    `
+    `,
   );
-
 
 // ==================== UNALLOCATED CLASS SUBJECTS ====================
 
@@ -180,9 +158,8 @@ exports.getUnallocatedClassSubjects = () =>
     WHERE cs.teacherid IS NULL
 
     ORDER BY s.subjectname
-    `
+    `,
   );
-
 
 // ==================== ALLOCATED CLASS SUBJECTS ====================
 
@@ -215,9 +192,8 @@ exports.getAllocatedClassSubjects = () =>
       ON t.id = cs.teacherid
 
     ORDER BY s.subjectname
-    `
+    `,
   );
-
 
 // ==================== DELETE CLASS SUBJECT ====================
 
@@ -227,5 +203,5 @@ exports.deleteClassSubject = (id) =>
     DELETE FROM class_subjects
     WHERE class_subjectsid = ?
     `,
-    [id]
+    [id],
   );

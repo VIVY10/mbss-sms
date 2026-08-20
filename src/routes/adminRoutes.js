@@ -19,7 +19,7 @@ const { ensureRole } = require('../middleware/authChecker.js');
 const controller = require('../controllers/adminController.js');
 
 const router = express.Router();
-const adminOnly = [authChecker, ensureRole('Admin')];
+const adminOnly = [authChecker, ensureRole('ADMIN')];
 const hodOnly = [authChecker, ensureRole('HOD')];
 
 router.get('/schoolYears', ...adminOnly, controller.schoolYears);

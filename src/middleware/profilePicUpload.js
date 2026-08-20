@@ -7,7 +7,7 @@ const fs = require('fs');
 
 const uploadDir = path.join(
   __dirname,
-  '../public/images/profile'
+  '../../public/images/profile'
 );
 
 fs.mkdirSync(uploadDir, { recursive: true });

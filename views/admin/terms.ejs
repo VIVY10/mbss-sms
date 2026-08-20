@@ -15,7 +15,8 @@
             <tr>
               <th>termid</th>
               <th>year</th>
-              <td>termnumber</td>
+              <td>term</td>
+              <td>status</td>
               <td>startdate</td>
               <td>enddate</td>
               <th colspan="2">Action</th>
@@ -27,7 +28,8 @@
                 <tr>
                   <td><%= element.termid %></td>
                   <td><%= element.yearname %></td>
-                  <td><%= element.termnumber %></td>
+                  <td><%= element.termname %></td>
+                  <td><%= element.status %></td>
                   <td><%= element.startdate.toISOString().split('T')[0] %></td>
                   <td><%= element.enddate.toISOString().split('T')[0] %></td>
                   <td>
