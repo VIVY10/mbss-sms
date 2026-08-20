@@ -4,7 +4,8 @@
   <form action="schoolYear" method="post" id="form1">
       <h3>CREATE SCHOOL YEAR</h3>
       <label for="yearname">Academic Year</label>
-      <input type="text" name="yearname" class="form-control" placeholder="2024 School Year" required/>
+      <input type="number" name="yearname" class="form-control" pattern="[0-9]{4}" inputmode="numeric" maxlength="4" placeholder="YYYY" required/>
+
       <label for="startdate">Start Date</label>
       <input type="date" name="startdate" class="form-control" required/>
       <label for="enddate">End Date</label>

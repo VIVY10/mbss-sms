@@ -1,6 +1,6 @@
 exports.showStaffLogin = async(req, res) => {
   if (req.isAuthenticated?.()) {
-    if (['Teacher', 'Admin', 'HOD'].includes(req.user?.usertype)) {
+    if (['TEACHER', 'ADMIN'].includes(req.user?.usertype)) {
       return res.redirect('/Dashboard');
     }
 
@@ -13,7 +13,7 @@ exports.showStaffLogin = async(req, res) => {
 exports.showStudentLogin = async(req, res) => {
   if (req.isAuthenticated?.()) {
     if (req.user?.usertype === 'pupil') {
-      return res.redirect('/studentDashboard');
+      return res.redirect('/Dashboard');
     }
 
     return req.logout(() => res.render('./pupil/login'));
@@ -21,6 +21,8 @@ exports.showStudentLogin = async(req, res) => {
 
   res.render('./pupil/login');
 }
+
+
 
 exports.logout = async(req, res) => {
   req.logout(error => {

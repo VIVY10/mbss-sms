@@ -80,10 +80,10 @@ const schoolyearValidationRules = () => [
     .trim()
     .notEmpty()
     .withMessage("School year name is required.")
-    .isLength({ min: 4, max: 50 })
-    .withMessage("School year name must be between 4 and 50 characters.")
-    .matches(/^\d{4}\s+school\s+year$/i)
-    .withMessage('School year name must be in the format "2026 school year".'),
+    .isLength({ max: 4, max: 4 })
+    .withMessage("School year name must be 4 characters.")
+    .matches(/^\d{4}/i)
+    .withMessage('School year name must be in the format "YYYY".'),
 
   body("startdate")
     .trim()

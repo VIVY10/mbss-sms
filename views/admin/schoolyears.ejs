@@ -17,7 +17,8 @@
               <th>yearname</th>
               <td>startdate</td>
               <td>enddate</td>
-              <th>Action</th>
+              <td>Status</td>
+              <th colspan="2">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -28,11 +29,15 @@
                   <td><%= element.yearname %></td>
                   <td><%= element.startdate.toISOString().split('T')[0] %></td>
                   <td><%= element.enddate.toISOString().split('T')[0] %></td>
+                  <td><%= element.status %></td>
                   <td>
                     <form action="/deleteYear" method="POST" onsubmit="return confirm('Are you sure you want to delete this record?');">
                       <input type="hidden" name="schoolyearid" value="<%= element.schoolyearid %>">
                       <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
+                  </td>
+                  <td>
+                      <button type="button" class="btn btn-danger">test</button>
                   </td>
                 </tr>
               <% }) %>

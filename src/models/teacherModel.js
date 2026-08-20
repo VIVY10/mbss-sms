@@ -6,8 +6,7 @@ exports.findByUsername = (username) =>
   query(
     `
     SELECT
-      usertype,
-      username
+      *
     FROM teachers
     WHERE username = ?
     `,
