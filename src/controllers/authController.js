@@ -1,6 +1,6 @@
 exports.showStaffLogin = async(req, res) => {
   if (req.isAuthenticated?.()) {
-    if (['TEACHER', 'ADMIN'].includes(req.user?.usertype)) {
+    if (['admin', 'teacher'].includes(req.user?.usertype)) {
       return res.redirect('/Dashboard');
     }
 

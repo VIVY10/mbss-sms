@@ -24,6 +24,7 @@ exports.register = async (req, res) => {
 
 exports.viewTeachers = async (req, res) => {
   const results = await teacherModel.getAll();
+
   res.render("./teacher/viewRegTeachers", {
     results,
     user: req.user,
@@ -125,7 +126,6 @@ exports.allocateSubjectPage = async (req, res) => {
 // ==================== ALLOCATE SUBJECT ====================
 
 exports.allocateSubject = async (req, res) => {
-  // console.log(req.body)
   const { teacher, subjectid } = req.body;
 
   await teacherModel.allocateSubject(teacher, subjectid);
@@ -163,16 +163,44 @@ exports.updateTeacher = (req, res) => {
 
   return res.redirect("/login");
 };
- 
+
 // ==================== LOCK TEACHER ACCOUNT ====================
-exports.lockTeacherAccount = async (req, res) => {
-  const [user] = teacherModel.findByUsername(req.query.username)
+exports.lockTeacherAccount = async (req, res, next) => {
+  try {
+    const { username } = req.query;
 
-  if(user.login_disabled){
-    
+    await teacherService.lockAccount(req, username);
+
+    // req.flash(
+    //     "success",
+    //     "Account has been locked successfully."
+    // );
+
+    return res.redirect("/viewTeachers");
+  } catch (error) {
+    req.flash("error", error.message);
+
+    return res.redirect("/viewTeachers");
   }
+};
 
-  // await teacherService.lockAccount(user.id); 
 
-  // res.redirect("/viewTeachers");
+// ==================== UNLOCK TEACHER ACCOUNT ====================
+exports.unlockTeacherAccount = async (req, res, next) => {
+  try {
+    const { username } = req.query;
+
+    await teacherService.unlockAccount(username);
+
+    // req.flash(
+    //     "success",
+    //     "Account has been unlocked successfully."
+    // );
+
+    return res.redirect("/viewTeachers");
+  } catch (error) {
+    req.flash("error", error.message);
+
+    return res.redirect("/viewTeachers");
+  }
 };

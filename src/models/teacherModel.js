@@ -82,14 +82,7 @@ exports.getAll = () =>
   query(
     `
     SELECT
-      id,
-      fname,
-      lname,
-      gender,
-      username,
-      usertype,
-      email,
-      time_created
+      *
     FROM teachers
     `,
   );
@@ -305,7 +298,7 @@ exports.countAdmins = () =>
     FROM teachers
     WHERE usertype = ?
     `,
-    ["ADMIN"],
+    ["admin"],
   );
 
 // ==================== DELETE TEACHER ====================

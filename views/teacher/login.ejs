@@ -6,11 +6,10 @@
             <form action="/login" method="POST">
                 <center><img  class="row my-3"   src="/images/logo.png" alt="" width="72" height="57"></center>
                 <center><h1 class="h3 mb-3 fw-normal"> sign in</h1></center>
-            
+                <% if(messages) { %>
+                    <div style="color: red; margin-bottom: 10px;"><%= messages.error %></div>
+                 <%}%>
                 <div class="form-floating">
-                  <% if(messages) { %>
-                    <div style="color: red;"><%= messages.error %></div>
-                  <%}%>
                   <input type="username" name="username" class="form-control"  placeholder="Username" required>
                   <label for="username">Username</label>
                 </div>

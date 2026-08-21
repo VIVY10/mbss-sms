@@ -1,60 +1,135 @@
 <%- include("../partials/sidebar") %>
       <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
-      <div class="table-responsive">
-        <div style="float: right;">
-          <a href="/registerTeacher">
-              <button type="submit" class="btn btn-success">Add Teacher</button>
-          </a>
-      </div>
-      <table class="table table-bordered">
-        <h3>Registered Teacher</h3>
+    <div class="table-responsive">
+
+    <div class="mb-3 text-end">
+        <a href="/registerTeacher" class="btn btn-success">
+            Add Teacher
+        </a>
+    </div>
+
+    <h3>Registered Teachers</h3>
+
+    <table class="table table-bordered">
+
         <thead class="table-dark">
-          <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Gender</th>
-            <th>Username</th>
-            <th>UserType</th>
-            <th>Email</th>
-            <th>Date Created</th>
-            <th colspan="3">Action</th>
-          </tr>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Username</th>
+                <th>User Type</th>
+                <th>Email</th>
+                <th>Date Created</th>
+                <th colspan="3">Action</th>
+            </tr>
         </thead>
-      <% if(locals.results){ %>
-        <% results.forEach(element => { %>
-          <% console.log(element) %>          
-            <tbody>
-              <tr>
-                <td><%= element.id %></td>
-                <td><%= element.fname %> <%= element.lname %></td>
-                <td><%= element.gender %></td>
-                <td><%= element.username %></td>
-                <td><%= element.usertype %></td>
-                <td><%= element.email %></td>
-                <!-- <td><%= element.time_created.toDateString() %></td> -->
-                <td>
-                  <%= new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(element.time_created) %>
-                </td> 
-                <td>
-                    <a href="/updateTeacherRecord?username<%= element.username %>"><i class="material-icons" title="edit user account">edit</i></a>
-                </td>       
-                <td>
-                  <a href="/deleteTeacher?username=<%= element.username %>"><i class="material-icons" title="delete user account">delete</i></a>
-                </td> 
-                <td>
-                  <a href="/lockTeacherAccount?username=<%= element.username %>"><i class="material-icons" title="lock user account">lock</i></a>
-                </td>           
-              </tr> 
-            </tbody>                 
-          <% }); %> 
-        <% } %>
-      </table>        
-      </div>
+
+        <tbody>
+
+            <% if (locals.results && results.length > 0) { %>
+
+                <% results.forEach((element) => { %>
+
+                    <tr>
+                        <td><%= element.id %></td>
+
+                        <td>
+                            <%= element.fname %>
+                            <%= element.lname %>
+                        </td>
+
+                        <td><%= element.gender %></td>
+
+                        <td><%= element.username %></td>
+
+                        <td><%= element.usertype %></td>
+
+                        <td><%= element.email %></td>
+
+                        <td>
+                            <%= new Intl.DateTimeFormat('en-CA', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit'
+                            }).format(element.time_created) %>
+                        </td>
+
+                        <!-- Edit -->
+                        <td>
+                            <a href="/updateTeacherRecord?username=<%= encodeURIComponent(element.username) %>">
+                                <i class="material-icons" title="Edit teacher account">
+                                    edit
+                                </i>
+                            </a>
+                        </td>
+
+                        <!-- Delete -->
+                        <td>
+                            <a
+                                href="/deleteTeacher?username=<%= encodeURIComponent(element.username) %>"
+                                onclick="return confirm('Are you sure you want to delete this teacher account?')"
+                            >
+                                <i class="material-icons" title="Delete teacher account">
+                                    delete
+                                </i>
+                            </a>
+                        </td>
+
+                        <!-- Lock / Unlock -->
+                        <td>
+
+                            <% if (Number(element.is_locked)) { %>
+
+                                <a
+                                    href="/unlockTeacherAccount?username=<%= encodeURIComponent(element.username) %>"
+                                    onclick="return confirm('Are you sure you want to unlock this account?')"
+                                >
+                                    <i class="material-icons" title="unlock teacher account">
+                                        lock
+                                    </i>
+                                </a>
+
+                            <% } else { %>
+
+                                <a
+                                    href="/lockTeacherAccount?username=<%= encodeURIComponent(element.username) %>"
+                                    onclick="return confirm('Are you sure you want to lock this account?')"
+                                >
+                                    <i class="material-icons" title="lock teacher account">
+                                        lock_open
+                                    </i>
+                                </a>
+
+                            <% } %>
+
+                        </td>
+
+                    </tr>
+
+                <% }); %>
+
+            <% } else { %>
+
+                <tr>
+                    <td colspan="10" class="text-center">
+                        No teachers found.
+                    </td>
+                </tr>
+
+            <% } %>
+
+        </tbody>
+
+    </table>
+
+</div>
     </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
 integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 <script src="/scripts/adminScripts.js"></script>
+<script src="/scripts/viewRegTeachers.js"></script>
 </body>
 
-</html>
+</html> 

@@ -34,7 +34,7 @@ passport.use(
       }
 
       // administrative access restricted
-      if (!user.login_enabled) {
+      if (user.is_locked) {
         return done(null, false, {
           message: "Login access has been disabled.",
         });
@@ -42,8 +42,18 @@ passport.use(
 
       // still locked temporarily
       if (user.locked_until && new Date(user.locked_until) > new Date()) {
+        
+        const formattedDate = new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }).format(user.lockedUntil);
+
         return done(null, false, {
-          message: `Account temporarily locked until ${user.locked_until}`,
+          message: `Account temporarily locked until ${formattedDate}`,
         });
       }
 
@@ -59,10 +69,10 @@ passport.use(
           await authModel.lock(user.id, attempts, lockTime);
 
           return done(null, false, {
-            message: `Too many failed attempts. Account locked for 30 minutes.`,
+            message: `Too many failed attempts. Account locked for ${LOCK_MINUTES} minutes.`,
           });
         }
- 
+
         await authModel.updateAttempts(user.id, attempts);
 
         return done(null, false, {

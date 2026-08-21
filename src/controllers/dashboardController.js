@@ -3,8 +3,6 @@ const dashboardViews = require("../config/dashboardViews");
 exports.showDashboard = (req, res) => {
     const user = req.user;
 
-    const userDashboard = req.user.usertype
-
     const dashboard = dashboardViews[req.user.usertype];
     
 

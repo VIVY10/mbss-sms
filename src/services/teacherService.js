@@ -94,28 +94,57 @@ async function deleteTeacher(username) {
   return teacherModel.deleteByUsername(username);
 }
 
+async function lockAccount(req, username) {
+  const users = await teacherModel.findByUsername(username);
 
-async function lockAccount(username) {
+  if (!users.length) {
+    return res.render("./response/response", {
+      message: "user not found.",
+    });
+  }
+
+  const account = users[0];
+
+  // Prevent self-locking
+  if (Number(account.id) === Number(req.user.id)) {
+    return res.render("./response/response", {
+      message: "You cannot lock your own account.",
+    });
+  }
+
+  // If the account is an Admin, ensure another active Admin remains
+  if (account.usertype === "admin") {
+    const activeAdminCount = await teacherModel.countAdmins();
+
+    console.log(activeAdminCount)
+
+    if (activeAdminCount <= 1) {
+      return res.render("./response/response", {
+        message:
+          "This account cannot be locked because it is the last active Administrator account.",
+      });
+    }
+  }
+
+  return await authModel.disableLogin(account.id);
+}
+
+async function unlockAccount(username) {
   const teacher = await teacherModel.findByUsername(username);
 
   if (!teacher.length) {
-    throw new Error("Teacher not found.");
+    return res.render("./response/response", {
+      message: "Teacher not found.",
+    });
   }
 
-  if (teacher[0].usertype === "Admin") {
-      throw new Error("You must have at least one active Admin in the system.");    
-  }
-
-    if (teacher[0].usertype === req.user.usertype) {
-      throw new Error("You can not lock yourself out of the system as admin");    
-  }
-
-  return authModel.disableLogin(username)
+  return authModel.enableLogin(teacher[0].id);
 }
 
 module.exports = {
   registerTeacher,
   getSubjectAllocation,
   deleteTeacher,
-  lockAccount
+  lockAccount,
+  unlockAccount,
 };

@@ -24,6 +24,7 @@ router.post('/allocateSubject', authChecker, controller.allocateSubject);
 router.post('/registeredPupils', authChecker, controller.registeredPupils);
 router.get('/deleteTeacher', authChecker, controller.deleteTeacher);
 router.post('/updateTeacherRecord', authChecker, controller.updateTeacher);
-router.post('/lockTeacherAccount', authChecker, controller.lockTeacherAccount); 
+router.get('/lockTeacherAccount', authChecker, controller.lockTeacherAccount);
+router.get('/unlockTeacherAccount', authChecker, controller.unlockTeacherAccount); 
 
 module.exports = router;

@@ -13,7 +13,7 @@ exports.lock = (id, attempts, lockedUntil) =>
   query(
     `UPDATE teachers
          SET failed_login_attempts = ?,
-             locked_until = ?,
+             locked_until = ?
          WHERE id = ?`,
     [attempts, lockedUntil, id],
   );
@@ -22,7 +22,16 @@ exports.lock = (id, attempts, lockedUntil) =>
 exports.disableLogin = (id) =>
   query(
     `UPDATE teachers
-         SET login_enabled = ?
+         SET is_locked = ?
+         WHERE id = ?`,
+    [1, id],
+  );
+
+
+  exports.enableLogin = (id) =>
+  query(
+    `UPDATE teachers
+         SET is_locked = ?
          WHERE id = ?`,
     [0, id],
   );
