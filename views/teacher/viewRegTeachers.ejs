@@ -17,7 +17,7 @@
             <th>UserType</th>
             <th>Email</th>
             <th>Date Created</th>
-            <th colspan="2">Action</th>
+            <th colspan="3">Action</th>
           </tr>
         </thead>
       <% if(locals.results){ %>
@@ -36,14 +36,17 @@
                   <%= new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(element.time_created) %>
                 </td> 
                 <td>
-                    <a href="/updateTeacherRecord?gvjhgfcdchvfh<%= element.username %>"><i class="material-icons">edit</i></a>
+                    <a href="/updateTeacherRecord?username<%= element.username %>"><i class="material-icons" title="edit user account">edit</i></a>
                 </td>       
                 <td>
-                  <a href="/deleteTeacher?nkhvjhgfch=<%= element.username %>"><i class="material-icons">delete</i></a>
+                  <a href="/deleteTeacher?username=<%= element.username %>"><i class="material-icons" title="delete user account">delete</i></a>
+                </td> 
+                <td>
+                  <a href="/lockTeacherAccount?username=<%= element.username %>"><i class="material-icons" title="lock user account">lock</i></a>
                 </td>           
               </tr> 
             </tbody>                 
-          <% }); %>
+          <% }); %> 
         <% } %>
       </table>        
       </div>

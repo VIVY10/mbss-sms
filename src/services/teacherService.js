@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const teacherModel = require("../models/teacherModel");
+const authModel = require("../models/authModel");
 
 async function registerTeacher({ data, file }) {
   const username = data.username.toLowerCase();
@@ -93,8 +94,28 @@ async function deleteTeacher(username) {
   return teacherModel.deleteByUsername(username);
 }
 
+
+async function lockAccount(username) {
+  const teacher = await teacherModel.findByUsername(username);
+
+  if (!teacher.length) {
+    throw new Error("Teacher not found.");
+  }
+
+  if (teacher[0].usertype === "Admin") {
+      throw new Error("You must have at least one active Admin in the system.");    
+  }
+
+    if (teacher[0].usertype === req.user.usertype) {
+      throw new Error("You can not lock yourself out of the system as admin");    
+  }
+
+  return authModel.disableLogin(username)
+}
+
 module.exports = {
   registerTeacher,
   getSubjectAllocation,
   deleteTeacher,
+  lockAccount
 };

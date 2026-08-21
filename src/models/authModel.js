@@ -8,28 +8,36 @@ exports.updateAttempts = (id, attempts) =>
     [attempts, id],
   );
 
+  // temporarily lock account after too many attempts
 exports.lock = (id, attempts, lockedUntil) =>
   query(
     `UPDATE teachers
          SET failed_login_attempts = ?,
              locked_until = ?,
-             status = ?,
-             is_locked = ?
          WHERE id = ?`,
-    [attempts, lockedUntil, "INACTIVE", 1, id],
+    [attempts, lockedUntil, id],
   );
 
+
+exports.disableLogin = (id) =>
+  query(
+    `UPDATE teachers
+         SET login_enabled = ?
+         WHERE id = ?`,
+    [0, id],
+  );
+
+  // Unlock after account after temporarily lock
   exports.unLock = (id) =>
   query(
     `UPDATE teachers
          SET failed_login_attempts = ?,
-             locked_until = NULL,
-             status = ?,
-             is_locked = ?
+             locked_until = NULL
          WHERE id = ?`,
-    [0, "ACTIVE", 0, id],
+    [0, id],
   );
 
+  // Reset login attempts
 exports.resetAttempts = (id) =>
   query(
     `UPDATE teachers

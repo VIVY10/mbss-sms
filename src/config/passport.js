@@ -3,13 +3,13 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 
 const teacherModel = require("../models/teacherModel");
-const authModel = require("../models/authModel.js")
+const authModel = require("../models/authModel.js");
 
 const pool = require("./db.js");
 
 // ==================== STAFF LOGIN ====================
 const MAX_ATTEMPTS = 5;
-const LOCK_MINUTES = 30;
+const LOCK_MINUTES = 3;
 
 passport.use(
   "staff",
@@ -27,16 +27,23 @@ passport.use(
       const user = rows[0];
 
       // Disabled account
-      if (rows.status === "INACTIVE") {
+      if (user.status !== "active") {
         return done(null, false, {
-          message: "Your account has been disabled.",
+          message: "Your account is not active.",
         });
       }
 
-      // still locked
+      // administrative access restricted
+      if (!user.login_enabled) {
+        return done(null, false, {
+          message: "Login access has been disabled.",
+        });
+      }
+
+      // still locked temporarily
       if (user.locked_until && new Date(user.locked_until) > new Date()) {
         return done(null, false, {
-          message: `Account locked until ${user.locked_until}`,
+          message: `Account temporarily locked until ${user.locked_until}`,
         });
       }
 
@@ -52,10 +59,10 @@ passport.use(
           await authModel.lock(user.id, attempts, lockTime);
 
           return done(null, false, {
-          message: `Too many failed attempts. Account locked for 30 minutes.`,
-        });
+            message: `Too many failed attempts. Account locked for 30 minutes.`,
+          });
         }
-
+ 
         await authModel.updateAttempts(user.id, attempts);
 
         return done(null, false, {
