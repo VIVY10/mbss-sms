@@ -1,0 +1,79 @@
+<!-- <!DOCTYPE html>
+<html>
+
+<head>
+    <title>Live User Activity Dashboard</title>
+    <link rel="stylesheet" href="/styles/socket.io.css">
+</head>
+<div class="container">
+    <h1>Live Analytics Dashboard</h1>
+    <div class="grid">
+        <div class="feed-card">
+            <h2>Real-Time Feed</h2>
+            <div id="feed" class="feed"></div>
+        </div>
+        <div class="online-card">
+            <h2>Online Now <span id="onlineCount">0</span></h2>
+            <div id="onlineUsers" class="online-list"></div>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="chart-header">
+            <h2>Most Visited Pages (24h)</h2>
+            <button id="exportCsv">Export CSV</button>
+        </div>
+        <canvas id="heatmapChart"></canvas>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/scripts/socket.io.js"></script>
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Live User Activity Dashboard</title>
+    <link rel="stylesheet" href="/styles/user_logs.css">
+    <link rel="stylesheet" href="/styles/socket.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Live Analytics Dashboard</h1>
+
+        <div class="grid">
+            <div class="feed-card">
+                <h2>Real-Time Feed</h2>
+                <div id="feed" class="feed"></div>
+            </div>
+
+            <div class="online-card">
+                <h2>Online Now <span id="onlineCount">0</span></h2>
+                <div id="onlineUsers" class="online-list"></div>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-header">
+                <h2>Most Visited Pages (24h)</h2>
+                <button id="exportCsv">Export CSV</button>
+            </div>
+
+            <canvas id="heatmapChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Load Chart.js FIRST -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Your Dashboard JavaScript -->
+    <script src="/scripts/socket.io.js"></script>
+
+</body>
+</html>

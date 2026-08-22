@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 const fs = require('fs');
 
-const {
+const { 
     getConnection,
     beginTransaction,
     commit,
@@ -12,6 +12,12 @@ const {
 const pupilModel = require('../models/pupilModel.js');
 const { removeFileIfExists } = require('../utils/fileUtils.js');
 
+// BEGIN TRANSACTION
+// Create student
+// Create yearly level
+// Create term enrolment
+// Create reporting record
+// COMMIT
 
 async function getRegistrationData() {
     const [
@@ -72,7 +78,7 @@ async function registerPupil({
                 hashedPassword,
                 profilePicture
             }
-        );
+        ); 
  
         await pupilModel.addYearLevel(
             connection,

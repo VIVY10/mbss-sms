@@ -1,0 +1,98 @@
+body {
+    font-family: system-ui, Arial;
+    background: #0f1724;
+    color: #e6eef8;
+    margin: 0;
+    padding: 24px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.grid {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.feed-card,
+.online-card {
+    background: #0b1220;
+    padding: 12px;
+    border-radius: 10px;
+    flex: 1;
+}
+
+.feed {
+    max-height: 420px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+}
+
+.feed-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.feed-item img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.online-list {
+    max-height: 420px;
+    overflow: auto;
+}
+
+.online-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.flag {
+    font-size: 18px;
+    width: 36px;
+}
+
+.chart-card {
+    background: #0b1220;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 12px;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#heatmapChart {
+    height: 200px;
+}
