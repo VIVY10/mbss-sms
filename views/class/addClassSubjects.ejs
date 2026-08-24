@@ -22,7 +22,7 @@
                                 <select class="select" name="classid" required>
                                   <option selected disabled value="">Class...</option>
                                   <% foundClass.forEach(element => { %>
-                                    <option value=<%= element.classid %>> <%= element.grade %><%= element.class %></option>                              
+                                    <option value=<%= element.classid %>> <%= element.levelname %><%= element.class %></option>                              
                                   <% }); %>
                                 </select>
                             <% } %>

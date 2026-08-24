@@ -12,19 +12,15 @@ async function createSchoolYear(data) {
 
 
 async function createTerm(data) {
-    const year = await model.findSchoolYearId(data.yearname);
 
-    if (!year.length) {
-        throw new Error('School year not found.');
-    }
+    const results = await model.findSchoolYearAndTermnumber(data.yearid, data.termnumber);
 
-    if ((await model.findTermNumber(data.termnumber)).length) {
-        throw new Error('Term already exists.');
+    if (results.length && results.length) {
+        throw new Error('Term exists.');
     }
 
     return model.createTerm({
-        ...data,
-        schoolyearid: year[0].schoolyearid
+        ...data
     });
 }
 

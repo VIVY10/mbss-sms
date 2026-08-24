@@ -7,10 +7,10 @@ exports.getSchoolYears = () =>
   query('SELECT * FROM schoolyear');
 
 
-exports.findSchoolYear = (yearname) =>
+exports.findSchoolYear = (yearid) =>
   query(
-    'SELECT * FROM schoolyear WHERE yearname = ?',
-    [yearname]
+    'SELECT * FROM schoolyear WHERE schoolyearid = ?',
+    [yearid]
   );
 
 
@@ -50,17 +50,38 @@ exports.getTerms = () =>
       ON sy.schoolyearid = tm.yearid
   `);
 
+  exports.get_Open_Terms = () =>
+  query(`
+    SELECT
+      tm.termid,
+      sy.yearname,
+      tm.termname,
+      tm.status,
+      tm.startdate,
+      tm.enddate
+    FROM terms AS tm
+    JOIN schoolyear AS sy
+      ON sy.schoolyearid = tm.yearid
+    WHERE tm.status = ?
+  `, ['OPEN']);
+
 
 exports.getSchoolYearsBasic = () =>
   query(
-    'SELECT schoolyearid, yearname FROM schoolyear'
+    'SELECT * FROM schoolyear'
   );
 
 
-exports.findSchoolYearId = (yearname) =>
+exports.findSchoolYearById = (yearid) =>
   query(
-    'SELECT schoolyearid FROM schoolyear WHERE yearname = ?',
-    [yearname]
+    'SELECT schoolyearid FROM schoolyear WHERE schoolyearid = ?',
+    [yearid]
+  );
+
+  exports.findSchoolYearAndTermnumber = (yearid, termnumber) =>
+  query(
+    'SELECT yearid, termnumber FROM terms WHERE yearid = ? AND termnumber = ?',
+    [yearid, termnumber]
   );
 
 
@@ -74,11 +95,12 @@ exports.findTermNumber = (termnumber) =>
 exports.createTerm = (data) =>
   query(
     `INSERT INTO terms
-     (yearid, termnumber, startdate, enddate)
-     VALUES (?, ?, ?, ?)`,
+     (yearid, termnumber, termname, startdate, enddate)
+     VALUES (?, ?, ?, ?, ?)`,
     [
-      data.schoolyearid,
+      data.yearid,
       data.termnumber,
+      data.termname,
       data.startdate,
       data.enddate
     ]

@@ -14,25 +14,28 @@
         <h3>CREATE SCHOOL TERM</h3>
         
         <% if(locals.results){ %>
-                <select class="select" name="yearname">
+                <select class="select" name="yearid">
                   <option selected disabled value="">Year...</option>
                   <% results.forEach(element => { %>
-                    <option name="<%= element.yearname %>" value="<%= element.yearname %>"> <%= element.yearname %> </option>                              
+                    <option value="<%= element.schoolyearid %>"> <%= element.yearname %> </option>                              
                   <% }); %>
                 </select>
             <% } else{%>
-                    <select class="select" name="grade">
+                    <select class="select">
                       <option selected disabled value="">Choose...</option>                                    
-                        <option>No Year Created</option>                              
+                        <option disabled>No Year Created</option>                              
                     </select>
               <% } %>
       
-          <select class="select" name="termnumber" required>
+          <select class="select" name="termnumber" id="termnumber" required>
             <option selected disabled value="">Term...</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
+            <option value="1" data-termname="Term 1">1</option>
+            <option value="2" data-termname="Term 2">2</option>
+            <option value="3" data-termname="Term 3">3</option> 
           </select>  
+          <span>
+            <input type="text" name="termname" id="termname" value="" hidden readonly>
+          </span>
           <label class="form-label" for="startdate">Start Date</label>
           <input type="date" name="startdate" placeholder="Start Date" required/>
           <label class="form-label" for="enddate">End Date</label>
@@ -45,5 +48,12 @@
   </div>
       <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="/scripts/adminScripts.js"></script>
+      <script>
+        document.getElementById('termnumber').addEventListener('change', function(){
+          const selectedOptions = this.options[this.selectedIndex];
+          const termname = selectedOptions.getAttribute('data-termname');
+          document.getElementById('termname').value = termname;
+        })    
+  </script>
   </body>
   </html>

@@ -14,7 +14,7 @@ const {
 const controller = require('../controllers/examController.js');
 
 const router = express.Router();
-const adminOnly = [authChecker, ensureRole('ADMIN')];
+const adminOnly = [authChecker, ensureRole('admin')];
 
 router.get('/createExam', adminOnly, controller.showCreateExam);
 router.post('/createExam', adminOnly, createExamValidationRules(), validate, controller.createExam);

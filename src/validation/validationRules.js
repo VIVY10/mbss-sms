@@ -115,14 +115,9 @@ const schoolyearValidationRules = () => [
 ];
 
 const addTermValiadtionRules = () => [
-  body("yearname")
-    .trim()
-    .notEmpty()
-    .withMessage("School year name is required.")
-    .isLength({ min: 4, max: 50 })
-    .withMessage("School year name must be between 4 and 50 characters.")
-    .matches(/^\d{4}\s+school\s+year$/i)
-    .withMessage('School year name must be in the format "2026 school year".'),
+  requiredInt("yearid"),
+
+  requiredText('termname'),
 
   body("termnumber").trim().notEmpty().withMessage("term number is required."),
 
@@ -154,6 +149,31 @@ const addTermValiadtionRules = () => [
       return true;
     }),
 ];
+
+
+const createDepartmentValidationRules = () => [
+  requiredText('departmentname')
+];
+
+const addGuardianTypeValidationRules = () => [
+  requiredText('guardianType')
+];
+
+
+const createSubjectValidationRules = () =>{
+  return[
+    body('subjectcode').notEmpty().isNumeric().trim().escape(),
+    body('department').notEmpty().isNumeric().trim().escape(),
+    body('subjectname').notEmpty().trim().escape()
+  ]
+}
+
+const addClassSubjectsValidationrules = () =>{
+  return[
+    body('subjectcode').notEmpty().isNumeric().trim().escape(),
+    body('classid').notEmpty().isNumeric().trim().escape()
+  ]
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -459,6 +479,10 @@ const enterMarksValidationRules = () => [
 module.exports = {
   schoolyearValidationRules,
   addTermValiadtionRules,
+  createDepartmentValidationRules,
+  addGuardianTypeValidationRules,
+  createSubjectValidationRules,
+  addClassSubjectsValidationrules,
   checkexamnoValidationRules,
   pupilValidationRules,
   registerTeacherValidationRules,

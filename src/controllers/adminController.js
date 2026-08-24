@@ -3,6 +3,7 @@ const { matchedData } = require('express-validator');
 const model = require('../models/adminModel.js');
 const subjectModel = require('../models/subjectModel.js');
 const service = require('../services/adminService.js');
+const { query } = require('../config/db.js');
 
 const response = (res, message) => {
   res.render('./response/response', { message });
@@ -29,9 +30,9 @@ exports.schoolYearPage = (req, res) => {
 exports.createSchoolYear = async (req, res) => {
   try {
     await service.createSchoolYear(matchedData(req));
-    res.redirect('./schoolYear');
+    res.redirect('./schoolyears');
   } catch (e) {
-    res.redirect('./schoolYear');
+    res.redirect('./schoolyears');
   }
 };
 
@@ -47,6 +48,10 @@ exports.deleteYear = async (req, res) => {
 
 
 // ==================== TERMS ====================
+exports.get_terms = async(req, res) => {
+  const results = await model.get_Open_Terms()
+  return res.json(results)
+}
 
 exports.terms = async (req, res) => {
   const results = await model.getTerms();
@@ -68,7 +73,7 @@ exports.addTermPage = async (req, res) => {
 
 exports.addTerm = async (req, res) => {
 
-  try {
+  try { 
     await service.createTerm(matchedData(req));
     res.redirect('/terms');
   } catch (e) {
@@ -198,9 +203,9 @@ exports.createDepartmentPage = (req, res) => {
 
 exports.createDepartment = async (req, res) => {
   try {
-    await service.createDepartment(
-      matchedData(req).departmentname
-    );
+    const {departmentname} = matchedData(req)
+
+    await service.createDepartment(departmentname);
 
     res.redirect('/viewDepartment');
   } catch (e) {
@@ -396,10 +401,9 @@ exports.deleteGuardianType = async (req, res) => {
 // ==================== CLASS SUBJECTS ====================
 
 exports.addClassSubjectsPage = async (req, res) => {
-  const [
-    foundClass,
-    foundSubject
-  ] = await subjectModel.getClassSubjectOptions();
+
+  const foundSubject = await subjectModel.getSubjects();
+  const foundClass = await model.getClasses();
 
   if (!foundClass.length) {
     return response(
@@ -423,7 +427,7 @@ exports.addClassSubjectsPage = async (req, res) => {
 };
 
 exports.addClassSubjects = async (req, res) => {
-  const data = req.body;
+  const data = matchedData(req);
 
   try {
     await service.addClassSubject(
@@ -442,21 +446,23 @@ exports.addClassSubjects = async (req, res) => {
 
 exports.viewClassSubjects = async (req, res) => {
   try {
-    const results =
-      await subjectModel.getClassSubjects();
+    const results = await subjectModel.getClassSubjects();
 
     res.render('./admin/viewClassSubjects', {
       results,
       user: req.user
     });
-  } catch {
+  } catch(err) {
+    // console.log(err)
     response(res, 'Database error');
   }
 };
 
 exports.unallocatedSubjects = async (req, res) => {
+  const {termid} = req.query
+
   const results =
-    await subjectModel.getUnallocatedClassSubjects();
+    await subjectModel.getUnallocatedClassSubjects(termid);
 
   if (!results.length) {
     return response(
@@ -472,8 +478,10 @@ exports.unallocatedSubjects = async (req, res) => {
 };
 
 exports.classAllocation = async (req, res) => {
+  const {termid} = req.query
+  
   const results =
-    await subjectModel.getAllocatedClassSubjects();
+    await subjectModel.getAllocatedClassSubjects(termid);
 
   if (!results.length) {
     return response(
@@ -491,11 +499,12 @@ exports.classAllocation = async (req, res) => {
 exports.deleteClassSubject = async (req, res) => {
   try {
     await subjectModel.deleteClassSubject(
-      req.body.class_subjectsid
+      req.body.class_subject_id
     );
 
     res.redirect('/viewClassSubjects');
-  } catch {
+  } catch(err) {
+    console.log(err)
     response(res, 'Database error.');
   }
 };
