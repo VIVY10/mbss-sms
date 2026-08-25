@@ -19,6 +19,7 @@ const logger = require('./src/config/loggerConfig');
 
 const express = require('express');
 const session = require('express-session');
+
 const flash = require('express-flash');
 const passport = require('passport');
 const path = require('path');
