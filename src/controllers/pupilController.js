@@ -31,7 +31,7 @@ exports.showRegistration = async (req, res) => {
     return res.redirect("/Dashboard");
   }
 
-  return res.render("./pupil/register.ejs", {
+  return res.render("./pupil/student-registration.ejs", {
     ...data,
     user: req.user,
   });

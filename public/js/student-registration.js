@@ -1,341 +1,410 @@
 (() => {
-  'use strict';
+  "use strict";
 
-  const form = document.getElementById('registrationForm');
-  if (!form) return;
-
-  const panels = [...document.querySelectorAll('.step-panel')];
-  const steps = [...document.querySelectorAll('.step')];
-  const nextBtn = document.getElementById('nextBtn');
-  const backBtn = document.getElementById('backBtn');
-  const submitBtn = document.getElementById('submitBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
-  const reviewContent = document.getElementById('reviewContent');
-  const yearLevel = document.getElementById('yearlevel');
-  const classSelect = document.getElementById('classid');
-  const summaryClass = document.getElementById('summaryClass');
-  const photoInput = document.getElementById('profilePicture');
-  const photoPreview = document.getElementById('photoPreview');
-  const menuBtn = document.getElementById('menuBtn');
-  const sidebar = document.getElementById('sidebar');
+  // DOM refs
+  const form = document.getElementById("registrationForm");
+  const panels = document.querySelectorAll(".step-panel");
+  const steps = document.querySelectorAll(".step");
+  const nextBtn = document.getElementById("nextBtn");
+  const backBtn = document.getElementById("backBtn");
+  const submitBtn = document.getElementById("submitBtn");
+  const cancelBtn = document.getElementById("cancelBtn");
+  const reviewContent = document.getElementById("reviewContent");
+  const yearLevel = document.getElementById("yearlevel");
+  const classSelect = document.getElementById("classid");
+  const summaryClass = document.getElementById("summaryClass");
+  const photoInput = document.getElementById("profilePicture");
+  const photoPreview = document.getElementById("photoPreview");
+  const uploadBox = document.getElementById("photoUploadBox");
+  const admissionSelector = document.getElementById("admissionSelector");
+  const admissionTypeHidden = document.getElementById("admissionType");
+  const returningPanel = document.getElementById("returningPanel");
+  const returningResult = document.getElementById("returningResult");
+  const findBtn = document.getElementById("findReturningBtn");
+  const returningExamno = document.getElementById("returningExamno");
+  const regTypeLabel = document.getElementById("regTypeLabel");
+  const summaryType = document.getElementById("summaryType");
 
   let currentStep = 1;
+  let isReturning = false;
 
-  const value = (id) => {
-    const el = document.getElementById(id);
-    return el ? el.value.trim() : '';
+  // ----- helpers -----
+  const value = (id) => document.getElementById(id)?.value?.trim() || "";
+  const selectedText = (id) => {
+    const sel = document.getElementById(id);
+    if (!sel || sel.selectedIndex < 0) return "-";
+    return sel.options[sel.selectedIndex]?.textContent?.trim() || "-";
+  };
+  const setError = (field, msg) => {
+    const wrap = field.closest(".field");
+    if (!wrap) return;
+    wrap.classList.add("invalid");
+    const err = wrap.querySelector(".field-error");
+    if (err) err.textContent = msg;
+  };
+  const clearError = (field) => {
+    const wrap = field.closest(".field");
+    if (!wrap) return;
+    wrap.classList.remove("invalid");
+    const err = wrap.querySelector(".field-error");
+    if (err) err.textContent = "";
   };
 
+  // ----- step navigation -----
   function showStep(step) {
     currentStep = step;
-
-    panels.forEach(panel => {
-      panel.classList.toggle('active', Number(panel.dataset.panel) === step);
+    panels.forEach((p) =>
+      p.classList.toggle("active", Number(p.dataset.panel) === step),
+    );
+    steps.forEach((s) => {
+      const n = Number(s.dataset.step);
+      s.classList.toggle("active", n === step);
+      s.classList.toggle("done", n < step);
     });
-
-    steps.forEach(item => {
-      const number = Number(item.dataset.step);
-      item.classList.toggle('active', number === step);
-      item.classList.toggle('done', number < step);
-    });
-
-    backBtn.classList.toggle('hidden', step === 1);
-    nextBtn.classList.toggle('hidden', step === 4);
-    submitBtn.classList.toggle('hidden', step !== 4);
-
+    backBtn.classList.toggle("hidden", step === 1);
+    nextBtn.classList.toggle("hidden", step === 4);
+    submitBtn.classList.toggle("hidden", step !== 4);
     updateChecklist();
     if (step === 4) buildReview();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function setError(field, message) {
-    const wrapper = field.closest('.field');
-    if (!wrapper) return;
-    wrapper.classList.add('invalid');
-    const error = wrapper.querySelector('.field-error');
-    if (error) error.textContent = message;
-  }
-
-  function clearError(field) {
-    const wrapper = field.closest('.field');
-    if (!wrapper) return;
-    wrapper.classList.remove('invalid');
-    const error = wrapper.querySelector('.field-error');
-    if (error) error.textContent = '';
-  }
-
-  function validateStep(step) {
+  // ----- validation per step (without displaying for checklist) -----
+  function validateStep(step, displayErrors = true) {
     const panel = document.querySelector(`.step-panel[data-panel="${step}"]`);
     if (!panel) return true;
-
     let valid = true;
-    const required = [...panel.querySelectorAll('[required]')];
-
-    required.forEach(field => {
-      clearError(field);
-      if (field.type === 'checkbox') {
+    const required = panel.querySelectorAll("[required]");
+    required.forEach((field) => {
+      if (displayErrors) clearError(field);
+      if (field.type === "checkbox") {
         if (!field.checked) {
           valid = false;
-          setError(field, 'Please confirm this item.');
+          if (displayErrors) setError(field, "Please confirm");
         }
       } else if (!field.value.trim()) {
         valid = false;
-        setError(field, 'This field is required.');
+        if (displayErrors) setError(field, "Required");
       }
     });
-
-    if (step === 1) {
-      const dob = document.getElementById('dob');
-      if (dob && dob.value) {
-        const date = new Date(`${dob.value}T00:00:00`);
-        const today = new Date();
-        if (date > today) {
-          valid = false;
-          setError(dob, 'Date of birth cannot be in the future.');
-        }
-      }
-    }
-
-    if (step === 2) {
-      const guardianPhone = document.getElementById('guardian_phone');
-      if (guardianPhone && guardianPhone.value && !/^[0-9+\-\s()]{7,20}$/.test(guardianPhone.value)) {
-        valid = false;
-        setError(guardianPhone, 'Enter a valid phone number.');
-      }
-    }
-
+    // step 3 password match
     if (step === 3) {
-      const password = document.getElementById('password');
-      const confirm = document.getElementById('confirmPassword');
-
-      if (password.value.length < 8) {
+      const pwd = document.getElementById("password");
+      const cnf = document.getElementById("confirmPassword");
+      if (pwd.value.length < 8) {
         valid = false;
-        setError(password, 'Password must contain at least 8 characters.');
+        if (displayErrors) setError(pwd, "Min 8 chars");
       }
-
-      if (password.value !== confirm.value) {
+      if (pwd.value !== cnf.value) {
         valid = false;
-        setError(confirm, 'Passwords do not match.');
+        if (displayErrors) setError(cnf, "Passwords do not match");
       }
     }
-
     return valid;
+  }
+
+  function validateWithoutDisplay(step) {
+    return validateStep(step, false);
   }
 
   function updateChecklist() {
     const checks = {
-      student: validateWithoutDisplaying(1),
-      guardian: validateWithoutDisplaying(2),
-      enrollment: validateWithoutDisplaying(3),
-      review: document.getElementById('confirmDetails')?.checked === true
+      student: validateWithoutDisplay(1),
+      guardian: validateWithoutDisplay(2),
+      enrollment: validateWithoutDisplay(3),
+      review: document.getElementById("confirmDetails")?.checked === true,
     };
-
-    Object.entries(checks).forEach(([name, completed]) => {
-      const item = document.querySelector(`[data-check="${name}"]`);
-      if (item) item.classList.toggle('completed', completed);
+    document.querySelectorAll("[data-check]").forEach((el) => {
+      const name = el.dataset.check;
+      el.classList.toggle("completed", checks[name] || false);
     });
   }
 
-  function validateWithoutDisplaying(step) {
-    const panel = document.querySelector(`.step-panel[data-panel="${step}"]`);
-    if (!panel) return false;
-
-    return [...panel.querySelectorAll('[required]')].every(field => {
-      if (field.type === 'checkbox') return field.checked;
-      return Boolean(field.value.trim());
-    });
-  }
-
-  function selectedText(id) {
-    const select = document.getElementById(id);
-    if (!select || select.selectedIndex < 0) return '-';
-    return select.options[select.selectedIndex].textContent.trim() || '-';
-  }
-
+  // ----- review builder -----
   function buildReview() {
-    const fullName = [value('fname'), value('middlename'), value('lname')]
-      .filter(Boolean).join(' ');
-
+    const fullName =
+      [value("fname"), value("middlename"), value("lname")]
+        .filter(Boolean)
+        .join(" ") || "-";
     const html = `
-      <div class="review-grid">
-        <div class="review-section">
-          <h3>Student</h3>
-          ${row('Full Name', fullName || '-')}
-          ${row('Gender', selectedText('gender'))}
-          ${row('Date of Birth', value('dob') || '-')}
-          ${row('Nationality', selectedText('nationality'))}
-          ${row('NRC / Birth Certificate', value('nrcno') || '-')}
-        </div>
-        <div class="review-section">
-          <h3>Guardian</h3>
-          ${row('Name', value('guardian_name') || '-')}
-          ${row('Relationship', selectedText('relationship'))}
-          ${row('Phone', value('guardian_phone') || '-')}
-          ${row('Email', value('guardian_email') || '-')}
-        </div>
-        <div class="review-section">
-          <h3>Enrollment</h3>
-          ${row('Exam Number', value('examno') || '-')}
-          ${row('Academic Year', document.getElementById('summaryYear')?.textContent.trim() || '-')}
-          ${row('Term', document.getElementById('summaryTerm')?.textContent.trim() || '-')}
-          ${row('Class', selectedText('classid'))}
-        </div>
-        <div class="review-section">
-          <h3>System Status</h3>
-          ${row('Student Status', 'ACTIVE')}
-          ${row('Enrollment', 'NEW')}
-          ${row('Reporting', 'REPORTED')}
-          ${row('Reporting Date', 'Database CURRENT_TIMESTAMP')}
-        </div>
-        <div class="review-section full">
-          <h3>Address</h3>
-          <div>${escapeHtml(value('address') || '-')}</div>
-        </div>
-      </div>
-    `;
-
+        <div class="review-section"><h3>Student</h3>${row("Name", fullName)}${row("Gender", selectedText("gender"))}${row("DOB", value("dob"))}${row("Nationality", selectedText("nationality"))}</div>
+        <div class="review-section"><h3>Guardian</h3>${row("Name", value("guardian_name") || "-")}${row("Relationship", selectedText("relationship"))}${row("Phone", value("guardian_phone"))}</div>
+        <div class="review-section"><h3>Enrollment</h3>${row("Exam No", value("examno"))}${row("Class", selectedText("classid"))}${row("Status", "ACTIVE")}</div>
+        <div class="review-section full"><h3>Address</h3><div>${value("address") || "-"}</div></div>
+      `;
     reviewContent.innerHTML = html;
   }
-
   function row(label, text) {
-    return `<div class="review-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(text)}</strong></div>`;
+    return `<div class="review-row"><span>${label}</span><strong>${text || "-"}</strong></div>`;
   }
 
-  function escapeHtml(text) {
-    return String(text).replace(/[&<>"']/g, ch => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
-    }[ch]));
+  // ----- admission type toggle -----
+  function setAdmissionType(type) {
+    isReturning = type === "returning";
+    admissionTypeHidden.value = type;
+    returningPanel.classList.toggle("hidden", !isReturning);
+    // reset result
+    if (!isReturning) returningResult.classList.add("hidden");
+    // update labels
+    const label = isReturning ? "RETURNING" : "NEW STUDENT";
+    regTypeLabel.textContent = label;
+    summaryType.textContent = label;
+    summaryType.className = `badge ${isReturning ? "badge-outline" : "badge-green"}`;
+    // enable/disable required fields? we keep them but returning will prefill via search (demo)
+    document
+      .querySelectorAll(".admission-type")
+      .forEach((btn) =>
+        btn.classList.toggle("active", btn.dataset.type === type),
+      );
   }
 
-  yearLevel?.addEventListener('change', () => {
-    const selected = yearLevel.options[yearLevel.selectedIndex];
-    const levelId = selected?.dataset.levelId || selected?.value || '';
+  // ----- returning student search (demo) -----
+  findBtn?.addEventListener("click", () => {
+    const exam = returningExamno.value.trim();
+    const err = document.getElementById("returningSearchError");
+    if (!exam) {
+      err.textContent = "Please enter examination number";
+      return;
+    }
+    err.textContent = "";
+    // demo: simulate found
+    const mock = {
+      exam: exam,
+      fname: "Chisanga",
+      lname: "Mwansa",
+      gender: "Male",
+      dob: "2010-05-12",
+      class: "10A",
+      status: "Active",
+    };
+    returningResult.classList.remove("hidden");
+    document.getElementById("returningName").textContent =
+      `${mock.fname} ${mock.lname}`;
+    document.getElementById("returningExamDisplay").textContent = mock.exam;
+    document.getElementById("returningClass").textContent = mock.class;
+    document.getElementById("returningStatus").textContent = mock.status;
+    // readonly details
+    document.getElementById("rExam").textContent = mock.exam;
+    document.getElementById("rFname").textContent = mock.fname;
+    document.getElementById("rLname").textContent = mock.lname;
+    document.getElementById("rGender").textContent = mock.gender;
+    document.getElementById("rDob").textContent = mock.dob;
+    // prefill form (readonly style but we fill fields for demo)
+    document.getElementById("fname").value = mock.fname;
+    document.getElementById("lname").value = mock.lname;
+    document.getElementById("gender").value = mock.gender.toLowerCase();
+    document.getElementById("dob").value = mock.dob;
+    document.getElementById("examno").value = mock.exam;
+    // set class
+    const clsOpt = document.querySelector(`#classid option[data-level="10"]`);
+    if (clsOpt) {
+      classSelect.value = clsOpt.value;
+      classSelect.disabled = false;
+      summaryClass.textContent = "10A";
+    }
+    // show step 1
+    showStep(1);
+  });
 
-    classSelect.disabled = !levelId;
-    classSelect.value = '';
+  // ----- event listeners -----
+  // admission selector
+  admissionSelector?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".admission-type");
+    if (!btn) return;
+    setAdmissionType(btn.dataset.type);
+  });
 
-    [...classSelect.options].forEach(option => {
-      if (!option.value) {
-        option.hidden = false;
+  // stepper click
+  steps.forEach((step) => {
+    step.addEventListener("click", () => {
+      const target = Number(step.dataset.step);
+      if (target < currentStep) {
+        showStep(target);
         return;
       }
-      option.hidden = option.dataset.levelId !== levelId;
+      let canMove = true;
+      for (let i = currentStep; i < target; i++) {
+        if (!validateStep(i, true)) {
+          canMove = false;
+          showStep(i);
+          break;
+        }
+      }
+      if (canMove) showStep(target);
     });
+  });
 
-    classSelect.options[0].textContent = levelId
-      ? 'Select class'
-      : 'Select year level first';
+  nextBtn?.addEventListener("click", () => {
+    if (!validateStep(currentStep, true)) return;
+    showStep(Math.min(4, currentStep + 1));
+  });
+  backBtn?.addEventListener("click", () =>
+    showStep(Math.max(1, currentStep - 1)),
+  );
 
-    summaryClass.textContent = 'Not selected';
+  cancelBtn?.addEventListener("click", () => {
+    if (confirm("Cancel registration? Unsaved data will be lost."))
+      window.location.href = "/register";
+  });
+
+  // class filter
+  yearLevel?.addEventListener("change", () => {
+    const level = yearLevel.value;
+    classSelect.disabled = !level;
+    classSelect.value = "";
+    summaryClass.textContent = "Not selected";
+    document.querySelectorAll("#classid option").forEach((opt) => {
+      if (!opt.value) return;
+      opt.hidden = opt.dataset.level !== level;
+    });
+    updateChecklist();
+  });
+  classSelect?.addEventListener("change", () => {
+    summaryClass.textContent = selectedText("classid");
     updateChecklist();
   });
 
-  classSelect?.addEventListener('change', () => {
-    summaryClass.textContent = selectedText('classid');
-    updateChecklist();
+  // ----- FIXED PHOTO UPLOAD -----
+  // Click on upload box triggers file input
+  uploadBox?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    photoInput?.click();
   });
 
-  photoInput?.addEventListener('change', () => {
+  // Drag and drop support
+  uploadBox?.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    uploadBox.style.borderColor = "var(--blue)";
+    uploadBox.style.background = "var(--blue-light)";
+  });
+
+  uploadBox?.addEventListener("dragleave", (e) => {
+    e.preventDefault();
+    uploadBox.style.borderColor = "#b7c4d5";
+    uploadBox.style.background = "#fbfcfe";
+  });
+
+  uploadBox?.addEventListener("drop", (e) => {
+    e.preventDefault();
+    uploadBox.style.borderColor = "#b7c4d5";
+    uploadBox.style.background = "#fbfcfe";
+
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      photoInput.files = files;
+      photoInput.dispatchEvent(new Event("change"));
+    }
+  });
+
+  // Improved photo preview
+  photoInput?.addEventListener("change", () => {
     const file = photoInput.files?.[0];
-    if (!file) return;
-
-    const allowed = ['image/jpeg', 'image/png'];
-    if (!allowed.includes(file.type)) {
-      photoInput.value = '';
+    if (!file) {
+      photoPreview.innerHTML = "📷";
       return;
     }
 
+    // Check file type
+    if (!["image/jpeg", "image/png"].includes(file.type)) {
+      alert("Please upload a JPG or PNG image.");
+      photoInput.value = "";
+      photoPreview.innerHTML = "📷";
+      return;
+    }
+
+    // Check file size (2MB limit)
     if (file.size > 2 * 1024 * 1024) {
-      photoInput.value = '';
+      alert("File size must be less than 2MB.");
+      photoInput.value = "";
+      photoPreview.innerHTML = "📷";
       return;
     }
 
     const reader = new FileReader();
-    reader.addEventListener('load', () => {
-      photoPreview.innerHTML = `<img src="${reader.result}" alt="Profile preview">`;
-    });
+    reader.onload = (e) => {
+      photoPreview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    };
+    reader.onerror = () => {
+      alert("Error reading file. Please try again.");
+      photoInput.value = "";
+      photoPreview.innerHTML = "📷";
+    };
     reader.readAsDataURL(file);
   });
 
-  document.querySelectorAll('.password-toggle').forEach(button => {
-    button.addEventListener('click', () => {
-      const target = document.getElementById(button.dataset.target);
+  // password toggle
+  document.querySelectorAll(".password-toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = document.getElementById(btn.dataset.target);
       if (!target) return;
-
-      const show = target.type === 'password';
-      target.type = show ? 'text' : 'password';
-      button.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      target.type = target.type === "password" ? "text" : "password";
     });
   });
 
-  steps.forEach(step => {
-    step.addEventListener('click', () => {
-      const target = Number(step.dataset.step);
-      if (target < currentStep) {
-        showStep(target);
-      } else if (target === currentStep) {
-        return;
-      } else {
-        let canMove = true;
-        for (let i = currentStep; i < target; i++) {
-          if (!validateStep(i)) {
-            canMove = false;
-            showStep(i);
-            break;
-          }
-        }
-        if (canMove) showStep(target);
-      }
-    });
-  });
+  // confirm checkbox update
+  document
+    .getElementById("confirmDetails")
+    ?.addEventListener("change", updateChecklist);
+  document.addEventListener("input", updateChecklist);
+  document.addEventListener("change", updateChecklist);
 
-  nextBtn?.addEventListener('click', () => {
-    if (!validateStep(currentStep)) return;
-    showStep(Math.min(4, currentStep + 1));
-  });
+  // submit with fetch for better UX
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault(); // Prevent default form submission
 
-  backBtn?.addEventListener('click', () => {
-    showStep(Math.max(1, currentStep - 1));
-  });
-
-  document.getElementById('confirmDetails')?.addEventListener('change', updateChecklist);
-
-  cancelBtn?.addEventListener('click', () => {
-    if (window.confirm('Cancel student registration? Unsaved information will be lost.')) {
-      window.location.href = '/students';
-    }
-  });
-
-  form.addEventListener('submit', event => {
-    for (let step = 1; step <= 4; step++) {
-      if (!validateStep(step)) {
-        event.preventDefault();
-        showStep(step);
+    // Validate all steps
+    for (let i = 1; i <= 4; i++) {
+      if (!validateStep(i, true)) {
+        showStep(i);
         return;
       }
     }
 
-    const password = document.getElementById('password');
-    const confirm = document.getElementById('confirmPassword');
-
-    if (password.value !== confirm.value) {
-      event.preventDefault();
+    const pwd = document.getElementById("password");
+    const cnf = document.getElementById("confirmPassword");
+    if (pwd.value !== cnf.value) {
       showStep(3);
-      setError(confirm, 'Passwords do not match.');
+      setError(cnf, "Passwords do not match");
       return;
     }
 
-    const submitted = submitBtn;
-    submitted.disabled = true;
-    submitted.textContent = 'Registering...';
+    // Disable submit button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Registering...";
+
+    try {
+      // Get form data
+      const formData = new FormData(form);
+
+      // Send POST request to /register
+      const response = await fetch("/register", {
+        method: "POST",
+        body: formData,
+        // Don't set Content-Type header - browser will set it with boundary for FormData
+      });
+
+      // Handle response
+      if (response.ok) {
+        const result = await response.json();
+        // Show success message
+        alert(result.message || "Student registered successfully!");
+        // Optionally redirect
+        window.location.href = "/viewPupils";
+      } else {
+        const error = await response.json();
+        alert(error.message || "Registration failed. Please try again.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "✓ Register Student";
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("An error occurred during registration. Please try again.");
+      submitBtn.disabled = false;
+      submitBtn.textContent = "✓ Register Student";
+    }
   });
 
-  menuBtn?.addEventListener('click', () => {
-    sidebar?.classList.toggle('open');
-  });
-
-  document.addEventListener('input', updateChecklist);
-  document.addEventListener('change', updateChecklist);
-
+  // init
+  setAdmissionType("new");
   showStep(1);
 })();

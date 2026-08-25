@@ -1,515 +1,371 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="csrf-token" content="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
-  <title>New Student Registration</title>
+  <title>Student Registration · New & Returning</title>
+  <!-- Font & minimal reset -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/student-registration.css">
 </head>
-<body>
-  <div class="app-shell">
+<body> 
+<div class="app-card">
 
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="brand-logo">S</div>
-        <div>
-          <strong>Secondary School</strong>
-          <span>Student Information System</span>
-        </div>
-      </div>
-
-      <nav class="nav">
-        <div class="nav-label">ADMISSION</div>
-        <a href="/Dashboard" class="nav-item">⌂ <span>Dashboard</span></a>
-        <a href="/students/register" class="nav-item active">＋ <span>New Student Registration</span></a>
-        <a href="/students/returning" class="nav-item">↻ <span>Returning Students</span></a>
-        <a href="/students/search" class="nav-item">⌕ <span>Search Students</span></a>
-        <a href="/guardians" class="nav-item">♧ <span>Guardians</span></a>
-        <a href="/enrollment" class="nav-item">▣ <span>Enrollment</span></a>
-        <a href="/reporting" class="nav-item">✓ <span>Reporting</span></a>
-        <a href="/reports" class="nav-item">▤ <span>Reports</span></a>
-
-        <div class="nav-label">SETUP</div>
-        <a href="/classes" class="nav-item">▦ <span>Classes</span></a>
-        <a href="/yearlevels" class="nav-item">▥ <span>Year Levels</span></a>
-        <a href="/terms" class="nav-item">◷ <span>Terms</span></a>
-        <a href="/schoolyears" class="nav-item">□ <span>School Years</span></a>
-        <a href="/users" class="nav-item">♙ <span>Users &amp; Roles</span></a>
-
-        <div class="nav-label">SYSTEM</div>
-        <a href="/settings" class="nav-item">⚙ <span>Settings</span></a>
-        <a href="/audit-log" class="nav-item">▧ <span>Audit Log</span></a>
-      </nav>
-    </aside>
-
-    <main class="main">
-      <header class="topbar">
-        <button type="button" class="menu-btn" id="menuBtn" aria-label="Toggle navigation">☰</button>
-
-        <div class="topbar-spacer"></div>
-
-        <div class="current-year">
-          <span class="calendar-icon">□</span>
-          <span><%= schoolyear?.yearname %></span>
-          <span>⌄</span>
-        </div>
-
-        <button type="button" class="icon-btn notification-btn" aria-label="Notifications">
-          ♧<span class="notification-count">3</span>
-        </button>
-
-        <div class="user-menu">
-          <div class="avatar">R</div>
-          <div>
-            <strong><%= user.fname || 'Registrar' %></strong>
-            <span>Admission Office</span>
-          </div>
-          <span>⌄</span>
-        </div>
-      </header>
-
-      <div class="content">
-        <div class="page-heading">
-          <div>
-            <h1>New Student Registration</h1>
-            <p>Register a new student and enroll them into a class.</p>
-          </div>
-        </div>
-
-        <% if (typeof error !== 'undefined' && error) { %>
-          <div class="alert alert-error" role="alert"><%= error %></div>
-        <% } %>
-
-        <% if (typeof success !== 'undefined' && success) { %>
-          <div class="alert alert-success" role="alert"><%= success %></div>
-        <% } %>
-
-        <form id="registrationForm"
-              action="/students/register"
-              method="POST"
-              enctype="multipart/form-data"
-              novalidate>
-
-          <input type="hidden" name="enrollment_type" value="new">
-          <input type="hidden" name="schoolyear" value="<%= schoolyear[0]?.schoolyearid || '' %>">
-          <input type="hidden" name="schoolyear" value="<%= schoolyear[0]?.schoolyearid || '' %>">
-          <input type="hidden" name="termid" value="<%= foundTerm[0]?.termid || '' %>">
-          <input type="hidden" name="reporting_status" value="REPORTED">
-
-          <div class="stepper">
-            <button type="button" class="step active" data-step="1">
-              <span>1</span><strong>Student Information</strong>
-            </button>
-            <i></i>
-            <button type="button" class="step" data-step="2">
-              <span>2</span><strong>Guardian Information</strong>
-            </button>
-            <i></i>
-            <button type="button" class="step" data-step="3">
-              <span>3</span><strong>Enrollment Details</strong>
-            </button>
-            <i></i>
-            <button type="button" class="step" data-step="4">
-              <span>4</span><strong>Review &amp; Confirm</strong>
-            </button>
-          </div>
-
-          <div class="registration-grid">
-            <div class="form-column">
-
-              <section class="card step-panel active" data-panel="1">
-                <div class="card-title">
-                  <div class="title-icon">♙</div>
-                  <div>
-                    <h2>Student Information</h2>
-                    <p>Enter the student's personal information.</p>
-                  </div>
-                </div>
-
-                <div class="form-grid three">
-                  <div class="field">
-                    <label for="fname">First Name <b>*</b></label>
-                    <input id="fname" name="fname" type="text" autocomplete="given-name" required
-                           placeholder="Enter first name" value="<%= typeof data !== 'undefined' ? (data.fname || '') : '' %>">
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="middlename">Middle Name</label>
-                    <input id="middlename" name="middlename" type="text" autocomplete="additional-name"
-                           placeholder="Enter middle name" value="<%= typeof data !== 'undefined' ? (data.middlename || '') : '' %>">
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="lname">Last Name <b>*</b></label>
-                    <input id="lname" name="lname" type="text" autocomplete="family-name" required
-                           placeholder="Enter last name" value="<%= typeof data !== 'undefined' ? (data.lname || '') : '' %>">
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="gender">Gender <b>*</b></label>
-                    <select id="gender" name="gender" required>
-                      <option value="">Select gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="dob">Date of Birth <b>*</b></label>
-                    <input id="dob" name="dob" type="date" required
-                           value="<%= typeof data !== 'undefined' ? (data.dob || '') : '' %>">
-                    <small class="field-hint">Select the student's date of birth.</small>
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="birthplace">Place of Birth</label>
-                    <input id="birthplace" name="birthplace" type="text"
-                           placeholder="Enter place of birth" value="<%= typeof data !== 'undefined' ? (data.birthplace || '') : '' %>">
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="nationality">Nationality <b>*</b></label>
-                    <select id="nationality" name="nationality" required>
-                      <option value="">Select nationality</option>
-                      <% if (typeof nationalities !== 'undefined') { nationalities.forEach(function(item) { %>
-                        <option value="<%= item.id ?? item.value %>"><%= item.name ?? item.label %></option>
-                      <% }); } %>
-                      <% if (typeof nationalities === 'undefined') { %>
-                        <option value="Zambian">Zambian</option>
-                        <option value="Other">Other</option>
-                      <% } %>
-                    </select>
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="religion">Religion</label>
-                    <select id="religion" name="religion">
-                      <option value="">Select religion</option>
-                      <% if (typeof religions !== 'undefined') { religions.forEach(function(item) { %>
-                        <option value="<%= item.id ?? item.value %>"><%= item.name ?? item.label %></option>
-                      <% }); } %>
-                    </select>
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="nrcno">NRC / Birth Certificate No.</label>
-                    <input id="nrcno" name="nrcno" type="text"
-                           placeholder="Enter identification number" value="<%= typeof data !== 'undefined' ? (data.nrcno || '') : '' %>">
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="previous_school">Previous School</label>
-                    <input id="previous_school" name="previous_school" type="text"
-                           placeholder="Enter previous school (if any)">
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="admission_date">Admission Date <b>*</b></label>
-                    <input id="admission_date" name="admission_date" type="date" required
-                           value="<%= typeof data !== 'undefined' && data.admission_date ? data.admission_date : '' %>">
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field photo-field">
-                    <label for="profilePicture">Profile Photo</label>
-                    <label class="upload-box" for="profilePicture">
-                      <span class="upload-preview" id="photoPreview">♙</span>
-                      <span>
-                        <strong>Click to upload photo</strong>
-                        <small>JPG, PNG (max 2MB)</small>
-                      </span>
-                    </label>
-                    <input id="profilePicture" name="profilePicture" type="file"
-                           accept="image/jpeg,image/png" hidden>
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field full">
-                    <label for="address">Residential Address <b>*</b></label>
-                    <textarea id="address" name="address" rows="3" required
-                              placeholder="Enter residential address"><%= typeof data !== 'undefined' ? (data.address || '') : '' %></textarea>
-                    <small class="field-error"></small>
-                  </div>
-                </div>
-              </section>
-
-              <section class="card step-panel" data-panel="2">
-                <div class="card-title">
-                  <div class="title-icon">♧</div>
-                  <div>
-                    <h2>Guardian Information</h2>
-                    <p>Enter the parent or guardian responsible for the student.</p>
-                  </div>
-                </div>
-
-                <div class="form-grid three">
-                  <div class="field">
-                    <label for="guardian_name">Guardian Full Name <b>*</b></label>
-                    <input id="guardian_name" name="guardian_name" type="text" required
-                           placeholder="Enter guardian name">
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="relationship">Relationship <b>*</b></label>
-                    <select id="relationship" name="relationship" required>
-                      <option value="">Select relationship</option>
-                      <% if (typeof guardianTypes !== 'undefined') { guardianTypes.forEach(function(item) { %>
-                        <option value="<%= item.guardiantypeid ?? item.id %>"><%= item.guardianname ?? item.name %></option>
-                      <% }); } %>
-                      <% if (typeof guardianTypes === 'undefined') { %>
-                        <option value="1">Father</option>
-                        <option value="2">Mother</option>
-                        <option value="3">Guardian</option>
-                      <% } %>
-                    </select>
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="guardian_nrc">Guardian NRC <b>*</b></label>
-                    <input id="guardian_nrc" name="guardian_nrc" type="text" required
-                           placeholder="Enter guardian NRC">
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="guardian_phone">Primary Phone <b>*</b></label>
-                    <input id="guardian_phone" name="guardian_phone" type="tel" required
-                           placeholder="e.g. 0971234567">
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="guardian_alt_phone">Alternative Phone</label>
-                    <input id="guardian_alt_phone" name="guardian_alt_phone" type="tel"
-                           placeholder="Alternative phone number">
-                  </div>
-
-                  <div class="field">
-                    <label for="guardian_email">Email</label>
-                    <input id="guardian_email" name="guardian_email" type="email"
-                           placeholder="guardian@example.com">
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="guardian_occupation">Occupation</label>
-                    <input id="guardian_occupation" name="guardian_occupation" type="text"
-                           placeholder="Enter occupation">
-                  </div>
-
-                  <div class="field full">
-                    <label for="guardian_address">Guardian Address</label>
-                    <textarea id="guardian_address" name="guardian_address" rows="3"
-                              placeholder="Enter guardian address"></textarea>
-                  </div>
-                </div>
-              </section>
-
-              <section class="card step-panel" data-panel="3">
-                <div class="card-title">
-                  <div class="title-icon">▣</div>
-                  <div>
-                    <h2>Enrollment Details</h2>
-                    <p>The current academic year and term are selected by the system.</p>
-                  </div>
-                </div>
-
-                <div class="info-grid">
-                  <div class="info-item">
-                    <span>Registration Type</span>
-                    <strong class="badge green">NEW STUDENT</strong>
-                  </div>
-                  <div class="info-item">
-                    <span>Academic Year</span>
-                    <strong><%= schoolyear[0]?.yearname %></strong>
-                  </div>
-                  <div class="info-item">
-                    <span>Current Term</span>
-                    <strong><%= foundTerm[0]?.termname %></strong>
-                  </div>
-                </div>
-
-                <div class="form-grid two">
-                  <div class="field">
-                    <label for="yearlevel">Year Level <b>*</b></label>
-                    <select id="yearlevel" name="yearlevel" required>
-                      <option value="">Select year level</option>
-                      <% if (typeof yearLevels !== 'undefined') { yearLevels.forEach(function(item) { %>
-                        <option value="<%= item.levelorder ?? item.levelid %>"
-                                data-level-id="<%= item.levelid ?? item.id %>">
-                          <%= item.levelname ?? item.name %>
-                        </option>
-                      <% }); } %>
-                    </select>
-                    <small class="field-error"></small>
-                  </div>
-
-                  <div class="field">
-                    <label for="classid">Class <b>*</b></label>
-                    <select id="classid" name="classid" required disabled>
-                      <option value="">Select year level first</option>
-                      <% if (typeof classes !== 'undefined') { classes.forEach(function(item) { %>
-                        <option value="<%= item.classid %>"
-                                data-level-id="<%= item.levelid %>">
-                          <%= item.class %>
-                        </option>
-                      <% }); } %>
-                    </select>
-                    <small class="field-hint">Only classes belonging to the selected year level are shown.</small>
-                    <small class="field-error"></small>
-                  </div>
-                </div>
-
-                <div class="notice">
-                  <span>ⓘ</span>
-                  <div>
-                    <strong>Automatic reporting</strong>
-                    <p>New students registered through this process are automatically enrolled and marked as <strong>REPORTED</strong>. The reporting date is recorded by the database using the current timestamp.</p>
-                  </div>
-                </div>
-
-                <div class="account-section">
-                  <div class="card-title compact">
-                    <div class="title-icon">♧</div>
-                    <div>
-                      <h2>Account Information</h2>
-                      <p>Credentials used by the student where applicable.</p>
-                    </div>
-                  </div>
-
-                  <div class="form-grid three">
-                    <div class="field">
-                      <label for="examno">Exam Number <b>*</b></label>
-                      <input id="examno" name="examno" type="text" required
-                             placeholder="e.g. 2026/0045" value="<%= typeof data !== 'undefined' ? (data.examno || '') : '' %>">
-                      <small class="field-hint">Must be unique.</small>
-                      <small class="field-error"></small>
-                    </div>
-
-                    <div class="field">
-                      <label for="password">Password <b>*</b></label>
-                      <div class="password-wrap">
-                        <input id="password" name="password" type="password" minlength="8" required
-                               placeholder="Enter password">
-                        <button type="button" class="password-toggle" data-target="password" aria-label="Show password">◉</button>
-                      </div>
-                      <small class="field-error"></small>
-                    </div>
-
-                    <div class="field">
-                      <label for="confirmPassword">Confirm Password <b>*</b></label>
-                      <div class="password-wrap">
-                        <input id="confirmPassword" type="password" minlength="8" required
-                               placeholder="Confirm password">
-                        <button type="button" class="password-toggle" data-target="confirmPassword" aria-label="Show password">◉</button>
-                      </div>
-                      <small class="field-error"></small>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <section class="card step-panel" data-panel="4">
-                <div class="card-title">
-                  <div class="title-icon">✓</div>
-                  <div>
-                    <h2>Review &amp; Confirm</h2>
-                    <p>Check the information before completing registration.</p>
-                  </div>
-                </div>
-
-                <div id="reviewContent" class="review"></div>
-
-                <div class="confirmation">
-                  <label>
-                    <input type="checkbox" id="confirmDetails" required>
-                    <span>I confirm that the information entered is correct and I want to register this student.</span>
-                  </label>
-                </div>
-              </section>
-
-              <div class="form-actions">
-                <button type="button" class="btn secondary" id="cancelBtn">Cancel</button>
-                <button type="button" class="btn secondary hidden" id="backBtn">← Back</button>
-                <button type="button" class="btn primary" id="nextBtn">Next →</button>
-                <button type="submit" class="btn primary hidden" id="submitBtn">Register Student ✓</button>
-              </div>
-            </div>
-
-            <aside class="right-column">
-              <div class="card summary-card">
-                <div class="summary-heading">
-                  <span>▣</span>
-                  <h2>Registration Summary</h2>
-                </div>
-
-                <div class="summary-row">
-                  <span>Registration Type</span>
-                  <strong class="badge green">NEW STUDENT</strong>
-                </div>
-                <div class="summary-row">
-                  <span>Academic Year</span>
-                  <strong id="summaryYear"><%= currentSchoolYear?.yearname || currentSchoolYear?.schoolyear || '-' %></strong>
-                </div>
-                <div class="summary-row">
-                  <span>Term</span>
-                  <strong id="summaryTerm"><%= currentTerm?.termname || currentTerm?.term || '-' %></strong>
-                </div>
-                <div class="summary-row">
-                  <span>Class</span>
-                  <strong id="summaryClass">Not selected</strong>
-                </div>
-                <div class="summary-row">
-                  <span>Status</span>
-                  <strong class="badge green">ACTIVE</strong>
-                </div>
-                <div class="summary-row">
-                  <span>Reporting</span>
-                  <strong class="badge green">REPORTED</strong>
-                </div>
-              </div>
-
-              <div class="card help-card">
-                <div class="help-icon">ⓘ</div>
-                <div>
-                  <h3>Need Help?</h3>
-                  <p>Fields marked with <b>*</b> are mandatory. Verify the student's identity before creating a new record to prevent duplicates.</p>
-                </div>
-              </div>
-
-              <div class="card checklist-card">
-                <h3>Registration Checklist</h3>
-                <label><span class="check" data-check="student">✓</span> Student information</label>
-                <label><span class="check" data-check="guardian">✓</span> Guardian information</label>
-                <label><span class="check" data-check="enrollment">✓</span> Class assignment</label>
-                <label><span class="check" data-check="review">✓</span> Final confirmation</label>
-              </div>
-            </aside>
-          </div>
-        </form>
-      </div>
-
-      <footer class="footer">
-        <span>© <%= new Date().getFullYear() %> Secondary School. All rights reserved.</span>
-        <span>Student Information System v1.0.0</span>
-      </footer>
-    </main>
+  <!-- HEADER -->
+  <div class="flex-between mb-2">
+    <div>
+      <h1 style="font-size: 22px; margin:0;">Student Registration</h1>
+      <p class="text-muted" style="margin-top:2px;">New student · Returning student search</p>
+    </div>
+    <div class="flex-row">
+      <span class="badge badge-green">Academic Year 2026</span>
+    </div>
   </div>
 
-  <script src="/js/student-registration.js" defer></script>
+  <!-- admission type selector -->
+  <div class="admission-type-selector" id="admissionSelector">
+    <button type="button" class="admission-type active" data-type="new">
+      <span class="admission-icon">➕</span>
+      <span><strong>New Student</strong><small>Register new</small></span>
+    </button>
+    <button type="button" class="admission-type" data-type="returning">
+      <span class="admission-icon">🔄</span>
+      <span><strong>Returning Student</strong><small>Search & enroll</small></span>
+    </button>
+  </div>
+
+  <input type="hidden" name="enrollment_type" id="admissionType" value="new">
+
+  <!-- RETURNING PANEL -->
+  <div id="returningPanel" class="returning-student-panel hidden">
+    <div class="panel-header">
+      <div class="eyebrow">RETURNING STUDENT</div>
+      <h2>Find existing student</h2>
+      <p class="text-muted text-small">Enter exam number to retrieve records</p>
+    </div>
+    <div class="search-student-box">
+      <div class="field">
+        <label for="returningExamno">Examination Number</label>
+        <div class="search-input-group">
+          <input type="text" id="returningExamno" placeholder="e.g. 2026/0045" autocomplete="off">
+          <button type="button" id="findReturningBtn">Search</button>
+        </div>
+        <div class="field-error" id="returningSearchError"></div>
+      </div>
+    </div>
+    <!-- result card -->
+    <div id="returningResult" class="hidden">
+      <div class="student-result-card">
+        <div class="student-photo"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='%23718096'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M12 14c-4 0-6 2-6 4v2h12v-2c0-2-2-4-6-4z'/%3E%3C/svg%3E" alt="avatar"></div>
+        <div class="student-result-information">
+          <div class="result-label">STUDENT FOUND</div>
+          <h3 id="returningName">Chisanga Mwansa</h3>
+          <div class="student-meta">
+            <div><span>Exam</span> <strong id="returningExamDisplay">2026/0045</strong></div>
+            <div><span>Class</span> <strong id="returningClass">10A</strong></div>
+            <div><span>Status</span> <strong id="returningStatus">Active</strong></div>
+          </div>
+        </div>
+        <div class="student-found-icon">✓</div>
+      </div>
+      <!-- prefill details (readonly) -->
+      <div style="margin-top: 14px;">
+        <div class="readonly-header">
+          <div><span class="eyebrow">EXISTING RECORD</span><h3 style="margin:0;">Student Information</h3></div>
+          <span class="record-badge">RETURNING</span>
+        </div>
+        <div class="readonly-grid" id="returningDetailsGrid">
+          <div class="readonly-field"><span>Exam Number</span><strong id="rExam">2026/0045</strong></div>
+          <div class="readonly-field"><span>First Name</span><strong id="rFname">Chisanga</strong></div>
+          <div class="readonly-field"><span>Last Name</span><strong id="rLname">Mwansa</strong></div>
+          <div class="readonly-field"><span>Gender</span><strong id="rGender">Male</strong></div>
+          <div class="readonly-field"><span>Date of Birth</span><strong id="rDob">2010-05-12</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN REGISTRATION FORM -->
+  <form id="registrationForm" method="POST" action="/register" enctype="multipart/form-data" novalidate>
+    <input type="hidden" name="schoolyear" value="<%= schoolyear && schoolyear.length > 0 ? schoolyear[0]?.schoolyearid : '' %>">
+    <input type="hidden" name="termid" value="<%= foundTerm && foundTerm.length > 0 ? foundTerm[0]?.termid : '' %>">
+
+    <!-- STEPPER -->
+    <div class="stepper">
+      <button type="button" class="step active" data-step="1"><span>1</span><strong>Student</strong></button>
+      <div class="stepper-sep"></div>
+      <button type="button" class="step" data-step="2"><span>2</span><strong>Guardian</strong></button>
+      <div class="stepper-sep"></div>
+      <button type="button" class="step" data-step="3"><span>3</span><strong>Enrollment</strong></button>
+      <div class="stepper-sep"></div>
+      <button type="button" class="step" data-step="4"><span>4</span><strong>Review</strong></button>
+    </div>
+
+    <div class="summary-grid">
+      <div class="form-column">
+        <!-- STEP 1 -->
+        <section class="step-panel active" data-panel="1">
+          <div class="card">
+            <div class="card-title"><div class="title-icon">👤</div><div><h2>Student Information</h2><p>Personal details</p></div></div>
+            <div class="form-grid">
+              <div class="field">
+                <label>First Name <b>*</b></label>
+                <input type="text" name="fname" id="fname" required placeholder="First name" value="<%= typeof data !== 'undefined' ? (data.fname || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Middle Name</label>
+                <input type="text" name="middlename" id="middlename" placeholder="Middle name" value="<%= typeof data !== 'undefined' ? (data.middlename || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Last Name <b>*</b></label>
+                <input type="text" name="lname" id="lname" required placeholder="Last name" value="<%= typeof data !== 'undefined' ? (data.lname || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Gender <b>*</b></label>
+                <select name="gender" id="gender" required>
+                  <option value="">Select</option>
+                  <option value="male" <%= typeof data !== 'undefined' && data.gender === 'male' ? 'selected' : '' %>>Male</option>
+                  <option value="female" <%= typeof data !== 'undefined' && data.gender === 'female' ? 'selected' : '' %>>Female</option>
+                  <option value="other" <%= typeof data !== 'undefined' && data.gender === 'other' ? 'selected' : '' %>>Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Date of Birth <b>*</b></label>
+                <input type="date" name="dob" id="dob" required value="<%= typeof data !== 'undefined' ? (data.dob || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Place of Birth</label>
+                <input type="text" name="birthplace" id="birthplace" placeholder="Place of birth" value="<%= typeof data !== 'undefined' ? (data.birthplace || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Nationality <b>*</b></label>
+                <select name="nationality" id="nationality" required>
+                  <option value="">Select</option>
+                  <% if (typeof nationalities !== 'undefined') { nationalities.forEach(function(item) { %>
+                    <option value="<%= item.id ?? item.value %>" <%= typeof data !== 'undefined' && data.nationality === (item.id ?? item.value) ? 'selected' : '' %>>
+                      <%= item.name ?? item.label %>
+                    </option>
+                  <% }); } %>
+                  <option value="Zambian">Zambian</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Religion</label>
+                <select name="religion" id="religion">
+                  <option value="">Select religion</option>
+                  <% if (typeof religions !== 'undefined') { religions.forEach(function(item) { %>
+                    <option value="<%= item.id ?? item.value %>" <%= typeof data !== 'undefined' && data.religion === (item.id ?? item.value) ? 'selected' : '' %>>
+                      <%= item.name ?? item.label %>
+                    </option>
+                  <% }); } %>
+                </select>
+              </div>
+              <div class="field">
+                <label>NRC / Birth Cert</label>
+                <input type="text" name="nrcno" id="nrcno" placeholder="NRC number" value="<%= typeof data !== 'undefined' ? (data.nrcno || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Previous School</label>
+                <input type="text" name="previous_school" id="previous_school" placeholder="Previous school" value="<%= typeof data !== 'undefined' ? (data.previous_school || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Admission Date <b>*</b></label>
+                <input type="date" name="admission_date" id="admission_date" required value="<%= typeof data !== 'undefined' ? (data.admission_date || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Profile Photo</label>
+                <div class="upload-box" id="photoUploadBox">
+                  <span class="upload-preview" id="photoPreview">📷</span>
+                  <span><strong>Upload photo</strong><small>JPG/PNG max 2MB</small></span>
+                </div>
+                <input type="file" id="profilePicture" name="profilePicture" accept="image/jpeg,image/png" hidden>
+              </div>
+              <div class="field full">
+                <label>Residential Address <b>*</b></label>
+                <textarea name="address" id="address" required rows="2" placeholder="Street, city, Zambia"><%= typeof data !== 'undefined' ? (data.address || '') : '' %></textarea>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 2 -->
+        <section class="step-panel" data-panel="2">
+          <div class="card">
+            <div class="card-title"><div class="title-icon">👪</div><div><h2>Guardian Information</h2><p>Parent or responsible adult</p></div></div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Full Name <b>*</b></label>
+                <input type="text" name="guardian_name" id="guardian_name" required placeholder="Guardian name" value="<%= typeof data !== 'undefined' ? (data.guardian_name || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Relationship <b>*</b></label>
+                <select name="relationship" id="relationship" required>
+                  <option value="">Select</option>
+                  <% if (typeof guardianTypes !== 'undefined') { guardianTypes.forEach(function(item) { %>
+                    <option value="<%= item.guardiantypeid ?? item.id %>" <%= typeof data !== 'undefined' && data.relationship == (item.guardiantypeid ?? item.id) ? 'selected' : '' %>>
+                      <%= item.guardianname ?? item.name %>
+                    </option>
+                  <% }); } %>
+                  <option value="Father">Father</option>
+                  <option value="Mother">Mother</option>
+                  <option value="Guardian">Guardian</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Guardian NRC <b>*</b></label>
+                <input type="text" name="guardian_nrc" id="guardian_nrc" required placeholder="NRC" value="<%= typeof data !== 'undefined' ? (data.guardian_nrc || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Primary Phone <b>*</b></label>
+                <input type="tel" name="guardian_phone" id="guardian_phone" required placeholder="0971234567" value="<%= typeof data !== 'undefined' ? (data.guardian_phone || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Alternative Phone</label>
+                <input type="tel" name="guardian_alt_phone" id="guardian_alt_phone" placeholder="Alternative" value="<%= typeof data !== 'undefined' ? (data.guardian_alt_phone || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Email</label>
+                <input type="email" name="guardian_email" id="guardian_email" placeholder="guardian@example.com" value="<%= typeof data !== 'undefined' ? (data.guardian_email || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Occupation</label>
+                <input type="text" name="guardian_occupation" id="guardian_occupation" placeholder="Occupation" value="<%= typeof data !== 'undefined' ? (data.guardian_occupation || '') : '' %>">
+              </div>
+              <div class="field full">
+                <label>Guardian Address</label>
+                <textarea name="guardian_address" id="guardian_address" rows="2" placeholder="Address"><%= typeof data !== 'undefined' ? (data.guardian_address || '') : '' %></textarea>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 3 -->
+        <section class="step-panel" data-panel="3">
+          <div class="card">
+            <div class="card-title"><div class="title-icon">📚</div><div><h2>Enrollment Details</h2><p>Class & credentials</p></div></div>
+            <div class="info-grid">
+              <div class="info-item"><span>Registration Type</span><strong class="badge badge-green" id="regTypeLabel">NEW STUDENT</strong></div>
+              <div class="info-item">
+                <span>Academic Year</span>
+                <strong><%= schoolyear && schoolyear.length > 0 ? schoolyear[0]?.yearname : '2026' %></strong>
+              </div>
+              <div class="info-item">
+                <span>Current Term</span>
+                <strong><%= foundTerm && foundTerm.length > 0 ? foundTerm[0]?.termname : 'Term 1' %></strong>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="field">
+                <label>Year Level <b>*</b></label>
+                <select name="yearlevel" id="yearlevel" required>
+                  <option value="">Select level</option>
+                  <% if (typeof yearLevels !== 'undefined') { yearLevels.forEach(function(item) { %>
+                    <option value="<%= item.levelorder ?? item.levelid %>" <%= typeof data !== 'undefined' && data.yearlevel == (item.levelorder ?? item.levelid) ? 'selected' : '' %>>
+                      <%= item.levelname ?? item.name %>
+                    </option>
+                  <% }); } %>
+                  <option value="10">Grade 10</option>
+                  <option value="11">Grade 11</option>
+                  <option value="12">Grade 12</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Class <b>*</b></label>
+                <select name="classid" id="classid" required <%= typeof data !== 'undefined' && data.classid ? '' : 'disabled' %>>
+                  <option value=""><%= typeof data !== 'undefined' && data.classid ? 'Select class' : 'Select year level first' %></option>
+                  <% if (typeof classes !== 'undefined') { classes.forEach(function(item) { %>
+                    <option value="<%= item.classid %>" data-level-id="<%= item.levelid %>" <%= typeof data !== 'undefined' && data.classid == item.classid ? 'selected' : '' %>>
+                      <%= item.class %>
+                    </option>
+                  <% }); } %>
+                  <option value="1" data-level="10">10A</option>
+                  <option value="2" data-level="10">10B</option>
+                  <option value="3" data-level="11">11A</option>
+                  <option value="4" data-level="12">12A</option>
+                </select>
+              </div>
+            </div>
+            <div class="notice"><span>ⓘ</span><div><strong>Auto‑reporting</strong><p>New students are marked as <strong>REPORTED</strong> with current timestamp.</p></div></div>
+            <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:18px;">
+              <div class="card-title compact"><div class="title-icon">🔐</div><div><h2>Account Credentials</h2><p>Student login</p></div></div>
+              <div class="form-grid">
+                <div class="field">
+                  <label>Exam Number <b>*</b></label>
+                  <input type="text" name="examno" id="examno" required placeholder="2026/0045" value="<%= typeof data !== 'undefined' ? (data.examno || '') : '' %>">
+                </div>
+                <div class="field">
+                  <label>Password <b>*</b></label>
+                  <div class="password-wrap">
+                    <input type="password" name="password" id="password" required minlength="8" placeholder="Min 8 chars">
+                    <button type="button" class="password-toggle" data-target="password">👁</button>
+                  </div>
+                </div>
+                <div class="field">
+                  <label>Confirm Password <b>*</b></label>
+                  <div class="password-wrap">
+                    <input type="password" id="confirmPassword" required minlength="8" placeholder="Confirm">
+                    <button type="button" class="password-toggle" data-target="confirmPassword">👁</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 4 -->
+        <section class="step-panel" data-panel="4">
+          <div class="card">
+            <div class="card-title"><div class="title-icon">✅</div><div><h2>Review & Confirm</h2><p>Verify before submission</p></div></div>
+            <div id="reviewContent" class="review-grid"></div>
+            <div class="confirmation"><label><input type="checkbox" id="confirmDetails" required> <span>I confirm that all information is correct and complete.</span></label></div>
+          </div>
+        </section>
+
+        <!-- FORM ACTIONS -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+          <button type="button" class="btn btn-secondary hidden" id="backBtn">← Back</button>
+          <button type="button" class="btn btn-primary" id="nextBtn">Next →</button>
+          <button type="submit" class="btn btn-primary hidden" id="submitBtn">✓ Register Student</button>
+        </div>
+      </div>
+
+      <!-- RIGHT SUMMARY -->
+      <div class="right-summary">
+        <div class="card">
+          <div class="flex-row" style="margin-bottom:10px;"><span style="font-size:18px;">📋</span><h3 style="margin:0;">Registration Summary</h3></div>
+          <div class="summary-row"><span>Type</span><strong id="summaryType" class="badge badge-green">NEW</strong></div>
+          <div class="summary-row">
+            <span>Year</span>
+            <strong><%= schoolyear && schoolyear.length > 0 ? schoolyear[0]?.yearname : '2026' %></strong>
+          </div>
+          <div class="summary-row">
+            <span>Term</span>
+            <strong><%= foundTerm && foundTerm.length > 0 ? foundTerm[0]?.termname : 'Term 1' %></strong>
+          </div>
+          <div class="summary-row"><span>Class</span><strong id="summaryClass">Not selected</strong></div>
+          <div class="summary-row"><span>Status</span><strong class="badge badge-green">ACTIVE</strong></div>
+          <div class="summary-row"><span>Reporting</span><strong class="badge badge-green">REPORTED</strong></div>
+        </div>
+        <div class="card">
+          <h3 style="margin:0 0 8px;">Checklist</h3>
+          <div class="checklist-card">
+            <label><span class="check" data-check="student">✓</span> Student info</label>
+            <label><span class="check" data-check="guardian">✓</span> Guardian info</label>
+            <label><span class="check" data-check="enrollment">✓</span> Class & credentials</label>
+            <label><span class="check" data-check="review">✓</span> Confirmation</label>
+          </div>
+        </div>
+        <div class="card" style="background:var(--blue-light); border-color:#cddcff;">
+          <div class="flex-row"><span style="font-size:20px;">💡</span><div><strong>Need help?</strong><p class="text-small text-muted">Fields with <b>*</b> are required. For returning students, search first to avoid duplicates.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<script src="/js/student-registration.js"></script>
 </body>
 </html>
