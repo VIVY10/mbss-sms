@@ -3,6 +3,13 @@ const { matchedData } = require("express-validator");
 const teacherModel = require("../models/teacherModel.js");
 const teacherService = require("../services/teacherService.js");
 
+// ==================== DIRECTORIES ====================
+const path = require("path");
+
+const profileDirectory = path.join(__dirname, "../../public/images/profile");
+
+const backupDirectory = path.join(__dirname, "../../public/images/backup");
+
 // ==================== TEACHER REGISTRATION ====================
 
 exports.showRegistration = (req, res) => {
@@ -145,11 +152,15 @@ exports.registeredPupils = async (req, res) => {
     user: req.user,
   });
 };
-
+ 
 // ==================== DELETE TEACHER ====================
 
 exports.deleteTeacher = async (req, res) => {
-  await teacherService.deleteTeacher(req.query.username);
+  await teacherService.deleteTeacher(
+    req.query.username, 
+    profileDirectory,
+    backupDirectory,
+  );
 
   res.redirect("/viewTeachers");
 };

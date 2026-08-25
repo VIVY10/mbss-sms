@@ -5,9 +5,9 @@ const pupilModel = require("../models/pupilModel.js");
 const path = require("path");
 const { matchedData } = require("express-validator");
 
-const profileDirectory = path.join(__dirname, "../public/images/profile");
+const profileDirectory = path.join(__dirname, "../../public/images/profile");
 
-const backupDirectory = path.join(__dirname, "../public/images/backup");
+const backupDirectory = path.join(__dirname, "../../public/images/backup");
 
 // ==================== CHECK EXAM NUMBER ====================
 
@@ -16,19 +16,12 @@ exports.checkExamNo = async (req, res) => {
 
   const results = await pupilModel.findByExamNo(examno);
 
-  if (results.length) {
-    return res.send(
-      "<span style='color:red'> Sorry student already exists.</span> " +
-        "<script>$('#next1').prop('disabled',true);</script>",
-    );
+  if (results.length > 0) {
+    return res.send({ message: "Sorry student already exists" });
   }
-
-  return res.send(
-    "<span style='color:green'> Student available for Registration.</span> " +
-      "<script>$('#next1').prop('disabled',false);</script>",
-  );
+  return res.send({ message: " Student available for Registration." });
 };
-
+ 
 // ==================== REGISTRATION ====================
 
 exports.showRegistration = async (req, res) => {
@@ -44,10 +37,43 @@ exports.showRegistration = async (req, res) => {
   });
 };
 
+// exports.showRegistration = async (req, res) => {
+//   const data = await pupilService.getRegistrationData();
+
+//   if (Object.values(data).some((value) => !value?.length)) {
+//     return res.redirect("/Dashboard");
+//   }
+
+//   return res.render("./pupil/student-registration.ejs", {
+//     ...data,
+//     user: req.user,
+//   });
+// };
+
+exports.returningPupils = async (req, res) => {
+  const data = await pupilService.getRegistrationData();
+
+  if (Object.values(data).some((value) => !value?.length)) {
+    return res.redirect("/Dashboard");
+  }
+
+  return res.render("./pupil/returningPupils.ejs", {
+    ...data,
+    user: req.user,
+  });
+};
+
 exports.register = async (req, res) => {
-  const data = matchedData(req).toLower();
+  const data = matchedData(req);
+
+  const reported_by = req.user.id;
+  const reporting_status = "reported";
+  const enrollment_type = "new";
 
   const result = await pupilService.registerPupil({
+    reported_by,
+    reporting_status,
+    enrollment_type,
     data,
     file: req.file,
     profileDirectory,
@@ -60,7 +86,7 @@ exports.register = async (req, res) => {
 
 exports.viewPupils = async (req, res) => {
   const results = await pupilModel.getAll();
-  
+
   return res.render("./pupil/searchList", {
     results,
     user: req.user,

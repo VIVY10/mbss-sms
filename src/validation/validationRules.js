@@ -202,12 +202,18 @@ const pupilValidationRules = () => [
     .withMessage("Exam number must contain digits only.")
     .escape(),
 
+
+
   // Password
   passwordValidator("password"),
 
   // Pupil Names
   nameValidator("fname", "First name"),
   nameValidator("lname", "Last name"),
+  otherNameValidator("middlename"),
+
+  // term
+  requiredInt("termid"),
 
   // Gender
   body("gender")
@@ -218,6 +224,19 @@ const pupilValidationRules = () => [
     .withMessage("Gender must be either male or female.")
     .escape(),
 
+  body("email")
+    .optional()
+    .trim()
+    .isEmail()
+    .withMessage("Enter a valid email address.")
+    .normalizeEmail(),
+  
+  body("studentPhoneNumber")
+    .optional()
+    .trim()
+    .matches(/^\d{10}$/)
+    .withMessage("Phone number must contain exactly 10 digits."),
+
   // Date of Birth
   body("dob")
     .trim()
@@ -227,14 +246,28 @@ const pupilValidationRules = () => [
     .withMessage("Date of birth must be in YYYY-MM-DD format.")
     .isISO8601({ strict: true })
     .withMessage("Enter a valid date.")
+    .custom((dob) => {
+      const birthDate = new Date(`${dob}T00:00:00`);
+      const today = new Date();
+
+      // Remove the time component
+      today.setHours(0, 0, 0, 0);
+
+      if (birthDate >= today) {
+        throw new Error("Date of birth must be before today.");
+      }
+
+      return true;
+    })
     .escape(),
 
   // Year Level
-  body("yearlevel")
-    .optional({ values: "falsy" })
-    .isInt()
-    .withMessage("Invalid year level.")
-    .toInt(),
+  requiredInt("yearlevel"),
+
+  // school year
+  requiredInt("schoolyear", "Invalid Year ID"),
+
+
 
   // Sponsor ID
   requiredInt("sponsor", "Invalid sponsor ID."),

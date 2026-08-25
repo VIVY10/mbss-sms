@@ -5,7 +5,7 @@
         <h4>Personal Details</h4>
         <div class="row g-3 mb-4">
             <div class="col-sm-6">
-              <input type="number" class="form-control form-control-md" name="examno" placeholder="Exam No" aria-label="Exam No" id="examno" minlength="4" oninput="checkExamno()" required>
+              <input type="number" class="form-control form-control-md" name="examno" placeholder="Exam No" aria-label="Exam No" id="examno" minlength="4" required>
               <span id="check-examno"></span>
             </div>
             <div class="col-sm-6">
@@ -13,13 +13,18 @@
               <small class="form-text text-muted">must be Alphanumeric & at least 8 characters</small>
             </div>
           </div>
-          <div class="row g-3 mb-4">
+          <div class="row g-4 mb-4">
             <div class="col-sm-4">
               <input type="text" class="form-control" name="fname" placeholder="First name" aria-label="First name" required>
             </div>
             <div class="col-sm-4">
               <input type="text" class="form-control" name="lname" placeholder="Last name" aria-label="Last name" required>
             </div>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="middlename" placeholder="Other name" aria-label="Other name">
+            </div>            
+          </div>
+          <div class="row g-3 mb-12">
             <div class="col-sm-4">
                 <select class="select form-control" name="gender" aria-label="gender" required>
                     <option selected disabled value="" >Gender...</option>
@@ -28,26 +33,33 @@
                     <option value="other">Other</option>                    
               </select>
             </div>
-          </div>
-          <div class="row g-3 mb-4">   
             <div class="col-sm-4">
-                <input type="date" class="form-control" name="dob" placeholder="Date of Birth" aria-label="date of birth" required>
+              <input type="tel" class="form-control" name="studentPhoneNumber" placeholder="student phone number" aria-label="studentPhoneNumber">
+            </div> 
+            <div class="col-sm-4">
+              <input type="email" class="form-control" name="email" placeholder="email@example.com" aria-label="email">
+            </div>  
+          </div> 
+          <div class="row g-3 mb-12">   
+            <div class="col-sm-3">                
+                <input type="date" class="form-control" name="dob" placeholder="DOB" aria-label="date of birth" required>
+                <small>date of birth</small>
             </div>   
-            <div class="col-sm-4">
+            <div class="col-sm-3">
               <% if(locals.foundClass){ %>
                       <select class="select form-control" name="classid" id="selectedClass" aria-label="Grade" required>
-                          <option selected disabled value="" >grade...</option>        
+                          <option selected disabled value="" >class...</option>        
                           <% foundClass.forEach(element => { %>
                               <option value="<%= element.classid %>"  
-                                      data-grade="<%= element.grade %>">
-                                  <%= element.grade %><%= element.class %>
+                                      data-levelid="<%= element.levelid %>">
+                                  <%= element.levelname %><%= element.class %>
                               </option>  
                           <% }); %>
                         </select>
                       <% } %>
               <input type="number" name="yearlevel" value="" id="yearlevel" hidden/>     
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-3">
               <% if(locals.schoolyear){ %>
                       <select class="select form-control" name="schoolyear" aria-label="school year" required>
                           <option selected disabled value="" >Academic Year...</option>
@@ -56,7 +68,17 @@
                           <% }); %>
                         </select>
                <% } %>
-            </div>                  
+            </div>  
+            <div class="col-sm-3">
+              <% if(locals.foundTerm){ %>
+                      <select class="select form-control" name="termid" aria-label="termid" required>
+                          <option selected disabled value="" >Term...</option>
+                          <% foundTerm.forEach(element => { %>
+                            <option value=<%= element.termid %>><%= element.termname %></option>                              
+                          <% }); %>
+                        </select>
+               <% } %>
+            </div>                 
           </div>
           <div class="row g-3 mb-4">
             <div class="col-sm-4">
@@ -101,7 +123,7 @@
           </div>
           <div class="row g-3 mb-4">
             <div class="col-sm-4">
-                <input type="number" class="form-control" name="nrcno" placeholder="NRC Number" minlength="9" aria-label="Parent NRC No." required>
+                <input type="number" class="form-control" name="nrcno" placeholder="nrc no." minlength="9" maxlength="9" aria-label="Parent NRC No." required>
                 <small>must be at least 9 digits</small>
             </div>
             <div class="col-sm-4">
@@ -113,7 +135,7 @@
           </div>
           <div class="row g-3 mb-4">
             <div class="col-sm-4">                           
-               <input type="tel" class="form-control" name="phoneNumber" id="phoneNumber" placeholder="Phone number" minlength="9" aria-label=" Phone Number" required>
+               <input type="tel" class="form-control" name="phoneNumber" id="phoneNumber" placeholder="Phone number" minlength="9" aria-label="Phone Number" required>
             </div>
             <!-- <div class="col-sm-4">
                 <input type="email" class="form-control" name="email" id="email" placeholder="Parent Email Address" aria-label="parent email" required>

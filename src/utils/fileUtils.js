@@ -4,7 +4,6 @@ const path = require('path');
 
 async function removeFileIfExists(filePath) {
   if (!filePath) return;
-
   try {
     await fs.unlink(filePath);
   } catch (error) {

@@ -1,6 +1,9 @@
 const bcrypt = require("bcrypt");
 const teacherModel = require("../models/teacherModel");
 const authModel = require("../models/authModel");
+const fs = require('fs').promises;
+const path = require('path');
+const { removeFileIfExists } = require('../utils/fileUtils.js');
 
 async function registerTeacher({ data, file }) {
   const username = data.username.toLowerCase();
@@ -76,8 +79,17 @@ async function getSubjectAllocation(teacherId, allocated) {
   };
 }
 
-async function deleteTeacher(username) {
+async function deleteTeacher(username, profileDirectory, backupDirectory) {
   const teacher = await teacherModel.findByUsername(username);
+  const profilePicture = teacher[0]?.profilePicture;
+
+  const imagePath = profilePicture
+    ? path.join(profileDirectory, profilePicture)
+    : null;
+
+  const backupPath = profilePicture
+    ? path.join(backupDirectory, profilePicture)
+    : null;
 
   if (!teacher.length) {
     throw new Error("Teacher not found.");
@@ -91,7 +103,28 @@ async function deleteTeacher(username) {
     }
   }
 
-  return teacherModel.deleteByUsername(username);
+  // Back up the profile picture before deleting
+  if (imagePath) {
+    try {
+      await fs.mkdir(backupDirectory, { recursive: true });
+      await fs.copyFile(imagePath, backupPath);
+      await removeFileIfExists(imagePath)
+    } catch (error) {
+      throw new Error(`Unable to back up profile picture: ${error.message}`);
+    }
+  }
+
+  try {
+    await teacherModel.deleteByUsername(username);
+    if (backupPath) {
+      await removeFileIfExists(backupPath);
+    }
+  } catch (error) {
+    if (imagePath && backupPath) {
+      await fs.copyFile(backupPath, imagePath).catch(() => {});
+    }
+    throw error;
+  }
 }
 
 async function lockAccount(req, username) {
@@ -116,7 +149,7 @@ async function lockAccount(req, username) {
   if (account.usertype === "admin") {
     const activeAdminCount = await teacherModel.countAdmins();
 
-    console.log(activeAdminCount)
+    console.log(activeAdminCount);
 
     if (activeAdminCount <= 1) {
       return res.render("./response/response", {

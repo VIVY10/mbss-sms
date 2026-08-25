@@ -15,7 +15,7 @@ $('#studentInfoBtn').on('click', function(event) {
             alert(data.message);
             window.location.href = "/register";
         },
-        error: function() {
+        error: function(err) {
             alert("Registration failed");
             window.location.href = "/register";
         }
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Get the selected option
         var selectedOption = this.options[this.selectedIndex];
         // Get the classid, grade, and section from the data attributes
-        var yearlevel = selectedOption.getAttribute('data-grade');
+        var yearlevel = selectedOption.getAttribute('data-levelid');
         // Set the value of the hidden levelorder input field
         document.getElementById('yearlevel').value = yearlevel;
     });

@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const path = require('path');
-const fs = require('fs');
+// const fs = require('fs');
+const fs = require('fs').promises; 
 
 const { 
     getConnection,
@@ -23,7 +24,8 @@ async function getRegistrationData() {
     const [
         foundClass,
         guardiantype,
-        schoolyear,
+        schoolyear, 
+        foundTerm,
         studentstatus,
         sponsor,
         ovcstatus
@@ -31,8 +33,9 @@ async function getRegistrationData() {
 
     return {
         foundClass,
-        guardiantype,
+        guardiantype, 
         schoolyear,
+        foundTerm,
         studentstatus,
         sponsor,
         ovcstatus
@@ -41,6 +44,9 @@ async function getRegistrationData() {
 
 
 async function registerPupil({
+    reported_by,
+    reporting_status,
+    enrollment_type,
     data,
     file,
     profileDirectory
@@ -87,11 +93,21 @@ async function registerPupil({
             data.schoolyear
         );
 
-        await pupilModel.addClass(
+        const studentclassid = await pupilModel.addClass(
             connection,
             data.examno,
-            data.classid
+            data.classid,
+            data.termid,
+            data.schoolyear,
+            enrollment_type
         );
+
+        await pupilModel.addReporting(
+            connection,
+            studentclassid,
+            reporting_status,
+            reported_by
+        )
 
         const guardian =
             await pupilModel.findGuardian(
@@ -117,7 +133,8 @@ async function registerPupil({
             message: 'Student successfully registered'
         };
 
-    } catch (error) {
+    } catch (err) {
+        console.log(err)
         await rollback(connection);
 
         if (imagePath) {
@@ -131,6 +148,8 @@ async function registerPupil({
         connection.release();
     }
 }
+
+
 
 
 async function updatePupil(data) {
@@ -170,11 +189,8 @@ async function deletePupil(
     profileDirectory,
     backupDirectory
 ) {
-    const pictureRows =
-        await pupilModel.getProfilePicture(examNumber);
-
-    const profilePicture =
-        pictureRows[0]?.profilePicture;
+    const pictureRows = await pupilModel.getProfilePicture(examNumber);
+    const profilePicture = pictureRows[0]?.profilePicture;
 
     const imagePath = profilePicture
         ? path.join(profileDirectory, profilePicture)
@@ -184,54 +200,30 @@ async function deletePupil(
         ? path.join(backupDirectory, profilePicture)
         : null;
 
-
     // Back up the profile picture before deleting
     if (imagePath) {
         try {
-            await fs.mkdir(backupDirectory, {
-                recursive: true
-            });
-
-            await fs.copyFile(
-                imagePath,
-                backupPath
-            );
-
-            await fs.unlink(imagePath)
-                .catch(() => {});
-
+            await fs.mkdir(backupDirectory, { recursive: true });
+            await fs.copyFile(imagePath, backupPath);
+            await removeFileIfExists(imagePath);
         } catch (error) {
             throw new Error(
                 `Unable to back up profile picture: ${error.message}`
             );
         }
     }
-
-
+ 
     try {
-        await pupilModel.deleteStudent(
-            examNumber
-        );
-
+        await pupilModel.deleteStudent(examNumber);
         await pupilModel.deleteOrphanedGuardians();
 
         if (backupPath) {
-            await removeFileIfExists(
-                backupPath
-            );
+            await removeFileIfExists(backupPath);
         }
-
     } catch (error) {
-
-        // Restore the profile picture if database
-        // deletion fails
         if (imagePath && backupPath) {
-            await fs.copyFile(
-                backupPath,
-                imagePath
-            ).catch(() => {});
+            await fs.copyFile(backupPath, imagePath).catch(() => {});
         }
-
         throw error;
     }
 }

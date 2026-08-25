@@ -9,14 +9,18 @@ const {
 const pupilListSql = `
   SELECT
     s.fname,
+    s.middlename,
     s.lname,
     s.id,
     s.dob,
     s.gender,
     s.enrollmentdate,
     s.status,
-    c.grade,
+    c.classid,
     c.class,
+    yl.levelorder,
+    yl.levelname,
+    yl.nextlevelorder,
     sp.sponsorName AS sponsor,
     st.studentStatus AS studentstatus,
     ovc.ovcstatus AS ovcstatus,
@@ -29,6 +33,8 @@ const pupilListSql = `
     ON sc.examno = s.id
   JOIN class c
     ON c.classid = sc.classid
+  JOIN yearlevel yl 
+    ON yl.levelorder = c.levelid
   JOIN sponsor AS sp
     ON s.sponsor = sp.sponsorID
   JOIN studentstatus AS st
@@ -56,7 +62,15 @@ exports.findByExamNo = (examno) =>
 exports.getRegistrationOptions = async () => {
   return Promise.all([
     query(
-      'SELECT classid, grade, class FROM class'
+      `SELECT 
+          c.classid,  
+          c.levelid,
+          yl.levelorder,
+          yl.levelname,
+          yl.nextlevelorder,
+          class
+      FROM class c
+      JOIN yearlevel yl ON yl.levelorder = c.levelid`
     ),
 
     query(
@@ -66,7 +80,11 @@ exports.getRegistrationOptions = async () => {
     ),
 
     query(
-      'SELECT schoolyearid, yearname FROM schoolyear'
+      'SELECT schoolyearid, yearname FROM schoolyear WHERE status = ?', ['OPEN']
+    ),
+
+    query(
+      'SELECT * FROM terms WHERE status = ?', ['OPEN']
     ),
 
     query(
@@ -189,6 +207,7 @@ exports.createStudent = (connection, data) =>
       (
         id,
         fname,
+        middlename,
         lname,
         password,
         dob,
@@ -198,12 +217,15 @@ exports.createStudent = (connection, data) =>
         sponsor,
         studentStatus,
         status,
-        usertype
+        usertype,
+        phone,
+        email
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 'pupil')`,
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 'pupil', ?, ?)`,
     [
       data.examno,
       data.fname,
+      data.middlename,
       data.lname,
       data.hashedPassword,
       data.dob,
@@ -211,7 +233,9 @@ exports.createStudent = (connection, data) =>
       data.profilePicture,
       data.ovcstatus,
       data.sponsor,
-      data.studentstatus
+      data.studentstatus,
+      data.studentPhoneNumber,
+      data.email
     ]
   );
 
@@ -252,22 +276,81 @@ exports.addYearLevel = (
 
 // ==================== ADD CLASS ====================
 
-exports.addClass = (
-  connection,
-  examno,
-  classid
-) =>
-  connectionQuery(
-    connection,
-    `INSERT INTO studentclass
-      (examno, classid)
-      VALUES (?, ?)`,
-    [
-      examno,
-      classid
-    ]
-  );
+// exports.addClass = (
+//   connection,
+//   examno,
+//   classid,
+//   termid,
+//   yearid,
+//   enrollment_type
+// ) =>
+//   connectionQuery(
+//     connection,
+//     `INSERT INTO studentclass
+//       (examno, classid, termid, yearid, enrollment_type)
+//       VALUES (?, ?, ?, ?, ?)`,
+//     [
+//       examno,
+//       classid,
+//       termid,
+//       yearid,
+//       enrollment_type
+//     ]
+//   );
 
+exports.addClass = async (
+    connection,
+    examno,
+    classid,
+    termid,
+    yearid,
+    enrollment_type
+) => {
+    const result = await connectionQuery(
+        connection,
+        `INSERT INTO studentclass
+        (
+            examno,
+            classid,
+            termid,
+            yearid,
+            enrollment_type
+        )
+        VALUES (?, ?, ?, ?, ?)`,
+        [
+            examno,
+            classid,
+            termid,
+            yearid,
+            enrollment_type
+        ]
+    );
+
+    return result.insertId;
+};
+
+// ==================== ADD REPORTING ====================
+exports.addReporting = (
+    connection,
+    studentclassid,
+    reporting_status,
+    reported_by
+) =>
+    connectionQuery(
+        connection,
+        `INSERT INTO student_reporting
+        (
+            studentclassid,
+            status,
+            reported_by
+        )
+        VALUES (?, ?, ?)`,
+        [
+            studentclassid,
+            reporting_status,
+            reported_by
+        ]
+    );
 
 // ==================== FIND GUARDIAN ====================
 

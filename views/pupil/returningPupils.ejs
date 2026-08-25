@@ -1,0 +1,356 @@
+<div class="page-heading">
+    <div>
+        <h1>Returning Student Enrollment</h1>
+        <p>
+            Find an existing student and enroll them for the current term.
+        </p>
+    </div>
+</div>
+
+<div class="registration-grid">
+
+    <!-- LEFT -->
+    <div>
+
+        <div class="card">
+
+            <div class="card-title">
+                <div class="title-icon">↻</div>
+
+                <div>
+                    <h2>Find Student</h2>
+                    <p>
+                        Search using the student's exam number.
+                    </p>
+                </div>
+            </div>
+
+            <div class="search-row">
+
+                <div class="field">
+                    <label for="examno">
+                        Exam Number <b>*</b>
+                    </label>
+
+                    <input
+                        type="text"
+                        id="examno"
+                        placeholder="Enter exam number"
+                        autocomplete="off"
+                    >
+                </div>
+
+                <button
+                    type="button"
+                    class="btn primary"
+                    id="searchStudent"
+                >
+                    Search
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- STUDENT RESULT -->
+
+        <div
+            class="card student-result hidden"
+            id="studentResult"
+        >
+
+            <div class="student-header">
+
+                <div
+                    class="student-photo"
+                    id="studentPhoto"
+                >
+                    ♙
+                </div>
+
+                <div>
+                    <h2 id="studentName">
+                        -
+                    </h2>
+
+                    <p id="studentExamno">
+                        -
+                    </p>
+
+                    <span class="badge green">
+                        EXISTING STUDENT
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="student-details">
+
+                <div>
+                    <span>Gender</span>
+                    <strong id="studentGender">-</strong>
+                </div>
+
+                <div>
+                    <span>Date of Birth</span>
+                    <strong id="studentDob">-</strong>
+                </div>
+
+                <div>
+                    <span>Status</span>
+                    <strong id="studentStatus">-</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ENROLLMENT -->
+
+        <div
+            class="card hidden"
+            id="enrollmentCard"
+        >
+
+            <div class="card-title">
+
+                <div class="title-icon">
+                    ▣
+                </div>
+
+                <div>
+                    <h2>
+                        Current Enrollment
+                    </h2>
+
+                    <p>
+                        Assign the student to their current class.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <form
+                id="returningEnrollmentForm"
+                method="POST"
+                action="/students/returning/enroll"
+            >
+
+                <input
+                    type="hidden"
+                    name="examno"
+                    id="formExamno"
+                >
+
+                <input
+                    type="hidden"
+                    name="yearid"
+                    value="<%= schoolyear[0].schoolyearid %>"
+                >
+ 
+                <input
+                    type="hidden"
+                    name="termid"
+                    value="<%= foundTerm[0].termid %>"
+                >
+
+                <input
+                    type="hidden"
+                    name="enrollment_type"
+                    value="returning"
+                >
+
+                <div class="form-grid two">
+
+                    <div class="field">
+
+                        <label for="yearlevel">
+                            Year Level <b>*</b>
+                        </label>
+
+                        <select
+                            id="yearlevel"
+                            name="yearlevel"
+                            required
+                        >
+
+                            <option value="">
+                                Select year level
+                            </option>
+
+                            <% foundClass.forEach(level => { %>
+
+                                <option
+                                    value="<%= level.levelorder %>"
+                                >
+                                    <%= level.levelname %>
+                                </option>
+
+                            <% }); %>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label for="classid">
+                            Class <b>*</b>
+                        </label>
+
+                        <select
+                            id="classid"
+                            name="classid"
+                            required
+                            disabled
+                        >
+
+                            <option value="">
+                                Select year level first
+                            </option>
+
+                            <% foundClass.forEach(item => { %>
+
+                                <option
+                                    value="<%= item.classid %>"
+                                    data-level-id="<%= item.levelid %>"
+                                >
+                                    <%= item.levelname %><%= item.class %>
+                                </option>
+
+                            <% }); %>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="notice">
+
+                    <span>ⓘ</span>
+
+                    <div>
+
+                        <strong>
+                            Automatic reporting
+                        </strong>
+
+                        <p>
+                            Once enrollment is completed,
+                            the student will automatically
+                            be marked as
+                            <strong>REPORTED</strong>.
+                            The reporting date will be recorded
+                            automatically.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="btn secondary"
+                        id="clearStudent"
+                    >
+                        Clear
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn primary"
+                    >
+                        Enroll &amp; Mark Reported ✓
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- RIGHT -->
+
+    <aside>
+
+        <div class="card summary-card">
+
+            <div class="summary-heading">
+                <span>▣</span>
+                <h2>Enrollment Summary</h2>
+            </div>
+
+            <div class="summary-row">
+                <span>Academic Year</span>
+
+                <strong>
+                    <%= schoolyear.yearname %>
+                </strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Current Term</span>
+
+                <strong>
+                    <%= foundTerm.termname %>
+                </strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Enrollment</span>
+
+                <strong class="badge green">
+                    RETURNING
+                </strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Reporting</span>
+
+                <strong class="badge green">
+                    REPORTED
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="card help-card">
+
+            <div class="help-icon">
+                ⓘ
+            </div>
+
+            <div>
+
+                <h3>
+                    Important
+                </h3>
+
+                <p>
+                    Returning students already have
+                    a student record. Do not create
+                    another student record or guardian
+                    record.
+                </p>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+</div>
