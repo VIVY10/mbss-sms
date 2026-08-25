@@ -400,7 +400,7 @@
         // Show success message
         alert(result.message || "Student registered successfully!");
         // Optionally redirect
-        window.location.href = "/viewPupils";
+        window.location.href = "/register";
       } else {
         const error = await response.json();
         alert(error.message || "Registration failed. Please try again.");
