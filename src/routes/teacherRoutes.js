@@ -3,7 +3,7 @@ const express = require('express');
 const { authChecker } = require('../middleware/authChecker.js');
 const { profilePicUpload } = require('../middleware/profilePicUpload.js');
 const { validate } = require('../middleware/validateRequest.js');
-
+ 
 const {
   allocateSubjectValidationRules,
   registerTeacherValidationRules

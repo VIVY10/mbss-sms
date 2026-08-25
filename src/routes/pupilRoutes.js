@@ -4,7 +4,7 @@ const { authChecker } = require('../middleware/authChecker.js');
 const { profilePicUpload } = require('../middleware/profilePicUpload.js');
 
 const {
-  validate,
+  validate, 
   validatePupilRegistration
 } = require('../middleware/validateRequest.js');
 

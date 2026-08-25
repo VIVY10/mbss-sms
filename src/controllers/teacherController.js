@@ -2,7 +2,7 @@ const { matchedData } = require("express-validator");
 
 const teacherModel = require("../models/teacherModel.js");
 const teacherService = require("../services/teacherService.js");
-
+ 
 // ==================== DIRECTORIES ====================
 const path = require("path");
 
