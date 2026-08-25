@@ -132,6 +132,14 @@
                 </select>
               </div>
               <div class="field">
+                <label>Email</label>
+                <input type="email" name="email" id="email" placeholder="student@example.com" value="<%= typeof data !== 'undefined' ? (data.email || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Primary Phone <b>*</b></label>
+                <input type="tel" name="studentPhoneNumber" id="studentPhoneNumber" required placeholder="0971234567" value="<%= typeof data !== 'undefined' ? (data.studentPhoneNumber || '') : '' %>">
+              </div>
+              <div class="field">
                 <label>Date of Birth <b>*</b></label>
                 <input type="date" name="dob" id="dob" required value="<%= typeof data !== 'undefined' ? (data.dob || '') : '' %>">
               </div>
@@ -154,18 +162,18 @@
               </div>
               <div class="field">
                 <label>Religion</label>
-                <select name="religion" id="religion">
-                  <option value="">Select religion</option>
+                <input type="text" name="religion" id="religion">
+                  <!-- <option value="">Select religion</option>
                   <% if (typeof religions !== 'undefined') { religions.forEach(function(item) { %>
                     <option value="<%= item.id ?? item.value %>" <%= typeof data !== 'undefined' && data.religion === (item.id ?? item.value) ? 'selected' : '' %>>
                       <%= item.name ?? item.label %>
                     </option>
                   <% }); } %>
-                </select>
+                </select> -->
               </div>
               <div class="field">
                 <label>NRC / Birth Cert</label>
-                <input type="text" name="nrcno" id="nrcno" placeholder="NRC number" value="<%= typeof data !== 'undefined' ? (data.nrcno || '') : '' %>">
+                <input type="text" name="studentnrcno" id="studentnrcno" placeholder="NRC number" value="<%= typeof data !== 'undefined' ? (data.studentnrc || '') : '' %>">
               </div>
               <div class="field">
                 <label>Previous School</label>
@@ -197,30 +205,31 @@
             <div class="card-title"><div class="title-icon">👪</div><div><h2>Guardian Information</h2><p>Parent or responsible adult</p></div></div>
             <div class="form-grid">
               <div class="field">
-                <label>Full Name <b>*</b></label>
-                <input type="text" name="guardian_name" id="guardian_name" required placeholder="Guardian name" value="<%= typeof data !== 'undefined' ? (data.guardian_name || '') : '' %>">
+                <label>First Name <b>*</b></label>
+                <input type="text" name="guardianFname" id="guardianFname" required placeholder="Guardian fname" value="<%= typeof data !== 'undefined' ? (data.guardianFname || '') : '' %>">
+              </div>
+              <div class="field">
+                <label>Last Name <b>*</b></label>
+                <input type="text" name="guardianLname" id="guardianLname" required placeholder="Guardian lname" value="<%= typeof data !== 'undefined' ? (data.guardianLname || '') : '' %>">
               </div>
               <div class="field">
                 <label>Relationship <b>*</b></label>
                 <select name="relationship" id="relationship" required>
                   <option value="">Select</option>
-                  <% if (typeof guardianTypes !== 'undefined') { guardianTypes.forEach(function(item) { %>
+                  <% if (typeof guardiantype !== 'undefined') { guardiantype.forEach(function(item) { %>
                     <option value="<%= item.guardiantypeid ?? item.id %>" <%= typeof data !== 'undefined' && data.relationship == (item.guardiantypeid ?? item.id) ? 'selected' : '' %>>
-                      <%= item.guardianname ?? item.name %>
+                      <%= item.relationship %>
                     </option>
                   <% }); } %>
-                  <option value="Father">Father</option>
-                  <option value="Mother">Mother</option>
-                  <option value="Guardian">Guardian</option>
                 </select>
               </div>
               <div class="field">
                 <label>Guardian NRC <b>*</b></label>
-                <input type="text" name="guardian_nrc" id="guardian_nrc" required placeholder="NRC" value="<%= typeof data !== 'undefined' ? (data.guardian_nrc || '') : '' %>">
+                <input type="text" name="nrcno" id="nrcno" required placeholder="NRC" value="<%= typeof data !== 'undefined' ? (data.nrcno || '') : '' %>">
               </div>
               <div class="field">
                 <label>Primary Phone <b>*</b></label>
-                <input type="tel" name="guardian_phone" id="guardian_phone" required placeholder="0971234567" value="<%= typeof data !== 'undefined' ? (data.guardian_phone || '') : '' %>">
+                <input type="tel" name="phoneNumber" id="guardian_phone" required placeholder="0971234567" value="<%= typeof data !== 'undefined' ? (data.phoneNumber || '') : '' %>">
               </div>
               <div class="field">
                 <label>Alternative Phone</label>
@@ -259,34 +268,75 @@
             </div>
             <div class="form-grid">
               <div class="field">
-                <label>Year Level <b>*</b></label>
-                <select name="yearlevel" id="yearlevel" required>
-                  <option value="">Select level</option>
-                  <% if (typeof yearLevels !== 'undefined') { yearLevels.forEach(function(item) { %>
-                    <option value="<%= item.levelorder ?? item.levelid %>" <%= typeof data !== 'undefined' && data.yearlevel == (item.levelorder ?? item.levelid) ? 'selected' : '' %>>
-                      <%= item.levelname ?? item.name %>
-                    </option>
+                <label>School Year <b>*</b></label>
+                <select name="schoolyear" id="schoolyear" required>
+                  <option value="">Select year</option>
+                  <% if (typeof schoolyear !== 'undefined') { schoolyear.forEach(function(item) { %>
+                    <option value="<%= item.schoolyearid %>" <%= typeof data !== 'undefined' && data.schoolyear == (item.schoolyearid) ? 'selected' : '' %>>
+                      <%= item.yearname %>
+                    </option> 
                   <% }); } %>
-                  <option value="10">Grade 10</option>
-                  <option value="11">Grade 11</option>
-                  <option value="12">Grade 12</option>
+                </select>
+              </div>
+              <div class="field">
+                <label> Term <b>*</b></label>
+                <select name="termid" id="termid" required>
+                  <option value="">Select term</option>
+                  <% if (typeof foundTerm !== 'undefined') { foundTerm.forEach(function(item) { %>
+                    <option value="<%= item.termid %>" <%= typeof data !== 'undefined' && data.termid == (item.termid) ? 'selected' : '' %>>
+                      <%= item.termname %>
+                    </option> 
+                  <% }); } %>
                 </select>
               </div>
               <div class="field">
                 <label>Class <b>*</b></label>
-                <select name="classid" id="classid" required <%= typeof data !== 'undefined' && data.classid ? '' : 'disabled' %>>
-                  <option value=""><%= typeof data !== 'undefined' && data.classid ? 'Select class' : 'Select year level first' %></option>
-                  <% if (typeof classes !== 'undefined') { classes.forEach(function(item) { %>
-                    <option value="<%= item.classid %>" data-level-id="<%= item.levelid %>" <%= typeof data !== 'undefined' && data.classid == item.classid ? 'selected' : '' %>>
-                      <%= item.class %>
+                <select name="classid" id="classid" required >
+                  <option value="">Select class</option>
+                  <% if (typeof foundClass !== 'undefined') { foundClass.forEach(function(item) { %>
+                    <option value="<%= item.classid %>" data-levelid="<%= item.levelid %>" <%= typeof data !== 'undefined' && data.classid == item.classid ? 'selected' : '' %>>
+                      <%= item.levelname %><%= item.class %>
                     </option>
                   <% }); } %>
-                  <option value="1" data-level="10">10A</option>
-                  <option value="2" data-level="10">10B</option>
-                  <option value="3" data-level="11">11A</option>
-                  <option value="4" data-level="12">12A</option>
+                </select>
+                <input type="number" name="yearlevel" value="" id="yearlevel" hidden/>  
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label>Student Status<b>*</b></label>
+                <select name="studentstatus" id="studentstatus" required>
+                  <option value="">Select status</option>
+                  <% if (typeof studentstatus !== 'undefined') { studentstatus.forEach(function(item) { %>
+                    <option value="<%= item.studentStatusID %>" <%= typeof data !== 'undefined' && data.studentStatusID == (item.studentStatusID) ? 'selected' : '' %>>
+                      <%= item.studentStatus %>
+                    </option> 
+                  <% }); } %>
                 </select>
               </div>
+              <div class="field">
+                <label> Term <b>*</b></label>
+                <select name="sponsor" id="sponsor" required>
+                  <option value="">Select Sponsor</option>
+                  <% if (typeof sponsor !== 'undefined') { sponsor.forEach(function(item) { %>
+                    <option value="<%= item.sponsorID %>" <%= typeof data !== 'undefined' && data.sponsorID == (item.sponsorID) ? 'selected' : '' %>>
+                      <%= item.sponsorName %>
+                    </option> 
+                  <% }); } %>
+                </select>
+              </div>
+              <div class="field">
+                <label>ovcstatus <b>*</b></label>
+                <select name="ovcstatus" id="ovcstatus" required >
+                  <option value="">Select OVC Status</option>
+                  <% if (typeof ovcstatus !== 'undefined') { ovcstatus.forEach(function(item) { %>
+                    <option value="<%= item.ovcstatusid %>" <%= typeof data !== 'undefined' && data.ovcstatusid == item.ovcstatusid ? 'selected' : '' %>>
+                      <%= item.ovcstatus %>
+                    </option>
+                  <% }); } %>
+                </select> 
+              </div> 
             </div>
             <div class="notice"><span>ⓘ</span><div><strong>Auto‑reporting</strong><p>New students are marked as <strong>REPORTED</strong> with current timestamp.</p></div></div>
             <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:18px;">

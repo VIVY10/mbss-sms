@@ -4,7 +4,7 @@ const authModel = require("../models/authModel");
 const fs = require('fs').promises;
 const path = require('path');
 const { removeFileIfExists } = require('../utils/fileUtils.js');
-
+ 
 async function registerTeacher({ data, file }) {
   const username = data.username.toLowerCase();
   const fname = data.Fname.toUpperCase();

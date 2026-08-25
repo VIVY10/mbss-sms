@@ -259,13 +259,13 @@
     });
     updateChecklist();
   });
+
   classSelect?.addEventListener("change", () => {
     summaryClass.textContent = selectedText("classid");
     updateChecklist();
   });
 
-  // ----- FIXED PHOTO UPLOAD -----
-  // Click on upload box triggers file input
+  // ----- PHOTO UPLOAD -----
   uploadBox?.addEventListener("click", (e) => {
     e.stopPropagation();
     photoInput?.click();
@@ -340,13 +340,24 @@
       target.type = target.type === "password" ? "text" : "password";
     });
   });
-
+ 
   // confirm checkbox update
   document
     .getElementById("confirmDetails")
     ?.addEventListener("change", updateChecklist);
   document.addEventListener("input", updateChecklist);
   document.addEventListener("change", updateChecklist);
+
+  document
+    .getElementById("selectedClass")
+    .addEventListener("change", function () {
+      // Get the selected option
+      var selectedOption = this.options[this.selectedIndex];
+      // Get the classid, grade, and section from the data attributes
+      var yearlevel = selectedOption.getAttribute("data-levelid");
+      // Set the value of the hidden levelorder input field
+      document.getElementById("yearlevel").value = yearlevel;
+    });
 
   // submit with fetch for better UX
   form.addEventListener("submit", async (e) => {

@@ -8,7 +8,7 @@ const { matchedData } = require("express-validator");
 const profileDirectory = path.join(__dirname, "../../public/images/profile");
 
 const backupDirectory = path.join(__dirname, "../../public/images/backup");
-
+ 
 // ==================== CHECK EXAM NUMBER ====================
 
 exports.checkExamNo = async (req, res) => {
@@ -30,6 +30,8 @@ exports.showRegistration = async (req, res) => {
   if (Object.values(data).some((value) => !value?.length)) {
     return res.redirect("/Dashboard");
   }
+
+  console.log(data)
 
   return res.render("./pupil/student-registration.ejs", {
     ...data,

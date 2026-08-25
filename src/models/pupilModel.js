@@ -3,7 +3,7 @@ const {
   connectionQuery
 } = require('../utils/db.js');
 
-
+ 
 // ==================== PUPIL LIST SQL ====================
 
 const pupilListSql = `
