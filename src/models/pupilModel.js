@@ -71,7 +71,7 @@ exports.getRegistrationOptions = async () => {
           class
       FROM class c
       JOIN yearlevel yl ON yl.levelorder = c.levelid`
-    ),
+    ), 
 
     query(
       `SELECT guardiantypeid,
