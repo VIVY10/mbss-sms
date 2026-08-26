@@ -8,7 +8,7 @@ const { matchedData } = require("express-validator");
 const profileDirectory = path.join(__dirname, "../../public/images/profile");
 
 const backupDirectory = path.join(__dirname, "../../public/images/backup");
- 
+
 // ==================== CHECK EXAM NUMBER ====================
 
 exports.checkExamNo = async (req, res) => {
@@ -21,7 +21,7 @@ exports.checkExamNo = async (req, res) => {
   }
   return res.send({ message: " Student available for Registration." });
 };
- 
+
 // ==================== REGISTRATION ====================
 
 exports.showRegistration = async (req, res) => {
@@ -31,7 +31,7 @@ exports.showRegistration = async (req, res) => {
     return res.redirect("/Dashboard");
   }
 
-  console.log(data)
+  // console.log(data)
 
   return res.render("./pupil/student-registration.ejs", {
     ...data,
@@ -82,6 +82,96 @@ exports.register = async (req, res) => {
   });
 
   return res.status(200).json(result);
+};
+
+
+exports.register2 = async (req, res) => {
+
+  //   const data = matchedData(req);
+
+//   const reported_by = req.user.id;
+//   const reporting_status = "reported";
+//   const enrollment_type = "new";
+
+    try {
+
+        const {
+            enrollment_type,
+            reporting_status,
+            reported_by
+        } = req.body;
+
+        let result;
+
+        if (enrollment_type === "returning") {
+
+            result = await registerReturningPupil({
+                reported_by,
+                reporting_status,
+                enrollment_type,
+                data: req.body
+            });
+
+        } else {
+
+            result = await registerPupil({
+                reported_by,
+                reporting_status,
+                enrollment_type,
+                data: req.body,
+                file: req.file,
+                profileDirectory
+            });
+        }
+
+        return res.status(201).json(result);
+
+    } catch (err) {
+
+        console.error("Registration error:", err);
+
+        return res.status(400).json({
+            message: err.message ||
+                "Student registration failed."
+        });
+    }
+};
+
+
+exports.searchReturningStudent = async (req, res) => {
+  try {
+    const { examno } = req.query;
+
+    if (!examno) {
+      return res.status(400).json({
+        message: "Examination number is required.",
+      });
+    }
+
+    const connection = await getConnection();
+
+    try {
+      const student = await pupilModel.findReturningStudent(connection, examno);
+
+      if (!student.length) {
+        return res.status(404).json({
+          message: "No student was found with that examination number.",
+        });
+      }
+
+      res.json({
+        student: student[0],
+      });
+    } finally {
+      connection.release();
+    }
+  } catch (err) {
+    console.error("Returning student search error:", err);
+
+    res.status(500).json({
+      message: "Unable to search for student.",
+    });
+  }
 };
 
 // ==================== VIEW PUPILS ====================

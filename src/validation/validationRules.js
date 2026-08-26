@@ -190,116 +190,516 @@ const checkexamnoValidationRules = () => [
     .escape(),
 ];
 
-const pupilValidationRules = () => [
-  // Exam Number
-  body("examno")
-    .trim()
-    .notEmpty()
-    .withMessage("Exam number is required.")
-    .isLength({ min: 12, max: 20 })
-    .withMessage("Exam number must be between 12 and 20 characters.")
-    .matches(/^\d+$/)
-    .withMessage("Exam number must contain digits only.")
-    .escape(),
+// const pupilValidationRules = () => [
+//   // Exam Number
+//   body("examno")
+//     .trim()
+//     .notEmpty()
+//     .withMessage("Exam number is required.")
+//     .isLength({ min: 12, max: 20 })
+//     .withMessage("Exam number must be between 12 and 20 characters.")
+//     .matches(/^\d+$/)
+//     .withMessage("Exam number must contain digits only.")
+//     .escape(),
 
 
 
-  // Password
-  passwordValidator("password"),
+//   // Password
+//   passwordValidator("password"),
 
-  // Pupil Names
-  nameValidator("fname", "First name"),
-  nameValidator("lname", "Last name"),
-  otherNameValidator("middlename"),
+//   // Pupil Names
+//   nameValidator("fname", "First name"),
+//   nameValidator("lname", "Last name"),
+//   otherNameValidator("middlename"),
 
-  // term
-  requiredInt("termid"),
+//   // term
+//   requiredInt("termid"),
 
-  // Gender
-  body("gender")
-    .trim()
-    .notEmpty()
-    .withMessage("Gender is required.")
-    .isIn(["male", "female"])
-    .withMessage("Gender must be either male or female.")
-    .escape(),
+//   // Gender
+//   body("gender")
+//     .trim()
+//     .notEmpty()
+//     .withMessage("Gender is required.")
+//     .isIn(["male", "female"])
+//     .withMessage("Gender must be either male or female.")
+//     .escape(),
 
-  body("email")
-    .optional()
-    .trim()
-    .isEmail()
-    .withMessage("Enter a valid email address.")
-    .normalizeEmail(),
+//   body("email")
+//     .optional()
+//     .trim()
+//     .isEmail()
+//     .withMessage("Enter a valid email address.")
+//     .normalizeEmail(),
   
-  body("studentPhoneNumber")
-    .optional()
-    .trim()
-    .matches(/^\d{10}$/)
-    .withMessage("Phone number must contain exactly 10 digits."),
+//   body("studentPhoneNumber")
+//     .optional()
+//     .trim()
+//     .matches(/^\d{10}$/)
+//     .withMessage("Phone number must contain exactly 10 digits."),
 
-  // Date of Birth
-  body("dob")
-    .trim()
-    .notEmpty()
-    .withMessage("Date of birth is required.")
-    .matches(/^\d{4}-\d{2}-\d{2}$/)
-    .withMessage("Date of birth must be in YYYY-MM-DD format.")
-    .isISO8601({ strict: true })
-    .withMessage("Enter a valid date.")
-    .custom((dob) => {
-      const birthDate = new Date(`${dob}T00:00:00`);
-      const today = new Date();
+//   // Date of Birth
+//   body("dob")
+//     .trim()
+//     .notEmpty()
+//     .withMessage("Date of birth is required.")
+//     .matches(/^\d{4}-\d{2}-\d{2}$/)
+//     .withMessage("Date of birth must be in YYYY-MM-DD format.")
+//     .isISO8601({ strict: true })
+//     .withMessage("Enter a valid date.")
+//     .custom((dob) => {
+//       const birthDate = new Date(`${dob}T00:00:00`);
+//       const today = new Date();
 
-      // Remove the time component
-      today.setHours(0, 0, 0, 0);
+//       // Remove the time component
+//       today.setHours(0, 0, 0, 0);
 
-      if (birthDate >= today) {
-        throw new Error("Date of birth must be before today.");
-      }
+//       if (birthDate >= today) {
+//         throw new Error("Date of birth must be before today.");
+//       }
 
-      return true;
-    })
-    .escape(),
+//       return true;
+//     })
+//     .escape(),
 
-  // Year Level
-  requiredInt("yearlevel"),
+//   // Year Level
+//   requiredInt("yearlevel"),
 
-  // school year
-  requiredInt("schoolyear", "Invalid Year ID"),
+//   // school year
+//   requiredInt("schoolyear", "Invalid Year ID"),
 
 
 
-  // Sponsor ID
-  requiredInt("sponsor", "Invalid sponsor ID."),
+//   // Sponsor ID
+//   requiredInt("sponsor", "Invalid sponsor ID."),
 
-  // OVC Status ID
-  requiredInt("ovcstatus", "Invalid OVC status."),
+//   // OVC Status ID
+//   requiredInt("ovcstatus", "Invalid OVC status."),
 
-  // NRC Number
-  body("nrcno")
-    .trim()
-    .notEmpty()
-    .withMessage("NRC number is required.")
-    .matches(/^\d{9}$/)
-    .withMessage("NRC number must contain exactly 9 digits.")
-    .escape(),
+//   // NRC Number
+//   body("nrcno")
+//     .trim()
+//     .notEmpty()
+//     .withMessage("NRC number is required.")
+//     .matches(/^\d{9}$/)
+//     .withMessage("NRC number must contain exactly 9 digits.")
+//     .escape(),
 
-  // Guardian Names
-  nameValidator("guardianFname", "Guardian first name"),
-  nameValidator("guardianLname", "Guardian last name"),
+//   // Guardian Names
+//   nameValidator("guardianFname", "Guardian first name"),
+//   nameValidator("guardianLname", "Guardian last name"),
 
-  // Phone Number
-  phoneValidator(),
+//   // Phone Number
+//   phoneValidator(),
 
-  // Relationship ID
-  requiredInt("relationship", "Invalid relationship ID."),
+//   // Relationship ID
+//   requiredInt("relationship", "Invalid relationship ID."),
 
-  // studentstatus ID
-  requiredInt("studentstatus", "Invalid student status ID."),
+//   // studentstatus ID
+//   requiredInt("studentstatus", "Invalid student status ID."),
 
-  // class ID
-  requiredInt("classid", "Invalid class ID."),
+//   // class ID
+//   requiredInt("classid", "Invalid class ID."),
+// ];
+
+const pupilValidationRules = () => [
+    // =========================================================
+    // STUDENT IDENTITY
+    // =========================================================
+
+    body("examno")
+        .trim()
+        .notEmpty()
+        .withMessage("Exam number is required.")
+        .isLength({ min: 12, max: 20 })
+        .withMessage(
+            "Exam number must be between 12 and 20 characters."
+        )
+        .matches(/^\d+$/)
+        .withMessage(
+            "Exam number must contain digits only."
+        )
+        .escape(),
+
+
+    // =========================================================
+    // PASSWORD
+    // =========================================================
+
+    passwordValidator("password"),
+
+
+    // =========================================================
+    // STUDENT NAMES
+    // =========================================================
+
+    nameValidator(
+        "fname",
+        "First name"
+    ),
+
+    nameValidator(
+        "lname",
+        "Last name"
+    ),
+
+    otherNameValidator(
+        "middlename"
+    ),
+
+
+    // =========================================================
+    // GENDER
+    // =========================================================
+
+    body("gender")
+        .trim()
+        .notEmpty()
+        .withMessage("Gender is required.")
+        .isIn([
+            "male",
+            "female",
+            "other"
+        ])
+        .withMessage(
+            "Gender must be male, female or other."
+        )
+        .escape(),
+
+
+    // =========================================================
+    // EMAIL
+    // =========================================================
+
+    body("email")
+        .optional({
+            checkFalsy: true
+        })
+        .trim()
+        .isEmail()
+        .withMessage(
+            "Enter a valid email address."
+        )
+        .normalizeEmail(),
+
+
+    // =========================================================
+    // STUDENT PHONE
+    // =========================================================
+
+    body("studentPhoneNumber")
+        .optional({
+            checkFalsy: true
+        })
+        .trim()
+        .matches(/^\d{10}$/)
+        .withMessage(
+            "Student phone number must contain exactly 10 digits."
+        ),
+
+
+    // =========================================================
+    // DATE OF BIRTH
+    // =========================================================
+
+    body("dob")
+        .trim()
+        .notEmpty()
+        .withMessage(
+            "Date of birth is required."
+        )
+        .matches(/^\d{4}-\d{2}-\d{2}$/)
+        .withMessage(
+            "Date of birth must be in YYYY-MM-DD format."
+        )
+        .isISO8601({
+            strict: true
+        })
+        .withMessage(
+            "Enter a valid date."
+        )
+        .custom((dob) => {
+
+            const birthDate =
+                new Date(`${dob}T00:00:00`);
+
+            const today = new Date();
+
+            today.setHours(
+                0,
+                0,
+                0,
+                0
+            );
+
+            if (birthDate >= today) {
+                throw new Error(
+                    "Date of birth must be before today."
+                );
+            }
+
+            return true;
+        })
+        .escape(),
+
+
+    // =========================================================
+    // PLACE OF BIRTH
+    // =========================================================
+
+    body("birthplace")
+        .optional({
+            checkFalsy: true
+        })
+        .trim()
+        .isLength({
+            max: 100
+        })
+        .withMessage(
+            "Place of birth must not exceed 100 characters."
+        )
+        .matches(
+            /^[A-Za-zÀ-ÿ0-9\s.,'()\/-]+$/
+        )
+        .withMessage(
+            "Place of birth contains invalid characters."
+        )
+        .escape(),
+
+
+    // =========================================================
+    // NATIONALITY
+    // =========================================================
+
+    body("nationality")
+        .trim()
+        .notEmpty()
+        .withMessage(
+            "Nationality is required."
+        )
+        .isLength({
+            max: 100
+        })
+        .withMessage(
+            "Nationality must not exceed 100 characters."
+        )
+        .escape(),
+
+
+    // =========================================================
+    // RELIGION
+    // =========================================================
+
+    body("religion")
+        .optional({
+            checkFalsy: true
+        })
+        .trim()
+        .isLength({
+            max: 100
+        })
+        .withMessage(
+            "Religion must not exceed 100 characters."
+        )
+        .escape(),
+
+
+    // =========================================================
+    // STUDENT NRC / BIRTH CERTIFICATE
+    // =========================================================
+
+    body("studentnrcno")
+        .optional({
+            checkFalsy: true
+        })
+        .trim()
+        .isLength({
+            max: 50
+        })
+        .withMessage(
+            "NRC / Birth Certificate number must not exceed 50 characters."
+        )
+        .matches(
+            /^[A-Za-z0-9\/-]+$/
+        )
+        .withMessage(
+            "NRC / Birth Certificate number contains invalid characters."
+        )
+        .escape(),
+
+
+    // =========================================================
+    // PREVIOUS SCHOOL
+    // =========================================================
+
+    body("previous_school")
+        .optional({
+            checkFalsy: true
+        })
+        .trim()
+        .isLength({
+            max: 150
+        })
+        .withMessage(
+            "Previous school must not exceed 150 characters."
+        )
+        .escape(),
+
+
+    // =========================================================
+    // ADMISSION DATE
+    // =========================================================
+
+    body("admission_date")
+        .trim()
+        .notEmpty()
+        .withMessage(
+            "Admission date is required."
+        )
+        .matches(/^\d{4}-\d{2}-\d{2}$/)
+        .withMessage(
+            "Admission date must be in YYYY-MM-DD format."
+        )
+        .isISO8601({
+            strict: true
+        })
+        .withMessage(
+            "Enter a valid admission date."
+        )
+        .custom((date) => {
+
+            const admissionDate =
+                new Date(`${date}T00:00:00`);
+
+            const today = new Date();
+
+            today.setHours(
+                0,
+                0,
+                0,
+                0
+            );
+
+            if (admissionDate > today) {
+                throw new Error(
+                    "Admission date cannot be in the future."
+                );
+            }
+
+            return true;
+        })
+        .escape(),
+
+
+    // =========================================================
+    // ADDRESS
+    // =========================================================
+
+    body("address")
+        .trim()
+        .notEmpty()
+        .withMessage(
+            "Residential address is required."
+        )
+        .isLength({
+            max: 255
+        })
+        .withMessage(
+            "Address must not exceed 255 characters."
+        )
+        .escape(),
+
+
+    // =========================================================
+    // ENROLLMENT
+    // =========================================================
+
+    requiredInt(
+        "termid",
+        "Invalid term ID."
+    ),
+
+    requiredInt(
+        "yearlevel",
+        "Invalid year level."
+    ),
+
+    requiredInt(
+        "schoolyear",
+        "Invalid year ID."
+    ),
+
+    requiredInt(
+        "classid",
+        "Invalid class ID."
+    ),
+
+
+    // =========================================================
+    // STUDENT CLASSIFICATION
+    // =========================================================
+
+    requiredInt(
+        "sponsor",
+        "Invalid sponsor ID."
+    ),
+
+    requiredInt(
+        "ovcstatus",
+        "Invalid OVC status."
+    ),
+
+    requiredInt(
+        "studentstatus",
+        "Invalid student status ID."
+    ),
+
+
+    // =========================================================
+    // GUARDIAN
+    // =========================================================
+
+    body("nrcno")
+        .trim()
+        .notEmpty()
+        .withMessage(
+            "Guardian NRC number is required."
+        )
+        .isLength({
+            max: 50
+        })
+        .withMessage(
+            "Guardian NRC number must not exceed 50 characters."
+        )
+        .matches(
+            /^[A-Za-z0-9\/-]+$/
+        )
+        .withMessage(
+            "Guardian NRC number contains invalid characters."
+        )
+        .escape(),
+
+
+    nameValidator(
+        "guardianFname",
+        "Guardian first name"
+    ),
+
+    nameValidator(
+        "guardianLname",
+        "Guardian last name"
+    ),
+
+
+    phoneValidator(),
+
+
+    requiredInt(
+        "relationship",
+        "Invalid relationship ID."
+    )
 ];
+
+
 
 /*
 |--------------------------------------------------------------------------

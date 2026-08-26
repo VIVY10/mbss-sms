@@ -20,6 +20,7 @@ const router = express.Router();
 router.post('/checkExamno', authChecker, checkexamnoValidationRules(), validate, controller.checkExamNo);
 router.get('/register', authChecker, controller.showRegistration);
 router.post('/register', authChecker, profilePicUpload.single('file'), pupilValidationRules(), validate, controller.register);
+router.get("/register/returning/search", controller.searchReturningStudent);
 router.get('/returningPupils', authChecker, controller.returningPupils);
 router.get('/viewPupils', authChecker, controller.viewPupils);
 router.get('/searchPupil', authChecker, controller.searchPage);

@@ -11,7 +11,7 @@
   const cancelBtn = document.getElementById("cancelBtn");
   const reviewContent = document.getElementById("reviewContent");
   const yearLevel = document.getElementById("yearlevel");
-  const classSelect = document.getElementById("classid");
+  const classSelect = document.getElementById("selectedClass");
   const summaryClass = document.getElementById("summaryClass");
   const photoInput = document.getElementById("profilePicture");
   const photoPreview = document.getElementById("photoPreview");
@@ -27,6 +27,7 @@
 
   let currentStep = 1;
   let isReturning = false;
+  let returningStudentVerified = false;
 
   // ----- helpers -----
   const value = (id) => document.getElementById(id)?.value?.trim() || "";
@@ -100,6 +101,14 @@
         if (displayErrors) setError(cnf, "Passwords do not match");
       }
     }
+
+    if (isReturning && step === 3) {
+      if (!returningStudentVerified) {
+        valid = false;
+
+        alert("Please search and verify the returning student first.");
+      }
+    }
     return valid;
   }
 
@@ -139,72 +148,211 @@
   }
 
   // ----- admission type toggle -----
+  // function setAdmissionType(type) {
+  //   isReturning = type === "returning";
+  //   admissionTypeHidden.value = type;
+  //   returningPanel.classList.toggle("hidden", !isReturning);
+  //   // reset result
+  //   if (!isReturning) returningResult.classList.add("hidden");
+  //   // update labels
+  //   const label = isReturning ? "RETURNING" : "NEW STUDENT";
+  //   regTypeLabel.textContent = label;
+  //   summaryType.textContent = label;
+  //   summaryType.className = `badge ${isReturning ? "badge-outline" : "badge-green"}`;
+  //   // enable/disable required fields? we keep them but returning will prefill via search (demo)
+  //   document
+  //     .querySelectorAll(".admission-type")
+  //     .forEach((btn) =>
+  //       btn.classList.toggle("active", btn.dataset.type === type),
+  //     );
+  // }
   function setAdmissionType(type) {
     isReturning = type === "returning";
+
     admissionTypeHidden.value = type;
+
     returningPanel.classList.toggle("hidden", !isReturning);
-    // reset result
-    if (!isReturning) returningResult.classList.add("hidden");
-    // update labels
+
+    if (!isReturning) {
+      returningResult.classList.add("hidden");
+      configureCredentialsForNew();
+    } else {
+      configureCredentialsForReturning();
+    }
+
     const label = isReturning ? "RETURNING" : "NEW STUDENT";
+
     regTypeLabel.textContent = label;
     summaryType.textContent = label;
-    summaryType.className = `badge ${isReturning ? "badge-outline" : "badge-green"}`;
-    // enable/disable required fields? we keep them but returning will prefill via search (demo)
-    document
-      .querySelectorAll(".admission-type")
-      .forEach((btn) =>
-        btn.classList.toggle("active", btn.dataset.type === type),
-      );
+
+    summaryType.className = `badge ${
+      isReturning ? "badge-outline" : "badge-green"
+    }`;
+
+    document.querySelectorAll(".admission-type").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.type === type);
+    });
   }
 
+  returningExamno.addEventListener("input", () => {
+    returningStudentVerified = false;
+    returningResult.classList.add("hidden");
+  });
+
   // ----- returning student search (demo) -----
-  findBtn?.addEventListener("click", () => {
+  // findBtn?.addEventListener("click", () => {
+  //   const exam = returningExamno.value.trim();
+  //   const err = document.getElementById("returningSearchError");
+  //   if (!exam) {
+  //     err.textContent = "Please enter examination number";
+  //     return;
+  //   }
+  //   err.textContent = "";
+  //   // demo: simulate found
+  //   const mock = {
+  //     exam: exam,
+  //     fname: "Chisanga",
+  //     lname: "Mwansa",
+  //     gender: "Male",
+  //     dob: "2010-05-12",
+  //     class: "10A",
+  //     status: "Active",
+  //   };
+  //   returningResult.classList.remove("hidden");
+  //   document.getElementById("returningName").textContent =
+  //     `${mock.fname} ${mock.lname}`;
+  //   document.getElementById("returningExamDisplay").textContent = mock.exam;
+  //   document.getElementById("returningClass").textContent = mock.class;
+  //   document.getElementById("returningStatus").textContent = mock.status;
+  //   // readonly details
+  //   document.getElementById("rExam").textContent = mock.exam;
+  //   document.getElementById("rFname").textContent = mock.fname;
+  //   document.getElementById("rLname").textContent = mock.lname;
+  //   document.getElementById("rGender").textContent = mock.gender;
+  //   document.getElementById("rDob").textContent = mock.dob;
+  //   // prefill form (readonly style but we fill fields for demo)
+  //   document.getElementById("fname").value = mock.fname;
+  //   document.getElementById("lname").value = mock.lname;
+  //   document.getElementById("gender").value = mock.gender.toLowerCase();
+  //   document.getElementById("dob").value = mock.dob;
+  //   document.getElementById("examno").value = mock.exam;
+  //   // set class
+  //   const clsOpt = document.querySelector(`#classid option[data-level="10"]`);
+  //   if (clsOpt) {
+  //     classSelect.value = clsOpt.value;
+  //     classSelect.disabled = false;
+  //     summaryClass.textContent = "10A";
+  //   }
+  //   // show step 1
+  //   showStep(1);
+  // });
+
+  findBtn?.addEventListener("click", async () => {
     const exam = returningExamno.value.trim();
     const err = document.getElementById("returningSearchError");
+
     if (!exam) {
       err.textContent = "Please enter examination number";
       return;
     }
+
     err.textContent = "";
-    // demo: simulate found
-    const mock = {
-      exam: exam,
-      fname: "Chisanga",
-      lname: "Mwansa",
-      gender: "Male",
-      dob: "2010-05-12",
-      class: "10A",
-      status: "Active",
-    };
-    returningResult.classList.remove("hidden");
-    document.getElementById("returningName").textContent =
-      `${mock.fname} ${mock.lname}`;
-    document.getElementById("returningExamDisplay").textContent = mock.exam;
-    document.getElementById("returningClass").textContent = mock.class;
-    document.getElementById("returningStatus").textContent = mock.status;
-    // readonly details
-    document.getElementById("rExam").textContent = mock.exam;
-    document.getElementById("rFname").textContent = mock.fname;
-    document.getElementById("rLname").textContent = mock.lname;
-    document.getElementById("rGender").textContent = mock.gender;
-    document.getElementById("rDob").textContent = mock.dob;
-    // prefill form (readonly style but we fill fields for demo)
-    document.getElementById("fname").value = mock.fname;
-    document.getElementById("lname").value = mock.lname;
-    document.getElementById("gender").value = mock.gender.toLowerCase();
-    document.getElementById("dob").value = mock.dob;
-    document.getElementById("examno").value = mock.exam;
-    // set class
-    const clsOpt = document.querySelector(`#classid option[data-level="10"]`);
-    if (clsOpt) {
-      classSelect.value = clsOpt.value;
-      classSelect.disabled = false;
-      summaryClass.textContent = "10A";
+    findBtn.disabled = true;
+    findBtn.textContent = "Searching...";
+
+    try {
+      const response = await fetch(
+        `/register/returning/search?examno=${encodeURIComponent(exam)}`,
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Student not found");
+      }
+
+      populateReturningStudent(result.student);
+    } catch (error) {
+      returningResult.classList.add("hidden");
+
+      err.textContent = error.message || "Unable to find student.";
+    } finally {
+      findBtn.disabled = false;
+      findBtn.textContent = "Search";
     }
-    // show step 1
-    showStep(1);
   });
+
+  function populateReturningStudent(student) {
+    returningResult.classList.remove("hidden");
+
+    document.getElementById("returningName").textContent =
+      `${student.fname} ${student.lname}`;
+
+    document.getElementById("returningExamDisplay").textContent =
+      student.examno;
+
+    document.getElementById("returningClass").textContent =
+      student.current_class || "Not enrolled";
+
+    document.getElementById("returningStatus").textContent =
+      student.status || "Active";
+
+    document.getElementById("rExam").textContent = student.examno;
+
+    document.getElementById("rFname").textContent = student.fname;
+
+    document.getElementById("rLname").textContent = student.lname;
+
+    document.getElementById("rGender").textContent = student.gender;
+
+    document.getElementById("rDob").textContent = student.dob;
+
+    /*
+     * Prefill existing student information
+     */
+    document.getElementById("fname").value = student.fname || "";
+
+    document.getElementById("middlename").value = student.middlename || "";
+
+    document.getElementById("lname").value = student.lname || "";
+
+    document.getElementById("gender").value = student.gender || "";
+
+    document.getElementById("email").value = student.email || "";
+
+    document.getElementById("studentPhoneNumber").value =
+      student.studentPhoneNumber || "";
+
+    document.getElementById("dob").value = student.dob || "";
+
+    document.getElementById("birthplace").value = student.birthplace || "";
+
+    document.getElementById("nationality").value = student.nationality || "";
+
+    document.getElementById("religion").value = student.religion || "";
+
+    document.getElementById("studentnrcno").value = student.studentnrcno || "";
+
+    document.getElementById("previous_school").value =
+      student.previous_school || "";
+
+    document.getElementById("address").value = student.address || "";
+
+    document.getElementById("examno").value = student.examno;
+
+    /*
+     * Existing student does not need a new password.
+     */
+    document.getElementById("password").value = "";
+    document.getElementById("confirmPassword").value = "";
+
+    /*
+     * Store that this is a verified returning student.
+     */
+    document.getElementById("admissionType").value = "returning";
+
+    isReturning = true;
+  }
 
   // ----- event listeners -----
   // admission selector
@@ -248,17 +396,17 @@
   });
 
   // class filter
-  yearLevel?.addEventListener("change", () => {
-    const level = yearLevel.value;
-    classSelect.disabled = !level;
-    classSelect.value = "";
-    summaryClass.textContent = "Not selected";
-    document.querySelectorAll("#classid option").forEach((opt) => {
-      if (!opt.value) return;
-      opt.hidden = opt.dataset.level !== level;
-    });
-    updateChecklist();
-  });
+  // yearLevel?.addEventListener("change", () => {
+  //   const level = yearLevel.value;
+  //   classSelect.disabled = !level;
+  //   classSelect.value = "";
+  //   summaryClass.textContent = "Not selected";
+  //   document.querySelectorAll("#classid option").forEach((opt) => {
+  //     if (!opt.value) return;
+  //     opt.hidden = opt.dataset.level !== level;
+  //   });
+  //   updateChecklist();
+  // });
 
   classSelect?.addEventListener("change", () => {
     summaryClass.textContent = selectedText("classid");
@@ -340,7 +488,7 @@
       target.type = target.type === "password" ? "text" : "password";
     });
   });
- 
+
   // confirm checkbox update
   document
     .getElementById("confirmDetails")
@@ -387,6 +535,8 @@
       // Get form data
       const formData = new FormData(form);
 
+      console.log(formData);
+
       // Send POST request to /register
       const response = await fetch("/register", {
         method: "POST",
@@ -414,6 +564,79 @@
       submitBtn.textContent = "✓ Register Student";
     }
   });
+
+  function configureCredentialsForReturning() {
+    const password = document.getElementById("password");
+
+    const confirmPassword = document.getElementById("confirmPassword");
+
+    const passwordField = document.getElementById("passwordField");
+
+    const confirmPasswordField = document.getElementById(
+      "confirmPasswordField",
+    );
+
+    const description = document.getElementById("credentialsDescription");
+
+    password.required = false;
+    confirmPassword.required = false;
+
+    passwordField.classList.add("hidden");
+    confirmPasswordField.classList.add("hidden");
+
+    description.textContent =
+      "Existing student account credentials will be retained.";
+  }
+
+  function configureCredentialsForNew() {
+    const password = document.getElementById("password");
+
+    const confirmPassword = document.getElementById("confirmPassword");
+
+    const passwordField = document.getElementById("passwordField");
+
+    const confirmPasswordField = document.getElementById(
+      "confirmPasswordField",
+    );
+
+    const description = document.getElementById("credentialsDescription");
+
+    password.required = true;
+    confirmPassword.required = true;
+
+    passwordField.classList.remove("hidden");
+    confirmPasswordField.classList.remove("hidden");
+
+    description.textContent = "Student login";
+  }
+
+  function setAdmissionType(type) {
+    isReturning = type === "returning";
+
+    admissionTypeHidden.value = type;
+
+    returningPanel.classList.toggle("hidden", !isReturning);
+
+    if (!isReturning) {
+      returningResult.classList.add("hidden");
+      configureCredentialsForNew();
+    } else {
+      configureCredentialsForReturning();
+    }
+
+    const label = isReturning ? "RETURNING" : "NEW STUDENT";
+
+    regTypeLabel.textContent = label;
+    summaryType.textContent = label;
+
+    summaryType.className = `badge ${
+      isReturning ? "badge-outline" : "badge-green"
+    }`;
+
+    document.querySelectorAll(".admission-type").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.type === type);
+    });
+  }
 
   // init
   setAdmissionType("new");

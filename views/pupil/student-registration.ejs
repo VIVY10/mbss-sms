@@ -89,8 +89,8 @@
 
   <!-- MAIN REGISTRATION FORM -->
   <form id="registrationForm" method="POST" action="/register" enctype="multipart/form-data" novalidate>
-    <input type="hidden" name="schoolyear" value="<%= schoolyear && schoolyear.length > 0 ? schoolyear[0]?.schoolyearid : '' %>">
-    <input type="hidden" name="termid" value="<%= foundTerm && foundTerm.length > 0 ? foundTerm[0]?.termid : '' %>">
+    <!-- <input type="hidden" name="schoolyear" value="<%= schoolyear && schoolyear.length > 0 ? schoolyear[0]?.schoolyearid : '' %>"> -->
+    <!-- <input type="hidden" name="termid" value="<%= foundTerm && foundTerm.length > 0 ? foundTerm[0]?.termid : '' %>"> -->
 
     <!-- STEPPER -->
     <div class="stepper">
@@ -189,7 +189,7 @@
                   <span class="upload-preview" id="photoPreview">📷</span>
                   <span><strong>Upload photo</strong><small>JPG/PNG max 2MB</small></span>
                 </div>
-                <input type="file" id="profilePicture" name="profilePicture" accept="image/jpeg,image/png" hidden>
+                <input type="file" id="profilePicture" name="file" accept="image/jpeg,image/png" hidden>
               </div>
               <div class="field full">
                 <label>Residential Address <b>*</b></label>
@@ -291,13 +291,13 @@
               </div>
               <div class="field">
                 <label>Class <b>*</b></label>
-                <select name="classid" id="classid" required >
+                <select name="classid" id="selectedClass" required >
                   <option value="">Select class</option>
                   <% if (typeof foundClass !== 'undefined') { foundClass.forEach(function(item) { %>
                     <option value="<%= item.classid %>" data-levelid="<%= item.levelid %>" <%= typeof data !== 'undefined' && data.classid == item.classid ? 'selected' : '' %>>
                       <%= item.levelname %><%= item.class %>
                     </option>
-                  <% }); } %>
+                  <% }); } %> 
                 </select>
                 <input type="number" name="yearlevel" value="" id="yearlevel" hidden/>  
               </div>
@@ -342,7 +342,7 @@
             <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:18px;">
               <div class="card-title compact"><div class="title-icon">🔐</div><div><h2>Account Credentials</h2><p>Student login</p></div></div>
               <div class="form-grid">
-                <div class="field">
+                <!-- <div class="field">
                   <label>Exam Number <b>*</b></label>
                   <input type="text" name="examno" id="examno" required placeholder="2026/0045" value="<%= typeof data !== 'undefined' ? (data.examno || '') : '' %>">
                 </div>
@@ -360,7 +360,80 @@
                     <button type="button" class="password-toggle" data-target="confirmPassword">👁</button>
                   </div>
                 </div>
-              </div>
+              </div> -->
+              <div
+    id="credentialsSection"
+    style="margin-top:20px; border-top:1px solid var(--border); padding-top:18px;"
+>
+    <div class="card-title compact">
+        <div class="title-icon">🔐</div>
+        <div>
+            <h2>Account Credentials</h2>
+            <p id="credentialsDescription">
+                Student login
+            </p>
+        </div>
+    </div>
+
+    <div class="form-grid">
+
+        <div class="field">
+            <label>Exam Number <b>*</b></label>
+            <input
+                type="text"
+                name="examno"
+                id="examno"
+                required
+            >
+        </div>
+
+        <div
+            class="field"
+            id="passwordField"
+        >
+            <label>Password <b>*</b></label>
+            <div class="password-wrap">
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    minlength="8"
+                    placeholder="Min 8 chars"
+                >
+                <button
+                    type="button"
+                    class="password-toggle"
+                    data-target="password"
+                >
+                    👁
+                </button>
+            </div>
+        </div>
+
+        <div
+            class="field"
+            id="confirmPasswordField"
+        >
+            <label>Confirm Password <b>*</b></label>
+            <div class="password-wrap">
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    minlength="8"
+                    placeholder="Confirm"
+                >
+                <button
+                    type="button"
+                    class="password-toggle"
+                    data-target="confirmPassword"
+                >
+                    👁
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
             </div>
           </div>
         </section>
