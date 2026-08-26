@@ -16,7 +16,7 @@ const {
 const controller = require('../controllers/pupilController.js');
 
 const router = express.Router();
-
+ 
 router.post('/checkExamno', authChecker, checkexamnoValidationRules(), validate, controller.checkExamNo);
 router.get('/register', authChecker, controller.showRegistration);
 router.post('/register', authChecker, profilePicUpload.single('file'), pupilValidationRules(), validate, controller.register);

@@ -326,6 +326,7 @@ const pupilValidationRules = () => [
     // =========================================================
 
     passwordValidator("password"),
+    passwordValidator("confirmPassword"),
 
 
     // =========================================================
@@ -658,7 +659,7 @@ const pupilValidationRules = () => [
     // GUARDIAN
     // =========================================================
 
-    body("nrcno")
+    body("guardian_nrc_no")
         .trim()
         .notEmpty()
         .withMessage(

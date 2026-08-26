@@ -217,7 +217,7 @@ exports.deleteDepartment = (id) =>
 exports.getHodOptions = () =>
   Promise.all([
     query(
-      `SELECT id, fname, lname
+      `SELECT teacherid, fname, lname
        FROM teachers
        WHERE usertype = ?`,
       ['HOD']
@@ -269,7 +269,7 @@ exports.getHods = () =>
        dp.departmentname
      FROM teacher_department AS td
      JOIN teachers AS trs
-       ON td.teacherid = trs.id
+       ON td.teacherid = trs.teacherid
      JOIN department AS dp
        ON dp.departmentid = td.departmentid
      WHERE trs.usertype = ?`,
@@ -282,7 +282,7 @@ exports.getHods = () =>
 exports.getTeacherAllocationOptions = () =>
   Promise.all([
     query(
-      `SELECT id, fname, lname
+      `SELECT teacherid, fname, lname
        FROM teachers
        WHERE usertype = ?`,
       ['Teacher']
@@ -315,7 +315,7 @@ exports.getTeachersInDepartment = (
        dp.departmentname
      FROM teacher_department AS td
      JOIN teachers AS trs
-       ON td.teacherid = trs.id
+       ON td.teacherid = trs.teacherid
      JOIN department AS dp
        ON dp.departmentid = td.departmentid
      WHERE dp.departmentname = ?

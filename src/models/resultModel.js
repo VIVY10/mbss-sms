@@ -50,7 +50,7 @@ exports.getStudentResults = (examid, pupilId, termid, yearid) =>
     FROM studentsubject AS stsub
 
     JOIN students AS st
-      ON st.id = stsub.examno
+      ON st.examno = stsub.examno
 
     JOIN class AS c
       ON c.classid = (
@@ -81,7 +81,7 @@ exports.getStudentResults = (examid, pupilId, termid, yearid) =>
     LEFT JOIN exams AS ex
       ON ex.examid = ?
 
-    WHERE st.id = ?
+    WHERE st.examno = ?
       AND tm.termid = ?
       AND sy.schoolyearid = ?
 
@@ -98,7 +98,7 @@ exports.getProfile = (examno) =>
     SELECT
       s.fname,
       s.lname,
-      s.id,
+      s.examno,
       s.profilePicture,
       c.grade,
       c.section
@@ -106,12 +106,12 @@ exports.getProfile = (examno) =>
     FROM students AS s
 
     JOIN studentclass AS sc
-      ON s.id = sc.examno
+      ON s.examno = sc.examno
 
     JOIN class AS c
       ON c.classid = sc.classid
 
-    WHERE s.id = ?
+    WHERE s.examno = ?
     `,
     [examno],
   );
@@ -195,7 +195,7 @@ exports.getMissingMarks = async({ teacherid, classid, subjectcode, examid }) =>
             ON sc.classid = cs.classid
 
         JOIN students AS s
-            ON s.id = sc.examno
+            ON s.examno = sc.examno
 
         JOIN subjects AS su
             ON su.subjectcode = cs.subjectcode
@@ -342,7 +342,7 @@ exports.getClassResults = ({
         FROM students AS s
 
         JOIN student_results AS sr
-            ON sr.examno = s.id
+            ON sr.examno = s.examno
 
         JOIN subjects AS su
             ON su.subjectcode = sr.subjectcode

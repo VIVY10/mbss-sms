@@ -71,7 +71,7 @@ exports.getUnenrolledStudents = (
     FROM studentclass AS sc
 
     JOIN students AS s
-      ON s.id = sc.examno
+      ON s.examno = sc.examno
 
     WHERE sc.classid = ?
 
@@ -157,7 +157,7 @@ exports.getRegisteredPupils = (
       ON sc.examno = ss.examno
 
     JOIN students AS s
-      ON s.id = sc.examno
+      ON s.examno = sc.examno
 
     WHERE ss.subjectcode = ?
       AND sc.classid = ?

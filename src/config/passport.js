@@ -97,7 +97,7 @@ passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
       const [rows] = await pool.query(
-        "SELECT * FROM students WHERE id = ? LIMIT 1",
+        "SELECT * FROM students WHERE examno = ? LIMIT 1",
         [username],
       );
 

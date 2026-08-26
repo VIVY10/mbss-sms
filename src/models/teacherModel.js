@@ -46,7 +46,7 @@ exports.create = (data) =>
     `
     INSERT INTO teachers
       (
-        usertype,
+        usertype, 
         username,
         Fname,
         Lname,
@@ -192,7 +192,7 @@ exports.getAllocatedByDepartment = (departmentId) =>
       ON s.subjectcode = cs.subjectcode
 
     JOIN teachers AS t
-      ON t.id = cs.teacherid
+      ON t.teacherid = cs.teacherid
 
     JOIN department AS d
       ON s.departmentid = d.departmentid
@@ -231,14 +231,14 @@ exports.getAllocationDetails = (classSubjectId, departmentId) =>
     query(
       `
       SELECT
-        t.id,
+        t.teacherid,
         t.fname,
         t.lname
 
       FROM teacher_department AS td
 
       JOIN teachers AS t
-        ON t.id = td.teacherid
+        ON t.teacherid = td.teacherid
 
       WHERE td.departmentid = ?
         AND t.usertype = ?
@@ -281,7 +281,7 @@ exports.getRegisteredPupils = (subjectcode, classid) =>
       ON sc.examno = ss.examno
 
     JOIN students AS s
-      ON s.id = sc.examno
+      ON s.examno = sc.examno
 
     WHERE ss.subjectcode = ?
       AND sc.classid = ?

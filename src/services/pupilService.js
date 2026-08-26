@@ -19,7 +19,7 @@ const { removeFileIfExists } = require("../utils/fileUtils.js");
 // Create term enrolment
 // Create reporting record
 // COMMIT
-
+ 
 async function getRegistrationData() {
   const [
     foundClass,
@@ -50,6 +50,7 @@ async function registerPupil({
   file,
   profileDirectory,
 }) {
+    
   const connection = await getConnection();
 
   const profilePicture = file?.filename ?? null;

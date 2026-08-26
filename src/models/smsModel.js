@@ -56,7 +56,7 @@ exports.getResults = async ({
   const [rows] = await pool.query(
     `
     SELECT
-      st.id AS examno,
+      st.examno,
       st.fname,
       st.lname,
       sub.subjectcode,
@@ -72,7 +72,7 @@ exports.getResults = async ({
     FROM students AS st
 
     JOIN studentclass AS sc
-      ON st.id = sc.examno
+      ON st.examno = sc.examno
 
     JOIN class AS c
       ON sc.classid = c.classid
@@ -90,13 +90,13 @@ exports.getResults = async ({
       ON cs.subjectcode = sub.subjectcode
 
     JOIN studentguardian AS stg
-      ON stg.examno = st.id
+      ON stg.examno = st.examno
 
     JOIN guardian AS g
-      ON g.nrc_no = stg.guardianid
+      ON g.guardian_nrc_no = stg.guardianid
 
     LEFT JOIN student_results AS sr
-      ON st.id = sr.examno
+      ON st.examno = sr.examno
       AND sr.subjectcode = sub.subjectcode
       AND sr.examid = ?
 
@@ -107,7 +107,7 @@ exports.getResults = async ({
       AND sy.schoolyearid = ?
       AND c.grade = ?
 
-    ORDER BY st.id, sub.subjectcode
+    ORDER BY st.examno, sub.subjectcode
     `,
     [
       examid,

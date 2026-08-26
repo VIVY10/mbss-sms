@@ -261,11 +261,11 @@ static async logUserActivity(user, type, start, end) {
                 l.ip_address,
                 l.user_agent,
                 l.created_at,
-                u.username AS user_name,
+                u.username,
                 u.email AS user_email
             FROM user_activity_logs AS l
             LEFT JOIN teachers AS u 
-                ON l.user_id = u.id
+                ON l.user_id = u.teacherid
             WHERE (u.username LIKE ? OR ? = '')
               AND (l.activity_type LIKE ? OR ? = '')
               AND (DATE(l.created_at) >= ? OR ? = '')

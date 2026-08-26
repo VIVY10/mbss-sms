@@ -7,7 +7,7 @@ const pupilListSql = `
     s.fname,
     s.middlename,
     s.lname,
-    s.id,
+    s.examno,
     s.dob,
     s.gender,
     s.enrollmentdate,
@@ -20,13 +20,13 @@ const pupilListSql = `
     sp.sponsorName AS sponsor,
     st.studentStatus AS studentstatus,
     ovc.ovcstatus AS ovcstatus,
-    g.nrc_no,
+    g.guardian_nrc_no,
     g.fname AS guardianFname,
     g.lname AS guardianLname,
     g.phonenumber
   FROM students AS s
   JOIN studentclass sc
-    ON sc.examno = s.id
+    ON sc.examno = s.examno
   JOIN class c
     ON c.classid = sc.classid
   JOIN yearlevel yl 
@@ -38,15 +38,15 @@ const pupilListSql = `
   JOIN ovcstatus AS ovc
     ON s.ovcstatus = ovc.ovcstatusid
   JOIN studentguardian AS stg
-    ON stg.examno = s.id
+    ON stg.examno = s.examno
   JOIN guardian g
-    ON g.nrc_no = stg.guardianid
+    ON g.guardian_nrc_no = stg.guardianid
 `;
 
 // ==================== FIND PUPIL ====================
 
 exports.findByExamNo = (examno) =>
-  query("SELECT id FROM students WHERE id = ?", [examno]);
+  query("SELECT examno FROM students WHERE examno = ?", [examno]);
 
 // ==================== REGISTRATION OPTIONS ====================
 
@@ -54,7 +54,7 @@ exports.getRegistrationOptions = async () => {
   return Promise.all([
     query(
       `SELECT 
-          c.classid,  
+          c.classid,   
           c.levelid,
           yl.levelorder,
           yl.levelname,
@@ -117,7 +117,7 @@ exports.getEditData = async (id) => {
 
     query(
       `SELECT
-         s.id,
+         s.examno,
          s.fname,
          s.lname,
          s.dob,
@@ -132,7 +132,7 @@ exports.getEditData = async (id) => {
          st.studentStatus,
          s.ovcstatus AS ovcstatusid,
          ovc.ovcstatus,
-         g.nrc_no,
+         g.guardian_nrc_no, 
          g.fname AS guardianFname,
          g.lname AS guardianLname,
          g.phonenumber,
@@ -140,7 +140,7 @@ exports.getEditData = async (id) => {
          gt.guardiantypeid
        FROM students AS s
        JOIN studentclass AS sc
-         ON sc.examno = s.id
+         ON sc.examno = s.examno
        JOIN class AS c
          ON c.classid = sc.classid
        JOIN sponsor AS sp
@@ -150,12 +150,12 @@ exports.getEditData = async (id) => {
        JOIN ovcstatus AS ovc
          ON s.ovcstatus = ovc.ovcstatusid
        JOIN studentguardian AS sg
-         ON sg.examno = s.id
+         ON sg.examno = s.examno
        JOIN guardian AS g
-         ON g.nrc_no = sg.guardianid
+         ON g.guardian_nrc_no = sg.guardianid
        JOIN guardiantype AS gt
          ON gt.guardiantypeid = sg.guardiantypeid
-       WHERE s.id = ?`,
+       WHERE s.examno = ?`,
       [id],
     ),
   ]);
@@ -163,12 +163,12 @@ exports.getEditData = async (id) => {
 
 // ==================== CREATE STUDENT ====================
 
-exports.createStudent = (connection, data, hashedPassword, profilePicture) =>
+exports.createStudent = (connection, data) =>
   connectionQuery(
     connection,
     `INSERT INTO students
-      (
-        id,
+      ( 
+        examno,
         fname,
         middlename,
         lname,
@@ -186,11 +186,9 @@ exports.createStudent = (connection, data, hashedPassword, profilePicture) =>
         phone,
         email,
         address,
-        password,
-        status,
-        usertype
+        password
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       data.examno,
       data.fname,
@@ -199,7 +197,7 @@ exports.createStudent = (connection, data, hashedPassword, profilePicture) =>
       data.dob,
       data.studentnrcno,
       data.gender,
-      profilePicture,
+      data.profilePicture,
       data.ovcstatus,
       data.sponsor,
       data.studentstatus,
@@ -210,16 +208,14 @@ exports.createStudent = (connection, data, hashedPassword, profilePicture) =>
       data.studentPhoneNumber,
       data.email,
       data.address,
-      hashedPassword,
-      'active', 
-      'pupil'
+      data.hashedPassword
     ],
   );
 
 // ==================== FIND STUDENT ON CONNECTION ====================
 
 exports.findStudentOnConnection = (connection, examno) =>
-  connectionQuery(connection, "SELECT id FROM students WHERE id = ?", [examno]);
+  connectionQuery(connection, "SELECT examno FROM students WHERE examno = ?", [examno]);
 
 // ==================== ADD YEAR LEVEL ====================
 
@@ -303,7 +299,7 @@ exports.addReporting = (
 // ==================== FIND GUARDIAN ====================
 
 exports.findGuardian = (connection, nrcno) =>
-  connectionQuery(connection, "SELECT nrc_no FROM guardian WHERE nrc_no = ?", [
+  connectionQuery(connection, "SELECT guardian_nrc_no FROM guardian WHERE guardian_nrc_no = ?", [
     nrcno,
   ]);
 
@@ -314,13 +310,13 @@ exports.createGuardian = (connection, data) =>
     connection,
     `INSERT INTO guardian
       (
-        nrc_no,
+        guardian_nrc_no,
         fname,
         lname,
         phonenumber
       )
       VALUES (?, ?, ?, ?)`,
-    [data.nrcno, data.guardianFname, data.guardianLname, data.phoneNumber],
+    [data.guardian_nrc_no, data.guardianFname, data.guardianLname, data.phoneNumber],
   );
 
 // ==================== LINK GUARDIAN ====================
@@ -335,7 +331,7 @@ exports.linkGuardian = (connection, data) =>
         guardianid
       )
       VALUES (?, ?, ?)`,
-    [data.examno, data.relationship, data.nrcno],
+    [data.examno, data.relationship, data.guardian_nrc_no],
   );
 
 // ==================== UPDATE STUDENT ====================
@@ -351,7 +347,7 @@ exports.updateStudent = async (connection, data) => {
        ovcstatus = ?,
        sponsor = ?,
        studentstatus = ?
-     WHERE id = ?`,
+     WHERE examno = ?`,
     [
       data.fname,
       data.lname,
@@ -383,7 +379,7 @@ exports.updateStudent = async (connection, data) => {
 // ==================== UPSERT GUARDIAN ====================
 
 exports.upsertGuardianAndRelationship = async (connection, data) => {
-  const guardian = await exports.findGuardian(connection, data.nrcno);
+  const guardian = await exports.findGuardian(connection, data.guardian_nrc_no);
 
   if (guardian.length > 0) {
     await connectionQuery(
@@ -393,8 +389,8 @@ exports.upsertGuardianAndRelationship = async (connection, data) => {
          fname = ?,
          lname = ?,
          phonenumber = ?
-       WHERE nrc_no = ?`,
-      [data.guardianFname, data.guardianLname, data.phoneNumber, data.nrcno],
+       WHERE guardian_nrc_no = ?`,
+      [data.guardianFname, data.guardianLname, data.phoneNumber, data.guardian_nrc_no],
     );
   } else {
     await exports.createGuardian(connection, data);
@@ -414,7 +410,7 @@ exports.upsertGuardianAndRelationship = async (connection, data) => {
          guardiantypeid = ?,
          guardianid = ?
        WHERE examno = ?`,
-      [data.relationship, data.nrcno, data.examno],
+      [data.relationship, data.guardian_nrc_no, data.examno],
     );
   } else {
     await exports.linkGuardian(connection, data);
@@ -424,12 +420,12 @@ exports.upsertGuardianAndRelationship = async (connection, data) => {
 // ==================== PROFILE PICTURE ====================
 
 exports.getProfilePicture = (examno) =>
-  query("SELECT profilePicture FROM students WHERE id = ?", [examno]);
+  query("SELECT profilePicture FROM students WHERE examno = ?", [examno]);
 
 // ==================== DELETE STUDENT ====================
 
 exports.deleteStudent = (examno) =>
-  query("DELETE FROM students WHERE id = ?", [examno]);
+  query("DELETE FROM students WHERE examno = ?", [examno]);
 
 // ==================== DELETE ORPHANED GUARDIANS ====================
 
@@ -438,7 +434,7 @@ exports.deleteOrphanedGuardians = () =>
     DELETE g
     FROM guardian g
     LEFT JOIN studentguardian stg
-      ON g.nrc_no = stg.guardianid
+      ON g.guardian_nrc_no = stg.guardianid
     WHERE stg.guardianid IS NULL
   `);
 
@@ -497,7 +493,7 @@ exports.findReturningStudent = (connection, examno) => {
       FROM students s
 
       LEFT JOIN studentclass sc
-          ON sc.examno = s.id
+          ON sc.examno = s.examno
 
       LEFT JOIN class c
           ON c.classid = sc.classid
@@ -505,7 +501,7 @@ exports.findReturningStudent = (connection, examno) => {
       LEFT JOIN yearlevel yl
           ON yl.levelorder = c.levelid
 
-      WHERE s.id = ?
+      WHERE s.examno = ?
 
       ORDER BY
           sc.yearid DESC,

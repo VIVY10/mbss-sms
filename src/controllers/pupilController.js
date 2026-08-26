@@ -67,7 +67,7 @@ exports.returningPupils = async (req, res) => {
 
 exports.register = async (req, res) => {
   const data = matchedData(req);
-
+ 
   const reported_by = req.user.id;
   const reporting_status = "reported";
   const enrollment_type = "new";

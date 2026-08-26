@@ -30,7 +30,7 @@
         <% results.forEach(element => { %>          
             <tbody>
               <tr>
-                <td><%= element.id %></td>
+                <td><%= element.examno %></td>
                 <td><%= element.fname %> <%= element.lname %></td>
                 <td><%= element.dob.toLocaleDateString() %></td>
                 <td><%= element.gender %></td>
@@ -46,11 +46,11 @@
                   <%= new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(element.enrollmentdate) %>
                 </td>                
                 <td  style="text-align: center;" >
-                  <a href="/updatePupilRecord/<%= element.id %>"><i class="material-icons">edit</i></a>
+                  <a href="/updatePupilRecord/<%= element.examno %>"><i class="material-icons">edit</i></a>
                   
                 </td>  
                 <td>
-                  <a href="/deletePupilRecord/<%= element.id %>"><i class="material-icons">delete</i></a>
+                  <a href="/deletePupilRecord/<%= element.examno %>"><i class="material-icons">delete</i></a>
                 </td>             
               </tr>
             </tbody>        

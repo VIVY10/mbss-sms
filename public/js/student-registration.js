@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-
+ 
   // DOM refs
   const form = document.getElementById("registrationForm");
   const panels = document.querySelectorAll(".step-panel");
@@ -82,7 +82,7 @@
         if (!field.checked) {
           valid = false;
           if (displayErrors) setError(field, "Please confirm");
-        }
+        } 
       } else if (!field.value.trim()) {
         valid = false;
         if (displayErrors) setError(field, "Required");
@@ -102,13 +102,13 @@
       }
     }
 
-    if (isReturning && step === 3) {
-      if (!returningStudentVerified) {
-        valid = false;
+    // if (isReturning && step === 3) {
+    //   if (!returningStudentVerified) {
+    //     valid = false;
 
-        alert("Please search and verify the returning student first.");
-      }
-    }
+    //     alert("Please search and verify the returning student first.");
+    //   }
+    // }
     return valid;
   }
 

@@ -5,7 +5,7 @@ const pool = require('../config/db.js');
 
 exports.getStudentCount = async () => {
   const [rows] = await pool.query(
-    'SELECT COUNT(id) AS count FROM students'
+    'SELECT COUNT(examno) AS count FROM students'
   );
 
   return rows[0].count;
@@ -16,7 +16,7 @@ exports.getStudentCount = async () => {
 
 exports.getTeacherCount = async () => {
   const [rows] = await pool.query(
-    'SELECT COUNT(id) AS count FROM teachers'
+    'SELECT COUNT(teacherid) AS count FROM teachers'
   );
 
   return rows[0].count;

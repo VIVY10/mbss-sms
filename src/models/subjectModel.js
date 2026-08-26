@@ -179,8 +179,8 @@ exports.getAllocatedClassSubjects = (termid) =>
     INNER JOIN department d ON d.departmentid = s.departmentid
     INNER JOIN teaching_allocations ta ON cs.class_subject_id = ta.class_subject_id
     INNER JOIN terms t ON ta.termid = t.termid
-    INNER JOIN teachers tchr ON ta.teacherid = tchr.id
-    LEFT JOIN teachers alloc ON ta.allocated_by = alloc.id
+    INNER JOIN teachers tchr ON ta.teacherid = tchr.teacherid
+    LEFT JOIN teachers alloc ON ta.allocated_by = alloc.teacherid
     WHERE t.termid = ? 
       AND t.status = 'OPEN' 
     ORDER BY yl.levelorder, c.class, s.subjectname;
@@ -219,7 +219,7 @@ exports.teaching_allocation = (termid) =>{
       CROSS JOIN terms t
       LEFT JOIN teaching_allocations ta ON cs.class_subject_id = ta.class_subject_id 
           AND ta.termid = t.termid
-      LEFT JOIN teachers tchr ON ta.teacherid = tchr.id
+      LEFT JOIN teachers tchr ON ta.teacherid = tchr.teacherid
       WHERE t.termid = ? 
         AND t.status = 'OPEN'
       ORDER BY allocation_status DESC, yl.levelorder, c.class, s.subjectname;

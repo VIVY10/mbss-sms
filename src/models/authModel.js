@@ -4,7 +4,7 @@ exports.updateAttempts = (id, attempts) =>
   query(
     `UPDATE teachers
          SET failed_login_attempts = ?
-         WHERE id = ?`,
+         WHERE teacherid = ?`,
     [attempts, id],
   );
 
@@ -14,7 +14,7 @@ exports.lock = (id, attempts, lockedUntil) =>
     `UPDATE teachers
          SET failed_login_attempts = ?,
              locked_until = ?
-         WHERE id = ?`,
+         WHERE teacherid = ?`,
     [attempts, lockedUntil, id],
   );
 
@@ -23,7 +23,7 @@ exports.disableLogin = (id) =>
   query(
     `UPDATE teachers
          SET is_locked = ?
-         WHERE id = ?`,
+         WHERE teacherid = ?`,
     [1, id],
   );
 
@@ -32,7 +32,7 @@ exports.disableLogin = (id) =>
   query(
     `UPDATE teachers
          SET is_locked = ?
-         WHERE id = ?`,
+         WHERE teacherid = ?`,
     [0, id],
   );
 
@@ -42,7 +42,7 @@ exports.disableLogin = (id) =>
     `UPDATE teachers
          SET failed_login_attempts = ?,
              locked_until = NULL
-         WHERE id = ?`,
+         WHERE teacherid = ?`,
     [0, id],
   );
 
@@ -53,6 +53,6 @@ exports.resetAttempts = (id) =>
          SET failed_login_attempts = ?,
              locked_until = NULL,
              last_login = NOW()
-         WHERE id = ?`,
+         WHERE teacherid = ?`,
     [0, id],
   );
