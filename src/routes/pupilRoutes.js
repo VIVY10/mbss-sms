@@ -10,7 +10,8 @@ const {
 
 const {
   checkexamnoValidationRules,
-  pupilValidationRules
+  pupilValidationRules,
+  returningPupilValidationRules
 } = require('../validation/validationRules.js');
 
 const controller = require('../controllers/pupilController.js');
@@ -21,7 +22,7 @@ router.post('/checkExamno', authChecker, checkexamnoValidationRules(), validate,
 router.get('/register', authChecker, controller.showRegistration);
 router.post('/register', authChecker, profilePicUpload.single('file'), pupilValidationRules(), validate, controller.register);
 router.get("/register/returning/search", controller.searchReturningStudent);
-router.get('/returningPupils', authChecker, controller.returningPupils);
+router.post('/registerReturningPupils', authChecker, returningPupilValidationRules, validate, controller.register);
 router.get('/viewPupils', authChecker, controller.viewPupils);
 router.get('/searchPupil', authChecker, controller.searchPage);
 router.post('/searchPupil', authChecker, checkexamnoValidationRules(), validate, controller.searchPupil);

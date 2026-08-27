@@ -65,51 +65,48 @@ exports.returningPupils = async (req, res) => {
   });
 };
  
-exports.register = async (req, res) => {
-  const data = matchedData(req);
+// exports.register = async (req, res) => {
+//   const data = matchedData(req);
  
-  const reported_by = req.user.id;
-  const reporting_status = "reported";
-  const enrollment_type = "new";
-
-  const result = await pupilService.registerPupil({
-    reported_by,
-    reporting_status,
-    enrollment_type,
-    data,
-    file: req.file,
-    profileDirectory,
-  });
-
-  return res.status(200).json(result);
-};
-
-
-exports.register2 = async (req, res) => {
-
-  //   const data = matchedData(req);
-
 //   const reported_by = req.user.id;
 //   const reporting_status = "reported";
 //   const enrollment_type = "new";
 
+//   const result = await pupilService.registerPupil({
+//     reported_by,
+//     reporting_status,
+//     enrollment_type,
+//     data,
+//     file: req.file,
+//     profileDirectory,
+//   });
+
+//   return res.status(200).json(result);
+// };
+
+
+exports.register = async (req, res) => {
+
+  const data = matchedData(req);
+ 
     try {
 
-        const {
-            enrollment_type,
-            reporting_status,
-            reported_by
-        } = req.body;
+        const reported_by = req.user.id;
+        const reporting_status = "reported";
+        const enrollment_type = data.enrollment_type;
 
         let result;
 
         if (enrollment_type === "returning") {
 
+          console.log("returning here")
+          // result = "successfully enrolled"
+
             result = await registerReturningPupil({
                 reported_by,
                 reporting_status,
                 enrollment_type,
-                data: req.body
+                data
             });
 
         } else {
@@ -118,7 +115,7 @@ exports.register2 = async (req, res) => {
                 reported_by,
                 reporting_status,
                 enrollment_type,
-                data: req.body,
+                data,
                 file: req.file,
                 profileDirectory
             });
@@ -152,7 +149,7 @@ exports.searchReturningStudent = async (req, res) => {
 
       const student = await pupilModel.findReturningStudent(examno);
 
-      console.log(student)
+    //  console.log(student)
 
       if (!student.length) {
         return res.status(404).json({

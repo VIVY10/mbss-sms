@@ -53,8 +53,6 @@ const profilePicUpload = multer({
       file.mimetype
     );
 
-    console.log('multer')
-
     if (extensionValid && mimeTypeValid) {
       return cb(null, true);
     }
