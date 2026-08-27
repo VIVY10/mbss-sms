@@ -28,5 +28,5 @@ router.post('/searchPupil', authChecker, checkexamnoValidationRules(), validate,
 router.get('/updatePupilRecord/:id', authChecker, controller.editPage);
 router.post('/updatePupilRecord', authChecker, controller.update);
 router.get('/deletePupilRecord/:id', authChecker, controller.deletePupil);
-
+ 
 module.exports = router;

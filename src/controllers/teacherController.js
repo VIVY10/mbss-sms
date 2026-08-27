@@ -180,17 +180,12 @@ exports.lockTeacherAccount = async (req, res, next) => {
   try {
     const { username } = req.query;
 
-    await teacherService.lockAccount(req, username);
-
-    // req.flash(
-    //     "success",
-    //     "Account has been locked successfully."
-    // );
+    await teacherService.lockAccount(req, res, username);
 
     return res.redirect("/viewTeachers");
+
   } catch (error) {
     req.flash("error", error.message);
-
     return res.redirect("/viewTeachers");
   }
 };
@@ -203,14 +198,10 @@ exports.unlockTeacherAccount = async (req, res, next) => {
 
     await teacherService.unlockAccount(username);
 
-    // req.flash(
-    //     "success",
-    //     "Account has been unlocked successfully."
-    // );
-
     return res.redirect("/viewTeachers");
+
   } catch (error) {
-    req.flash("error", error.message);
+    console.log(error);
 
     return res.redirect("/viewTeachers");
   }

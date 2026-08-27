@@ -31,7 +31,9 @@ router.get('/terms', ...adminOnly, controller.terms);
 router.get('/fetchTerms', ...adminOnly, controller.get_terms);
 router.get('/addTerm', ...adminOnly, controller.addTermPage);
 router.post('/addTerm', ...adminOnly, addTermValiadtionRules(), validate, controller.addTerm);
-router.post('/deleteTerm', ...adminOnly, controller.deleteTerm);
+router.get('/deleteTerm', ...adminOnly, controller.deleteTerm);
+router.get('/openTerm', ...adminOnly, controller.openTerm)
+router.get('/closeTerm', ...adminOnly, controller.closeTerm)
 
 router.get('/get_class', ...adminOnly, controller.classes);
 router.get('/addClass', ...adminOnly, controller.addClassPage);

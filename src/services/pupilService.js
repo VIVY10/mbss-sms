@@ -68,13 +68,11 @@ async function registerPupil({
     );
 
     if (existing.length) {
-      throw new Error(
-        "Student already in the system. Update student records instead.",
-      );
+       return {message: "Student already in the system. Update student records instead."};
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
-
+ 
     await pupilModel.createStudent(connection, {
       ...data,
       hashedPassword,

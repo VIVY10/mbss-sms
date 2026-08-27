@@ -4,6 +4,7 @@ const authModel = require("../models/authModel");
 const fs = require('fs').promises;
 const path = require('path');
 const { removeFileIfExists } = require('../utils/fileUtils.js');
+const { response } = require("express");
  
 async function registerTeacher({ data, file }) {
   const username = data.username.toLowerCase();
@@ -127,51 +128,40 @@ async function deleteTeacher(username, profileDirectory, backupDirectory) {
   }
 }
 
-async function lockAccount(req, username) {
+async function lockAccount(req, res, username) {
   const users = await teacherModel.findByUsername(username);
 
   if (!users.length) {
-    return res.render("./response/response", {
-      message: "user not found.",
-    });
+    return response(res, "user not found.");
   }
 
   const account = users[0];
 
   // Prevent self-locking
-  if (Number(account.id) === Number(req.user.id)) {
-    return res.render("./response/response", {
-      message: "You cannot lock your own account.",
-    });
+  if (Number(account.teacherid) === Number(req.user.teacherid)) {
+    return response(res, "You cannot lock your own account.");
   }
 
   // If the account is an Admin, ensure another active Admin remains
   if (account.usertype === "admin") {
     const activeAdminCount = await teacherModel.countAdmins();
 
-    console.log(activeAdminCount);
-
     if (activeAdminCount <= 1) {
-      return res.render("./response/response", {
-        message:
-          "This account cannot be locked because it is the last active Administrator account.",
-      });
+      return response(res, "This account cannot be locked because it is the last active Administrator account.");
     }
   }
 
-  return await authModel.disableLogin(account.id);
+  return await authModel.disableLogin(account.teacherid);
 }
 
 async function unlockAccount(username) {
   const teacher = await teacherModel.findByUsername(username);
 
   if (!teacher.length) {
-    return res.render("./response/response", {
-      message: "Teacher not found.",
-    });
+    return response(res, "Teacher not found.");
   }
 
-  return authModel.enableLogin(teacher[0].id);
+  return authModel.enableLogin(teacher[0].teacherid);
 }
 
 module.exports = {

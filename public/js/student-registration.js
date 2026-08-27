@@ -147,52 +147,34 @@
     return `<div class="review-row"><span>${label}</span><strong>${text || "-"}</strong></div>`;
   }
 
-  // ----- admission type toggle -----
+
   // function setAdmissionType(type) {
   //   isReturning = type === "returning";
+
   //   admissionTypeHidden.value = type;
+
   //   returningPanel.classList.toggle("hidden", !isReturning);
-  //   // reset result
-  //   if (!isReturning) returningResult.classList.add("hidden");
-  //   // update labels
+
+  //   if (!isReturning) {
+  //     returningResult.classList.add("hidden");
+  //     configureCredentialsForNew();
+  //   } else {
+  //     configureCredentialsForReturning();
+  //   }
+
   //   const label = isReturning ? "RETURNING" : "NEW STUDENT";
+
   //   regTypeLabel.textContent = label;
   //   summaryType.textContent = label;
-  //   summaryType.className = `badge ${isReturning ? "badge-outline" : "badge-green"}`;
-  //   // enable/disable required fields? we keep them but returning will prefill via search (demo)
-  //   document
-  //     .querySelectorAll(".admission-type")
-  //     .forEach((btn) =>
-  //       btn.classList.toggle("active", btn.dataset.type === type),
-  //     );
+
+  //   summaryType.className = `badge ${
+  //     isReturning ? "badge-outline" : "badge-green"
+  //   }`;
+
+  //   document.querySelectorAll(".admission-type").forEach((btn) => {
+  //     btn.classList.toggle("active", btn.dataset.type === type);
+  //   });
   // }
-  function setAdmissionType(type) {
-    isReturning = type === "returning";
-
-    admissionTypeHidden.value = type;
-
-    returningPanel.classList.toggle("hidden", !isReturning);
-
-    if (!isReturning) {
-      returningResult.classList.add("hidden");
-      configureCredentialsForNew();
-    } else {
-      configureCredentialsForReturning();
-    }
-
-    const label = isReturning ? "RETURNING" : "NEW STUDENT";
-
-    regTypeLabel.textContent = label;
-    summaryType.textContent = label;
-
-    summaryType.className = `badge ${
-      isReturning ? "badge-outline" : "badge-green"
-    }`;
-
-    document.querySelectorAll(".admission-type").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.type === type);
-    });
-  }
 
   returningExamno.addEventListener("input", () => {
     returningStudentVerified = false;
@@ -283,6 +265,7 @@
   });
 
   function populateReturningStudent(student) {
+
     returningResult.classList.remove("hidden");
 
     document.getElementById("returningName").textContent =
@@ -305,7 +288,7 @@
 
     document.getElementById("rGender").textContent = student.gender;
 
-    document.getElementById("rDob").textContent = student.dob;
+    document.getElementById("rDob").textContent = student.dob.slice(0, 10);
 
     /*
      * Prefill existing student information
@@ -323,7 +306,7 @@
     document.getElementById("studentPhoneNumber").value =
       student.studentPhoneNumber || "";
 
-    document.getElementById("dob").value = student.dob || "";
+    document.getElementById("dob").value = student.dob.slice(0, 10) || "";
 
     document.getElementById("birthplace").value = student.birthplace || "";
 
@@ -340,6 +323,30 @@
 
     document.getElementById("examno").value = student.examno;
 
+    document.getElementById("schoolyear").value = student.schoolyearid || "";
+    document.getElementById("termid").value = student.termid || "";
+    document.getElementById("selectedClass").value = student.classid || "";
+    document.getElementById("studentstatus").value = student.studentStatusID || "";
+    document.getElementById("sponsor").value = student.sponsorID || "";
+    document.getElementById("ovcstatus").value = student.ovcstatusid || "";
+
+    document.getElementById("guardianFname").value = student.guardianFname || "";
+    document.getElementById("guardianLname").value = student.guardianLname || "";
+    document.getElementById("relationship").value = student.guardiantypeid || "";
+    document.getElementById("guardian_nrc_no").value = student.guardian_nrc_no || "";
+    document.getElementById("guardian_phone").value = student.phoneNumber || "";
+    document.getElementById("guardian_email").value = student.guardian_email || "";
+    document.getElementById("guardian_occupation").value = student.guardian_occupation || "";
+    document.getElementById("guardian_address").value = student.guardian_address || "";
+    document.getElementById("yearlevel").value = student.levelid || "";
+    // document.getElementById("address").value = student.address || "";
+    // document.getElementById("address").value = student.address || "";
+    // document.getElementById("address").value = student.address || "";
+    // document.getElementById("address").value = student.address || "";
+    // document.getElementById("address").value = student.address || "";
+
+
+
     /*
      * Existing student does not need a new password.
      */
@@ -353,7 +360,7 @@
 
     isReturning = true;
   }
-
+ 
   // ----- event listeners -----
   // admission selector
   admissionSelector?.addEventListener("click", (e) => {
@@ -576,7 +583,7 @@
       "confirmPasswordField",
     );
 
-    const description = document.getElementById("credentialsDescription");
+    // const description = document.getElementById("credentialsDescription");
 
     password.required = false;
     confirmPassword.required = false;
@@ -584,8 +591,8 @@
     passwordField.classList.add("hidden");
     confirmPasswordField.classList.add("hidden");
 
-    description.textContent =
-      "Existing student account credentials will be retained.";
+    // description.textContent =
+    //   "Existing student account credentials will be retained.";
   }
 
   function configureCredentialsForNew() {
@@ -599,7 +606,7 @@
       "confirmPasswordField",
     );
 
-    const description = document.getElementById("credentialsDescription");
+    // const description = document.getElementById("credentialsDescription");
 
     password.required = true;
     confirmPassword.required = true;
@@ -607,7 +614,7 @@
     passwordField.classList.remove("hidden");
     confirmPasswordField.classList.remove("hidden");
 
-    description.textContent = "Student login";
+    // description.textContent = "Student login";
   }
 
   function setAdmissionType(type) {

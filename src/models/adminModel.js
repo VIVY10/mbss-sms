@@ -50,6 +50,21 @@ exports.getTerms = () =>
       ON sy.schoolyearid = tm.yearid
   `);
 
+  exports.getTermById = (termid) =>
+  query(`
+    SELECT
+      tm.termid,
+      sy.yearname,
+      tm.termname,
+      tm.status,
+      tm.startdate,
+      tm.enddate
+    FROM terms AS tm
+    JOIN schoolyear AS sy
+      ON sy.schoolyearid = tm.yearid
+    WHERE tm.termid = ?
+  `, [termid]);
+
   exports.get_Open_Terms = () =>
   query(`
     SELECT
@@ -111,6 +126,32 @@ exports.deleteTerm = (id) =>
   query(
     'DELETE FROM terms WHERE termid = ?',
     [id]
+  );
+
+
+  exports.openTerm = (termid, opened_by) =>
+  query(
+    `UPDATE terms
+      SET
+        status = 'open',
+        closed_at = CURRENT_TIMESTAMP,
+        closed_by = ?
+      WHERE termid = ?
+        AND (status = 'closed' OR status = 'upcoming')`,
+    [opened_by, termid]
+  );
+
+
+  exports.closeTerm = (termid, closed_by) =>
+  query(
+    `UPDATE terms
+      SET
+        status = 'closed',
+        closed_at = CURRENT_TIMESTAMP,
+        closed_by = ?
+      WHERE termid = ?
+        AND status = 'open'`,
+    [closed_by, termid]
   );
 
 

@@ -64,7 +64,7 @@ exports.returningPupils = async (req, res) => {
     user: req.user,
   });
 };
-
+ 
 exports.register = async (req, res) => {
   const data = matchedData(req);
  
@@ -148,10 +148,11 @@ exports.searchReturningStudent = async (req, res) => {
       });
     }
 
-    const connection = await getConnection();
+    // const connection = await getConnection();
 
-    try {
-      const student = await pupilModel.findReturningStudent(connection, examno);
+      const student = await pupilModel.findReturningStudent(examno);
+
+      console.log(student)
 
       if (!student.length) {
         return res.status(404).json({
@@ -162,9 +163,6 @@ exports.searchReturningStudent = async (req, res) => {
       res.json({
         student: student[0],
       });
-    } finally {
-      connection.release();
-    }
   } catch (err) {
     console.error("Returning student search error:", err);
 

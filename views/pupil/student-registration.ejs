@@ -61,11 +61,11 @@
         <div class="student-photo"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='%23718096'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M12 14c-4 0-6 2-6 4v2h12v-2c0-2-2-4-6-4z'/%3E%3C/svg%3E" alt="avatar"></div>
         <div class="student-result-information">
           <div class="result-label">STUDENT FOUND</div>
-          <h3 id="returningName">Chisanga Mwansa</h3>
+          <h3 id="returningName"></h3>
           <div class="student-meta">
-            <div><span>Exam</span> <strong id="returningExamDisplay">2026/0045</strong></div>
-            <div><span>Class</span> <strong id="returningClass">10A</strong></div>
-            <div><span>Status</span> <strong id="returningStatus">Active</strong></div>
+            <div><span>Exam</span> <strong id="returningExamDisplay"></strong></div>
+            <div><span>Class</span> <strong id="returningClass"></strong></div>
+            <div><span>Status</span> <strong id="returningStatus"></strong></div>
           </div>
         </div>
         <div class="student-found-icon">✓</div>
@@ -77,11 +77,11 @@
           <span class="record-badge">RETURNING</span>
         </div>
         <div class="readonly-grid" id="returningDetailsGrid">
-          <div class="readonly-field"><span>Exam Number</span><strong id="rExam">2026/0045</strong></div>
-          <div class="readonly-field"><span>First Name</span><strong id="rFname">Chisanga</strong></div>
-          <div class="readonly-field"><span>Last Name</span><strong id="rLname">Mwansa</strong></div>
-          <div class="readonly-field"><span>Gender</span><strong id="rGender">Male</strong></div>
-          <div class="readonly-field"><span>Date of Birth</span><strong id="rDob">2010-05-12</strong></div>
+          <div class="readonly-field"><span>Exam Number</span><strong id="rExam"></strong></div>
+          <div class="readonly-field"><span>First Name</span><strong id="rFname"></strong></div>
+          <div class="readonly-field"><span>Last Name</span><strong id="rLname"></strong></div>
+          <div class="readonly-field"><span>Gender</span><strong id="rGender"></strong></div>
+          <div class="readonly-field"><span>Date of Birth</span><strong id="rDob"></strong></div>
         </div>
       </div>
     </div>
@@ -137,7 +137,7 @@
               </div>
               <div class="field">
                 <label>Primary Phone <b>*</b></label>
-                <input type="tel" name="studentPhoneNumber" id="studentPhoneNumber" required placeholder="0971234567" value="<%= typeof data !== 'undefined' ? (data.studentPhoneNumber || '') : '' %>">
+                <input type="tel" name="studentPhoneNumber" id="studentPhoneNumber" required placeholder="0971234567" value="<%= typeof data !== 'undefined' ? (data.phone || '') : '' %>">
               </div>
               <div class="field">
                 <label>Date of Birth <b>*</b></label>
@@ -152,7 +152,7 @@
                 <select name="nationality" id="nationality" required>
                   <option value="">Select</option>
                   <% if (typeof nationalities !== 'undefined') { nationalities.forEach(function(item) { %>
-                    <option value="<%= item.id ?? item.value %>" <%= typeof data !== 'undefined' && data.nationality === (item.id ?? item.value) ? 'selected' : '' %>>
+                    <option value="<%= item.nationality ?? item.value %>" <%= typeof data !== 'undefined' && data.nationality === (item.id ?? item.value) ? 'selected' : '' %>>
                       <%= item.name ?? item.label %>
                     </option>
                   <% }); } %>
@@ -179,10 +179,10 @@
                 <label>Previous School</label>
                 <input type="text" name="previous_school" id="previous_school" placeholder="Previous school" value="<%= typeof data !== 'undefined' ? (data.previous_school || '') : '' %>">
               </div>
-              <div class="field">
+              <!-- <div class="field">
                 <label>Admission Date <b>*</b></label>
                 <input type="date" name="admission_date" id="admission_date" required value="<%= typeof data !== 'undefined' ? (data.admission_date || '') : '' %>">
-              </div>
+              </div> -->
               <div class="field">
                 <label>Profile Photo</label>
                 <div class="upload-box" id="photoUploadBox">
@@ -217,11 +217,11 @@
                 <select name="relationship" id="relationship" required>
                   <option value="">Select</option>
                   <% if (typeof guardiantype !== 'undefined') { guardiantype.forEach(function(item) { %>
-                    <option value="<%= item.guardiantypeid ?? item.id %>" <%= typeof data !== 'undefined' && data.relationship == (item.guardiantypeid ?? item.id) ? 'selected' : '' %>>
+                    <option value="<%= item.guardiantypeid ?? item.id %>" <%= typeof data !== 'undefined' && data.guardiantypeid == (item.guardiantypeid ?? item.id) ? 'selected' : '' %>>
                       <%= item.relationship %>
                     </option>
                   <% }); } %>
-                </select>
+                </select> 
               </div>
               <div class="field">
                 <label>Guardian NRC <b>*</b></label>
@@ -272,7 +272,7 @@
                 <select name="schoolyear" id="schoolyear" required>
                   <option value="">Select year</option>
                   <% if (typeof schoolyear !== 'undefined') { schoolyear.forEach(function(item) { %>
-                    <option value="<%= item.schoolyearid %>" <%= typeof data !== 'undefined' && data.schoolyear == (item.schoolyearid) ? 'selected' : '' %>>
+                    <option value="<%= item.schoolyearid %>" <%= typeof data !== 'undefined' && data.schoolyearid == (item.schoolyearid) ? 'selected' : '' %>>
                       <%= item.yearname %>
                     </option> 
                   <% }); } %>
@@ -342,41 +342,30 @@
             <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:18px;">
               <div class="card-title compact"><div class="title-icon">🔐</div><div><h2>Account Credentials</h2><p>Student login</p></div></div>
               <div class="form-grid">
-                <!-- <div class="field">
+                <div class="field">
                   <label>Exam Number <b>*</b></label>
                   <input type="text" name="examno" id="examno" required placeholder="2026/0045" value="<%= typeof data !== 'undefined' ? (data.examno || '') : '' %>">
                 </div>
-                <div class="field">
+                <div class="field" id="passwordField">
                   <label>Password <b>*</b></label>
                   <div class="password-wrap">
                     <input type="password" name="password" id="password" required minlength="8" placeholder="Min 8 chars">
                     <button type="button" class="password-toggle" data-target="password">👁</button>
                   </div>
                 </div>
-                <div class="field">
+                <div class="field" id="confirmPasswordField">
                   <label>Confirm Password <b>*</b></label>
                   <div class="password-wrap">
                     <input type="password" id="confirmPassword" required minlength="8" placeholder="Confirm">
                     <button type="button" class="password-toggle" data-target="confirmPassword">👁</button>
                   </div>
                 </div>
-              </div> -->
-              <div
+              </div>
+    <!-- <div
     id="credentialsSection"
     style="margin-top:20px; border-top:1px solid var(--border); padding-top:18px;"
 >
-    <div class="card-title compact">
-        <div class="title-icon">🔐</div>
-        <div>
-            <h2>Account Credentials</h2>
-            <p id="credentialsDescription">
-                Student login
-            </p>
-        </div>
-    </div>
-
     <div class="form-grid">
-
         <div class="field">
             <label>Exam Number <b>*</b></label>
             <input
@@ -434,7 +423,7 @@
         </div>
 
     </div>
-</div>
+</div> -->
             </div>
           </div>
         </section>
@@ -464,11 +453,11 @@
           <div class="summary-row"><span>Type</span><strong id="summaryType" class="badge badge-green">NEW</strong></div>
           <div class="summary-row">
             <span>Year</span>
-            <strong><%= schoolyear && schoolyear.length > 0 ? schoolyear[0]?.yearname : '2026' %></strong>
+            <strong><%= schoolyear && schoolyear.length > 0 ? schoolyear[0]?.yearname : '' %></strong>
           </div>
           <div class="summary-row">
             <span>Term</span>
-            <strong><%= foundTerm && foundTerm.length > 0 ? foundTerm[0]?.termname : 'Term 1' %></strong>
+            <strong><%= foundTerm && foundTerm.length > 0 ? foundTerm[0]?.termname : '' %></strong>
           </div>
           <div class="summary-row"><span>Class</span><strong id="summaryClass">Not selected</strong></div>
           <div class="summary-row"><span>Status</span><strong class="badge badge-green">ACTIVE</strong></div>

@@ -28,7 +28,7 @@ exports.disableLogin = (id) =>
   );
 
 
-  exports.enableLogin = (id) =>
+  exports.enableLogin = (id) => 
   query(
     `UPDATE teachers
          SET is_locked = ?

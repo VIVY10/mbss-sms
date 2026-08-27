@@ -302,7 +302,7 @@ exports.findGuardian = (connection, nrcno) =>
   connectionQuery(connection, "SELECT guardian_nrc_no FROM guardian WHERE guardian_nrc_no = ?", [
     nrcno,
   ]);
-
+ 
 // ==================== CREATE GUARDIAN ====================
 
 exports.createGuardian = (connection, data) =>
@@ -461,7 +461,7 @@ exports.findEnrollmentOnConnection = (
   return query(connection, sql, [examno, schoolyear, termid]);
 };
 
-exports.findReturningStudent = (connection, examno) => {
+exports.findReturningStudent = (examno) => {
   const sql = `
       SELECT
           s.examno,
@@ -477,9 +477,17 @@ exports.findReturningStudent = (connection, examno) => {
           s.religion,
           s.studentnrcno,
           s.previous_school,
-          s.admission_date,
           s.address,
           s.status,
+          
+          ovc.ovcstatusid,
+          ovc.ovcstatus,
+          
+          sts.studentStatusID,
+          sts.studentStatus,
+          
+          sp.sponsorID,
+          sp.sponsorName,
 
           sc.classid,
           sc.termid,
@@ -487,6 +495,21 @@ exports.findReturningStudent = (connection, examno) => {
 
           c.class,
           c.levelid,
+          
+          g.guardian_nrc_no,
+          g.fname AS guardianFname,
+          g.lname AS guardianLname,
+          g.phonenumber AS phoneNumber,
+          g.email AS guardian_email,
+          g.address AS guardian_address,
+          
+          gt.guardiantypeid,
+          gt.guardiantypename AS relationship,
+
+          tm.termname,
+          
+          sy.schoolyearid,
+          sy.yearname,
 
           yl.levelname
 
@@ -494,12 +517,35 @@ exports.findReturningStudent = (connection, examno) => {
 
       LEFT JOIN studentclass sc
           ON sc.examno = s.examno
+          
+      LEFT JOIN ovcstatus ovc
+      	  ON ovc.ovcstatusid = s.ovcstatus
+          
+      LEFT JOIN studentstatus sts
+      	  ON sts.studentStatusID = s.studentstatus
+          
+      LEFT JOIN sponsor sp
+      	  ON sp.sponsorID = s.sponsor
 
       LEFT JOIN class c
           ON c.classid = sc.classid
 
+      LEFT JOIN terms tm
+		      ON tm.termid = sc.termid
+      LEFT JOIN schoolyear sy
+      	  ON sy.schoolyearid = tm.yearid
+
       LEFT JOIN yearlevel yl
           ON yl.levelorder = c.levelid
+
+      LEFT JOIN studentguardian sg
+          ON sg.examno = s.examno
+
+      LEFT JOIN guardian g
+          ON g.guardian_nrc_no = sg.guardianid
+          
+      LEFT JOIN guardiantype gt
+      	  ON gt.guardiantypeid = sg.guardiantypeid
 
       WHERE s.examno = ?
 
@@ -510,5 +556,5 @@ exports.findReturningStudent = (connection, examno) => {
       LIMIT 1;
     `;
 
-  return query(connection, sql, [examno]);
+  return query(sql, [examno]);
 };
