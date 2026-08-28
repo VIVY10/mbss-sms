@@ -64,10 +64,10 @@ exports.returningPupils = async (req, res) => {
     user: req.user,
   });
 };
- 
+
 // exports.register = async (req, res) => {
 //   const data = matchedData(req);
- 
+
 //   const reported_by = req.user.id;
 //   const reporting_status = "reported";
 //   const enrollment_type = "new";
@@ -84,54 +84,44 @@ exports.returningPupils = async (req, res) => {
 //   return res.status(200).json(result);
 // };
 
-
 exports.register = async (req, res) => {
-
   // const data = matchedData(req);
-   const data = req.body;
-    //console.log(req.body)
- 
-    try {
+  const data = req.body;
+  //console.log(req.body)
 
-        const reported_by = req.user.teacherid;
-        const reporting_status = "reported";
-        const enrollment_type = data.enrollment_type;
+  try {
+    const reported_by = req.user.teacherid;
+    const reporting_status = "reported";
+    const enrollment_type = data.enrollment_type;
 
-        let result;
+    let result;
 
-        if (enrollment_type === "returning") {
-
-            result = await pupilService.registerReturningPupil({
-                reported_by,
-                reporting_status,
-                data
-            });
-
-        } else {
-
-            result = await pupilService.registerPupil({
-                reported_by,
-                reporting_status,
-                enrollment_type,
-                data,
-                file: req.file,
-                profileDirectory
-            });
-        }
-
-        return res.status(201).json(result);
-
-    } catch (err) {
-
-        console.error("Registration error:", err);
-
-        return res.status(400).json({
-            message: err.message ||
-                "Student registration failed."
-        });
+    if (enrollment_type === "returning") {
+      result = await pupilService.registerReturningPupil({
+        reported_by,
+        reporting_status,
+        data,
+      });
+    } else {
+      result = await pupilService.registerPupil({
+        reported_by,
+        reporting_status,
+        enrollment_type,
+        data,
+        file: req.file,
+        profileDirectory,
+      });
     }
-};
 
+    return res.status(201).json(result);
+  } catch (err) {
+    console.error("Registration error:", err);
+
+    return res.status(400).json({
+      message: err.message || "Student registration failed.",
+    });
+  }
+};
 
 exports.searchReturningStudent = async (req, res) => {
   try {
@@ -145,19 +135,19 @@ exports.searchReturningStudent = async (req, res) => {
 
     // const connection = await getConnection();
 
-      const student = await pupilModel.findReturningStudent(examno);
+    const student = await pupilModel.findReturningStudent(examno);
 
     //  console.log(student)
 
-      if (!student.length) {
-        return res.status(404).json({
-          message: "No student was found with that examination number.",
-        });
-      }
-
-      res.json({
-        student: student[0],
+    if (!student.length) {
+      return res.status(404).json({
+        message: "No student was found with that examination number.",
       });
+    }
+
+    res.json({
+      student: student[0],
+    });
   } catch (err) {
     console.error("Returning student search error:", err);
 
@@ -173,6 +163,16 @@ exports.viewPupils = async (req, res) => {
   const results = await pupilModel.getAll();
 
   return res.render("./pupil/searchList", {
+    results,
+    user: req.user,
+  });
+};
+
+exports.students = async (req, res) => {
+  const results = await pupilModel.getAll();
+  console.log(results)
+
+  return res.render("./pupil/index", {
     results,
     user: req.user,
   });
