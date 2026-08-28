@@ -131,12 +131,7 @@ async function registerPupil({
   }
 }
 
-async function registerReturningPupil({
-  reported_by,
-  reporting_status,
-  enrollment_type,
-  data,
-}) {
+async function registerReturningPupil({ reported_by, reporting_status, data }) {
   const connection = await getConnection();
 
   try {
@@ -151,9 +146,9 @@ async function registerReturningPupil({
     );
 
     if (!existing.length) {
-      throw new Error(
-        "Student was not found. Please search for the student first.",
-      );
+      return {
+        message: "Student was not found. Please search for the student first.",
+      }
     }
 
     const student = existing[0];
@@ -165,9 +160,9 @@ async function registerReturningPupil({
       student.status &&
       ["transferred", "left"].includes(String(student.status).toLowerCase())
     ) {
-      throw new Error(
-        `Student cannot be enrolled because their status is ${student.status}.`,
-      );
+     return {
+        message: `Student cannot be enrolled because their status is ${student.status}.`,
+     }
     }
 
     /*
@@ -180,13 +175,14 @@ async function registerReturningPupil({
       connection,
       data.examno,
       data.schoolyear,
-      data.termid,
+      data.termid
     );
 
+
     if (existingEnrollment.length) {
-      throw new Error(
-        "Student is already enrolled for this academic year and term.",
-      );
+      return {
+        message: "Student is already enrolled for this academic year and term",
+      };
     }
 
     /*
@@ -198,7 +194,7 @@ async function registerReturningPupil({
       data.classid,
       data.termid,
       data.schoolyear,
-      enrollment_type,
+      data.enrollment_type,
     );
 
     /*
@@ -216,14 +212,14 @@ async function registerReturningPupil({
      *
      * Only update fields that are allowed to change.
      */
-    await pupilModel.updateReturningStudent(connection, data.examno, {
-      studentstatus: data.studentstatus,
-      sponsor: data.sponsor,
-      ovcstatus: data.ovcstatus,
-      studentPhoneNumber: data.studentPhoneNumber,
-      email: data.email,
-      address: data.address,
-    });
+    // await pupilModel.updateReturningStudent(connection, data.examno, {
+    //   studentstatus: data.studentstatus,
+    //   sponsor: data.sponsor,
+    //   ovcstatus: data.ovcstatus,
+    //   studentPhoneNumber: data.studentPhoneNumber,
+    //   email: data.email,
+    //   address: data.address,
+    // });
 
     /*
      * 7. Guardian
@@ -231,13 +227,13 @@ async function registerReturningPupil({
      * If the guardian exists, reuse it.
      * Otherwise create it.
      */
-    const guardian = await pupilModel.findGuardian(connection, data.nrcno);
+    // const guardian = await pupilModel.findGuardian(connection, data.guardian_nrc_no);
 
-    if (!guardian.length) {
-      await pupilModel.createGuardian(connection, data);
-    }
+    // if (!guardian.length) {
+    //   await pupilModel.createGuardian(connection, data);
+    // }
 
-    await pupilModel.linkGuardian(connection, data);
+    // await pupilModel.linkGuardian(connection, data);
 
     await commit(connection);
 

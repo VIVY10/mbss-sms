@@ -229,29 +229,6 @@ exports.addYearLevel = (connection, examno, yearlevel, schoolyear) =>
   );
 
 // ==================== ADD CLASS ====================
-
-// exports.addClass = (
-//   connection,
-//   examno,
-//   classid,
-//   termid,
-//   yearid,
-//   enrollment_type
-// ) =>
-//   connectionQuery(
-//     connection,
-//     `INSERT INTO studentclass
-//       (examno, classid, termid, yearid, enrollment_type)
-//       VALUES (?, ?, ?, ?, ?)`,
-//     [
-//       examno,
-//       classid,
-//       termid,
-//       yearid,
-//       enrollment_type
-//     ]
-//   );
-
 exports.addClass = async (
   connection,
   examno,
@@ -298,9 +275,9 @@ exports.addReporting = (
 
 // ==================== FIND GUARDIAN ====================
 
-exports.findGuardian = (connection, nrcno) =>
+exports.findGuardian = (connection, guardian_nrc_no) =>
   connectionQuery(connection, "SELECT guardian_nrc_no FROM guardian WHERE guardian_nrc_no = ?", [
-    nrcno,
+    guardian_nrc_no,
   ]);
  
 // ==================== CREATE GUARDIAN ====================
@@ -443,13 +420,9 @@ exports.deleteOrphanedGuardians = () =>
     WHERE stg.guardianid IS NULL
   `);
 
-exports.findEnrollmentOnConnection = (
-  connection,
-  examno,
-  schoolyear,
-  termid,
-) => {
-  const sql = `
+exports.findEnrollmentOnConnection = (connection, examno, schoolyear, termid ) => 
+  connectionQuery(
+  connection,`
         SELECT
             sc.studentclassid,
             sc.examno,
@@ -461,10 +434,8 @@ exports.findEnrollmentOnConnection = (
           AND sc.yearid = ?
           AND sc.termid = ?
         LIMIT 1
-    `;
-
-  return query(connection, sql, [examno, schoolyear, termid]);
-};
+    `, [examno, schoolyear, termid]
+)
 
 exports.findReturningStudent = (examno) => {
   const sql = `

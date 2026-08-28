@@ -89,24 +89,21 @@ exports.register = async (req, res) => {
 
   // const data = matchedData(req);
    const data = req.body;
-    console.log(req.body)
+    //console.log(req.body)
  
     try {
 
-        const reported_by = req.user.id;
+        const reported_by = req.user.teacherid;
         const reporting_status = "reported";
         const enrollment_type = data.enrollment_type;
 
         let result;
 
         if (enrollment_type === "returning") {
-          console.log("returning here")
-          // result = "successfully enrolled"
 
             result = await pupilService.registerReturningPupil({
                 reported_by,
                 reporting_status,
-                enrollment_type,
                 data
             });
 
