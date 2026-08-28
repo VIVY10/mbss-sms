@@ -19,7 +19,7 @@ const { removeFileIfExists } = require("../utils/fileUtils.js");
 // Create term enrolment
 // Create reporting record
 // COMMIT
- 
+
 async function getRegistrationData() {
   const [
     foundClass,
@@ -50,7 +50,6 @@ async function registerPupil({
   file,
   profileDirectory,
 }) {
-    
   const connection = await getConnection();
 
   const profilePicture = file?.filename ?? null;
@@ -68,11 +67,14 @@ async function registerPupil({
     );
 
     if (existing.length) {
-       return {message: "Student already in the system. Update student records instead."};
+      return {
+        message:
+          "Student already in the system. Update student records instead.",
+      };
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
- 
+
     await pupilModel.createStudent(connection, {
       ...data,
       hashedPassword,
@@ -318,6 +320,7 @@ async function deletePupil(examNumber, profileDirectory, backupDirectory) {
 module.exports = {
   getRegistrationData,
   registerPupil,
+  registerReturningPupil,
   updatePupil,
   deletePupil,
 };

@@ -87,7 +87,9 @@ exports.returningPupils = async (req, res) => {
 
 exports.register = async (req, res) => {
 
-  const data = matchedData(req);
+  // const data = matchedData(req);
+   const data = req.body;
+    console.log(req.body)
  
     try {
 
@@ -98,11 +100,10 @@ exports.register = async (req, res) => {
         let result;
 
         if (enrollment_type === "returning") {
-
           console.log("returning here")
           // result = "successfully enrolled"
 
-            result = await registerReturningPupil({
+            result = await pupilService.registerReturningPupil({
                 reported_by,
                 reporting_status,
                 enrollment_type,
@@ -111,7 +112,7 @@ exports.register = async (req, res) => {
 
         } else {
 
-            result = await registerPupil({
+            result = await pupilService.registerPupil({
                 reported_by,
                 reporting_status,
                 enrollment_type,

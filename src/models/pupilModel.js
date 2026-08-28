@@ -312,11 +312,16 @@ exports.createGuardian = (connection, data) =>
       (
         guardian_nrc_no,
         fname,
-        lname,
-        phonenumber
+        lname,        
+        guardian_occupation,
+        phonenumber,
+        guardian_alt_phone,
+        email,
+        address
+
       )
-      VALUES (?, ?, ?, ?)`,
-    [data.guardian_nrc_no, data.guardianFname, data.guardianLname, data.phoneNumber],
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [data.guardian_nrc_no, data.guardianFname, data.guardianLname, data.guardian_occupation,  data.phoneNumber, data.guardian_alt_phone, data.guardian_email, data.guardian_address],
   );
 
 // ==================== LINK GUARDIAN ====================

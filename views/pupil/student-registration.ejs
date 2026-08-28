@@ -36,8 +36,7 @@
     </button>
   </div>
 
-  <input type="hidden" name="enrollment_type" id="admissionType" value="new">
-
+  
   <!-- RETURNING PANEL -->
   <div id="returningPanel" class="returning-student-panel hidden">
     <div class="panel-header">
@@ -89,6 +88,7 @@
 
   <!-- MAIN REGISTRATION FORM -->
   <form id="registrationForm" method="POST" action="/register" enctype="multipart/form-data" novalidate>
+    <input type="hidden" name="enrollment_type" id="admissionType" value="">
     <!-- STEPPER -->
     <div class="stepper">
       <button type="button" class="step active" data-step="1"><span>1</span><strong>Student</strong></button>
@@ -346,7 +346,7 @@
                 <div class="field" id="confirmPasswordField">
                   <label>Confirm Password <b>*</b></label>
                   <div class="password-wrap">
-                    <input type="password" id="confirmPassword" required minlength="8" placeholder="Confirm">
+                    <input type="password" name="confirmPassword" id="confirmPassword" required minlength="8" placeholder="Confirm">
                     <button type="button" class="password-toggle" data-target="confirmPassword">👁</button>
                   </div>
                 </div>
