@@ -25,6 +25,7 @@ router.get("/register/returning/search", controller.searchReturningStudent);
 router.post('/registerReturningPupils', authChecker, controller.register);
 router.get('/viewPupils', authChecker, controller.viewPupils);
 router.get('/students', authChecker, controller.students); // test route for new UI
+router.get('/students/:examno', authChecker, controller.searchStudent); // test route for new UI
 router.get('/searchPupil', authChecker, controller.searchPage);
 router.post('/searchPupil', authChecker, checkexamnoValidationRules(), validate, controller.searchPupil);
 router.get('/updatePupilRecord/:id', authChecker, controller.editPage);

@@ -196,7 +196,7 @@ async function registerReturningPupil({ reported_by, reporting_status, data }) {
       data.schoolyear,
       data.enrollment_type,
     );
-
+ 
     /*
      * 5. Record reporting
      */

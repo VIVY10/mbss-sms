@@ -169,11 +169,11 @@ exports.viewPupils = async (req, res) => {
 };
 
 exports.students = async (req, res) => {
-  const results = await pupilModel.getAll();
-  console.log(results)
+  const students = await pupilModel.getAll();
+  console.log(students)
 
   return res.render("./pupil/index", {
-    results,
+    students,
     user: req.user,
   });
 };
@@ -183,6 +183,18 @@ exports.searchPage = (req, res) => {
     user: req.user,
   });
 };
+
+exports.searchStudent = async (req, res) => {
+  const { examno } = req.params
+
+  const student = await pupilModel.search(examno);
+
+  return res.render("./pupil/profile", {
+    student,
+    user: req.user,
+  });
+};
+
 
 exports.searchPupil = async (req, res) => {
   const { examno } = matchedData(req);

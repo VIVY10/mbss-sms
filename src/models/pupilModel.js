@@ -42,7 +42,7 @@ const pupilListSql = `
   JOIN guardian g
     ON g.guardian_nrc_no = stg.guardianid
 `;
-
+ 
 // ==================== FIND PUPIL ====================
 
 exports.findByExamNo = (examno) =>
@@ -91,7 +91,7 @@ exports.getAll = () => query(pupilListSql);
 // ==================== SEARCH PUPILS ====================
 
 exports.search = (examNumber) =>
-  query(`${pupilListSql} WHERE s.id = ?`, [examNumber]);
+  query(`${pupilListSql} WHERE s.examno = ?`, [examNumber]);
 
 // ==================== GET EDIT DATA ====================
 
