@@ -1,5 +1,6 @@
 const pupilService = require("../services/pupilService.js");
 const pupilModel = require("../models/pupilModel.js");
+const adminModel = require("../models/adminModel.js");
 
 // ==================== DIRECTORIES ====================
 const path = require("path");
@@ -31,26 +32,13 @@ exports.showRegistration = async (req, res) => {
     return res.redirect("/Dashboard");
   }
 
-  // console.log(data)
-
   return res.render("./pupil/student-registration.ejs", {
     ...data,
     user: req.user,
   });
 };
 
-// exports.showRegistration = async (req, res) => {
-//   const data = await pupilService.getRegistrationData();
 
-//   if (Object.values(data).some((value) => !value?.length)) {
-//     return res.redirect("/Dashboard");
-//   }
-
-//   return res.render("./pupil/student-registration.ejs", {
-//     ...data,
-//     user: req.user,
-//   });
-// };
 
 exports.returningPupils = async (req, res) => {
   const data = await pupilService.getRegistrationData();
@@ -65,24 +53,7 @@ exports.returningPupils = async (req, res) => {
   });
 };
 
-// exports.register = async (req, res) => {
-//   const data = matchedData(req);
 
-//   const reported_by = req.user.id;
-//   const reporting_status = "reported";
-//   const enrollment_type = "new";
-
-//   const result = await pupilService.registerPupil({
-//     reported_by,
-//     reporting_status,
-//     enrollment_type,
-//     data,
-//     file: req.file,
-//     profileDirectory,
-//   });
-
-//   return res.status(200).json(result);
-// };
 
 exports.register = async (req, res) => {
   // const data = matchedData(req);
@@ -160,20 +131,16 @@ exports.searchReturningStudent = async (req, res) => {
 // ==================== VIEW PUPILS ====================
 
 exports.viewPupils = async (req, res) => {
-  const results = await pupilModel.getAll();
-
-  return res.render("./pupil/searchList", {
-    results,
-    user: req.user,
-  });
-};
-
-exports.students = async (req, res) => {
-  const students = await pupilModel.getAll();
-  console.log(students)
+  const students = await pupilModel.getAll2();
+  const schoolyear = await adminModel.getSchoolYears()
+  const foundTerm = await adminModel.getTerms()
+  const foundClass = await adminModel.getClasses()
 
   return res.render("./pupil/index", {
     students,
+    schoolyear,
+    foundTerm,
+    foundClass,
     user: req.user,
   });
 };
@@ -185,6 +152,19 @@ exports.searchPage = (req, res) => {
 };
 
 exports.searchStudent = async (req, res) => {
+  const { examno } = req.params
+
+  const student = await pupilModel.search(examno);
+
+  return res.render("./pupil/profile", {
+    student,
+    user: req.user,
+  });
+};
+
+
+// not worked on. fix later
+exports.studentHistory = async (req, res) => {
   const { examno } = req.params
 
   const student = await pupilModel.search(examno);

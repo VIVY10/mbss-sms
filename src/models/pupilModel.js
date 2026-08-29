@@ -42,6 +42,22 @@ const pupilListSql = `
   JOIN guardian g
     ON g.guardian_nrc_no = stg.guardianid
 `;
+
+const pupilListSql2 = `
+  SELECT
+    s.fname,
+    s.middlename,
+    s.lname,
+    s.profilePicture,
+    s.examno,
+    s.address,
+    s.religion,
+    s.dob,
+    s.gender,
+    s.enrollmentdate,
+    s.status
+  FROM students AS s
+`;
  
 // ==================== FIND PUPIL ====================
 
@@ -87,6 +103,8 @@ exports.getRegistrationOptions = async () => {
 // ==================== GET ALL PUPILS ====================
 
 exports.getAll = () => query(pupilListSql);
+
+exports.getAll2 = () => query(pupilListSql2);
 
 // ==================== SEARCH PUPILS ====================
 

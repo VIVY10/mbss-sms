@@ -63,22 +63,22 @@
                 STUDENTS
             </div>
 
-            <a href="/students" class="nav-link active">
+            <a href="/viewPupils" class="nav-link active">
                 <i class="bi bi-people"></i>
                 <span>Students</span>
             </a>
 
-            <a href="/students/register" class="nav-link">
+            <a href="/register" class="nav-link">
                 <i class="bi bi-person-plus"></i>
                 <span>New Student</span>
             </a>
 
-            <a href="/students/returning" class="nav-link">
+            <a href="/register" class="nav-link">
                 <i class="bi bi-arrow-repeat"></i>
                 <span>Returning Student</span>
             </a>
 
-            <a href="/students/promotion" class="nav-link">
+            <a href="#" class="nav-link">
                 <i class="bi bi-arrow-up-circle"></i>
                 <span>Promotion</span>
             </a>
@@ -129,7 +129,7 @@
 
             <div class="admin-info">
                 <strong>Administrator</strong>
-                <small>System Admin</small>
+                <small><%= user.username %></small>
             </div>
 
             <button class="sidebar-more">
@@ -217,7 +217,7 @@
                 <div class="page-actions">
 
                     <a
-                        href="/students/returning"
+                        href="/register"
                         class="btn btn-outline-primary"
                     >
                         <i class="bi bi-arrow-repeat"></i>
@@ -225,7 +225,7 @@
                     </a>
 
                     <a
-                        href="/students/register"
+                        href="/register"
                         class="btn btn-primary"
                     >
                         <i class="bi bi-person-plus"></i>
@@ -544,9 +544,9 @@
 
                                 <th>EXAM NO.</th>
 
-                                <th>YEAR LEVEL</th>
+                                <th>RELIGION</th>
 
-                                <th>CLASS</th>
+                                <th>ADDRESS</th>
 
                                 <th>ENROLLMENT</th>
 
@@ -585,7 +585,7 @@
                                                     <% if (student.profilePicture) { %>
 
                                                         <img
-                                                            src="/uploads/students/<%= student.profilePicture %>"
+                                                            src="/images/profile/<%= student.profilePicture %>"
                                                             alt="<%= student.fname %>"
                                                         >
 
@@ -634,7 +634,7 @@
                                         <td>
 
                                             <span class="level-text">
-                                                <%= student.levelname %>
+                                                <%= student.religion %>
                                             </span>
 
                                         </td>
@@ -643,7 +643,7 @@
                                         <td>
 
                                             <span class="class-badge">
-                                                <%= student.class %>
+                                                <%= student.address %>
                                             </span>
 
                                         </td>
