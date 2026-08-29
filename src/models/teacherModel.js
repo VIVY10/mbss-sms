@@ -13,6 +13,17 @@ exports.findByUsername = (username) =>
     [username],
   );
 
+exports.findById = (teacherid) =>
+  query(
+    `
+    SELECT
+      *
+    FROM teachers
+    WHERE teacherid = ?
+    `,
+    [teacherid],
+  );
+
 exports.findByEmail = (email) =>
   query(
     `
@@ -89,47 +100,123 @@ exports.getAll = () =>
 
 // ==================== SUBJECTS TAUGHT ====================
 
-exports.getSubjectsTaught = (teacherId) =>
+exports.getTeacherSubjectAllocations = (teacherId) =>
   query(
     `
     SELECT
+      ta.allocation_id,
+      ta.class_subject_id,
+      ta.teacherid,
+      ta.termid,
+      ta.allocated_by,
+      s.subjectcode,
       s.subjectname,
-      cs.classid,
-      cs.subjectcode,
-      c.grade,
-      c.class
+      
+      d.departmentid,
+      d.departmentname,
+      
+      c.class,
+      yl.levelname,
+      t.termid,
+      t.termname,      
+      t.status,
+      
+      sy.schoolyearid,
+      sy.yearname
+      
 
-    FROM class_subjects AS cs
-
+    FROM teaching_allocations ta
+    
+    JOIN class_subjects cs
+    ON cs.class_subject_id = ta.class_subject_id
+    
     JOIN subjects AS s
       ON s.subjectcode = cs.subjectcode
+      
+     JOIN department d
+     ON d.departmentid = s.departmentid
 
     JOIN class AS c
       ON c.classid = cs.classid
+      
+    JOIN yearlevel yl
+    ON yl.levelorder = c.levelid
+    
+    JOIN terms t
+    ON t.termid = ta.termid
+    
+    JOIN schoolyear sy
+    ON sy.schoolyearid = t.yearid
 
-    WHERE cs.teacherid = ?
+    WHERE ta.teacherid = ?
+    AND t.status = 'open'
     `,
     [teacherId],
   );
 
+
+  exports.getTeacherSubjects = (teacherid) =>
+    query(
+      `
+SELECT
+        ts.teacher_subjectid,
+        s.subjectcode,
+        s.subjectname,
+        s.subjectname,
+        d.departmentid,
+        d.departmentname
+        
+      FROM teacher_subject ts
+      JOIN teachers t
+      ON t.teacherid = ts.teacherid
+      JOIN subjects s 
+      ON s.subjectcode = ts.subjectcode
+      
+      JOIN department d 
+      ON d.departmentid = s.departmentid
+      
+      WHERE t.teacherid = ?
+      ORDER BY s.subjectcode ASC
+      `, [teacherid]
+    )
+
 // ==================== GET TEACHER DEPARTMENT ====================
 
-exports.getDepartment = (teacherId) =>
+// exports.getDepartment = (teacherId) =>
+//   query(
+//     `
+//     SELECT
+//       td.teacherid,
+//       dp.departmentid,
+//       dp.departmentname
+
+//     FROM teacher_department AS td
+
+//     JOIN department AS dp
+//       ON td.departmentid = dp.departmentid
+
+//     WHERE td.teacherid = ?
+//     `,
+//     [teacherId],
+//   );
+
+
+exports.findTeacherDepartment = (teacherid) =>
   query(
     `
     SELECT
-      td.teacherid,
-      dp.departmentid,
-      dp.departmentname
-
-    FROM teacher_department AS td
-
-    JOIN department AS dp
-      ON td.departmentid = dp.departmentid
-
-    WHERE td.teacherid = ?
-    `,
-    [teacherId],
+        t.teacherid,
+        t.fname,
+        t.lname,        
+        d.departmentid,
+        d.departmentname,        
+        td.teacher_departmentid
+      FROM teacher_department td      
+      JOIN department d
+      JOIN teachers t
+        ON t.teacherid = td.teacherid
+      WHERE t.teacherid = ?
+    `, [teacherid]
   );
 
 // ==================== UNALLOCATED SUBJECTS ====================

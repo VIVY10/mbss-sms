@@ -61,7 +61,7 @@ router.get('/addGuardianType', ...adminOnly, controller.addGuardianTypePage);
 router.post('/addGuardianType', ...adminOnly, addGuardianTypeValidationRules(), validate, controller.addGuardianType);
 router.get('/viewGuardianType', ...adminOnly, controller.viewGuardianType);
 router.post('/deleteGuardianType', ...adminOnly, controller.deleteGuardianType);
-
+ 
 router.get('/addClassSubjects', ...adminOnly, controller.addClassSubjectsPage);
 router.post('/addClassSubjects', ...adminOnly, addClassSubjectsValidationrules(), validate, controller.addClassSubjects);
 router.get('/viewClassSubjects', ...adminOnly, controller.viewClassSubjects);

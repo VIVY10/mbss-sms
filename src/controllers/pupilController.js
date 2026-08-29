@@ -131,16 +131,24 @@ exports.searchReturningStudent = async (req, res) => {
 // ==================== VIEW PUPILS ====================
 
 exports.viewPupils = async (req, res) => {
+  // get current date
+  const currentDate = new Date()
+  // extract current year
+  const currentYear = currentDate.getFullYear()
+
   const students = await pupilModel.getAll2();
   const schoolyear = await adminModel.getSchoolYears()
   const foundTerm = await adminModel.getTerms()
+  const [openTerm] = await adminModel.get_Open_Terms()
   const foundClass = await adminModel.getClasses()
+  const [stats] = await pupilModel.statistics(currentYear, openTerm.termid)
 
   return res.render("./pupil/index", {
     students,
     schoolyear,
     foundTerm,
     foundClass,
+    stats,
     user: req.user,
   });
 };
@@ -151,13 +159,21 @@ exports.searchPage = (req, res) => {
   });
 };
 
-exports.searchStudent = async (req, res) => {
+exports.studentProfile = async (req, res) => {
   const { examno } = req.params
 
-  const student = await pupilModel.search(examno);
+  const [student] = await pupilModel.search(examno);
+  const [currentEnrollment] = await pupilModel.findCurrentEnrollment(examno);
+  const academicHistory = await pupilModel.findEnrollmentHistory(examno);
+  const guardians = await pupilModel.getStudentGuardian(examno)
+  const guardian = await pupilModel.getStudentGuardian(examno)
 
   return res.render("./pupil/profile", {
     student,
+    currentEnrollment,
+    academicHistory,
+    guardians,
+    guardian,
     user: req.user,
   });
 };

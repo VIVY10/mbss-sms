@@ -124,17 +124,17 @@
         <div class="sidebar-footer">
 
             <div class="admin-avatar">
-                A
+                <%= user.fname.charAt(0) %><%= user.lname.charAt(0) %>
             </div>
 
             <div class="admin-info">
                 <strong>Administrator</strong>
                 <small><%= user.username %></small>
             </div>
-
-            <button class="sidebar-more">
+            <!-- three dot will be implemented later -->
+            <!-- <button class="sidebar-more">
                 <i class="bi bi-three-dots"></i>
-            </button>
+            </button> -->
 
         </div>
 
@@ -177,14 +177,16 @@
                 </button>
 
                 <div class="topbar-user">
-                    <div class="top-avatar">A</div>
-
-                    <div>
-                        <strong>Administrator</strong>
-                        <small>Admin</small>
+                    <div class="top-avatar">
+                        <%= user.fname.charAt(0) %><%= user.lname.charAt(0) %>
                     </div>
 
-                    <i class="bi bi-chevron-down"></i>
+                    <!-- <div>
+                        <strong>Administrator</strong>
+                        <small><%= user.fname %></small>
+                    </div>
+
+                    <i class="bi bi-chevron-down"></i> -->
                 </div>
 
             </div>
@@ -252,7 +254,7 @@
 
                         <strong>
                             <%= typeof stats !== 'undefined'
-                                ? stats.total
+                                ? stats.totalStudents
                                 : 0 %>
                         </strong>
 
@@ -273,7 +275,7 @@
 
                         <strong>
                             <%= typeof stats !== 'undefined'
-                                ? stats.active
+                                ? stats.activeStudents
                                 : 0 %>
                         </strong>
 
@@ -302,6 +304,26 @@
 
                 </div>
 
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+
+                    <div>
+
+                        <span>New This Term</span>
+
+                        <strong>
+                            <%= typeof stats !== 'undefined'
+                                ? stats.newThisTerm
+                                : 0 %>
+                        </strong>
+
+                    </div>
+
+                </div>
+
 
                 <div class="stat-card">
 
@@ -315,7 +337,7 @@
 
                         <strong>
                             <%= typeof stats !== 'undefined'
-                                ? stats.returning
+                                ? stats.returningStudents
                                 : 0 %>
                         </strong>
 

@@ -15,7 +15,8 @@ const router = express.Router();
 
 router.get('/registerTeacher', authChecker, controller.showRegistration);
 router.post('/registerTeacher', authChecker, profilePicUpload.single('file'), registerTeacherValidationRules(), validate, controller.register);
-router.get('/viewTeachers', authChecker, controller.viewTeachers);
+router.get('/viewTeachers', authChecker, controller.viewTeachers); 
+router.get('/teachers/:teacherid', authChecker, controller.findTeacher); 
 router.get('/subjectsTaught', authChecker, controller.subjectsTaught);
 router.get('/trSubjectAllocation', authChecker, controller.unallocatedSubjectAllocation);
 router.get('/subjectAllocation', authChecker, controller.subjectAllocation);

@@ -1,0 +1,352 @@
+          :root {
+            --primary: #1f4e79;
+            --primary-dark: #173a5c;
+            --background: #f5f7fb;
+            --border: #e5e9f0;
+            --text: #253143;
+            --muted: #7b8794;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            font-family: Inter, -apple-system, BlinkMacSystemFont,
+                         "Segoe UI", sans-serif;
+        }
+
+        /* ----------------------------------
+           PAGE
+        ---------------------------------- */
+
+        .page-wrapper {
+            padding: 28px;
+        }
+
+        .page-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* ----------------------------------
+           PROFILE HEADER
+        ---------------------------------- */
+
+        .profile-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 26px;
+            margin-top: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.03);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .profile-main {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .profile-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            object-fit: cover;
+            border: 4px solid #f1f4f8;
+        }
+
+        .profile-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            background: #eef3f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            color: var(--primary);
+        }
+
+        .teacher-name {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .teacher-id {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .profile-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .badge-soft {
+            background: #eef3f8;
+            color: var(--primary);
+            padding: 6px 10px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #e8f7ef;
+            color: #198754;
+        }
+
+        .status-inactive {
+            background: #fbeaea;
+            color: #dc3545;
+        }
+
+        /* ----------------------------------
+           ACTIONS
+        ---------------------------------- */
+
+        .profile-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary-custom {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary-custom:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: #fff;
+        }
+
+        /* ----------------------------------
+           NAVIGATION TABS
+        ---------------------------------- */
+
+        .profile-tabs {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 20px;
+            padding: 6px;
+        }
+
+        .profile-tabs .nav-link {
+            color: #687386;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 11px 16px;
+        }
+
+        .profile-tabs .nav-link.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* ----------------------------------
+           CONTENT CARDS
+        ---------------------------------- */
+
+        .content-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+            height: 100%;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            margin-right: 8px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        /* ----------------------------------
+           STATISTICS
+        ---------------------------------- */
+
+        .stat-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #eef3f8;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-number {
+            font-size: 25px;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* ----------------------------------
+           TABLE
+        ---------------------------------- */
+
+        .table-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .table-card-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table thead th {
+            background: #f8fafc;
+            color: #687386;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            font-size: 14px;
+            padding: 14px;
+        }
+
+        .subject-code {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* ----------------------------------
+           DEPARTMENT ITEM
+        ---------------------------------- */
+
+        .department-item {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .department-name {
+            font-weight: 600;
+        }
+
+        .department-meta {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        /* ----------------------------------
+           RESPONSIVE
+        ---------------------------------- */
+
+        @media (max-width: 768px) {
+
+            .page-wrapper {
+                padding: 16px;
+            }
+
+            .profile-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .profile-main {
+                align-items: flex-start;
+            }
+
+            .teacher-name {
+                font-size: 21px;
+            }
+
+            .profile-actions {
+                width: 100%;
+            }
+
+            .profile-actions .btn {
+                flex: 1;
+            }
+
+            .profile-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .info-row {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .info-value {
+                text-align: left;
+            }
+        }

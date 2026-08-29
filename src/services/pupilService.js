@@ -104,7 +104,7 @@ async function registerPupil({
       reported_by,
     );
 
-    const guardian = await pupilModel.findGuardian(connection, data.nrcno);
+    const guardian = await pupilModel.findGuardian(connection, data.guardian_nrc_no);
 
     if (!guardian.length) {
       await pupilModel.createGuardian(connection, data);

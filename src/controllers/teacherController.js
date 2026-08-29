@@ -2,7 +2,8 @@ const { matchedData } = require("express-validator");
 
 const teacherModel = require("../models/teacherModel.js");
 const teacherService = require("../services/teacherService.js");
- 
+const adminModel = require('../models/adminModel.js')
+const subjectModel = require('../models/subjectModel.js')
 // ==================== DIRECTORIES ====================
 const path = require("path");
 
@@ -30,6 +31,45 @@ exports.register = async (req, res) => {
 // ==================== TEACHERS ====================
 
 exports.viewTeachers = async (req, res) => {
+  const teachers = await teacherModel.getAll();
+  const total = []
+
+  res.render("./teacher/index", {
+    teachers,
+    user: req.user,
+  });
+};
+
+
+exports.findTeacher = async (req, res) => {
+  const {teacherid} = req.params;
+  
+  const [teacher] = await teacherModel.findById(teacherid);
+  const departments = await teacherModel.findTeacherDepartment(teacherid)
+  const subjects = await teacherModel.getTeacherSubjects(teacherid)
+  const allocations = await teacherModel.getTeacherSubjectAllocations(teacherid)
+  const allocationHistory = []
+  const availableClasses  = []
+  const availableClassSubjects  = []
+  const availableDepartments = []
+  const availableSubjects = await subjectModel.getAll()
+
+  res.render("./teacher/teacher-profile", {
+    teacher,
+    departments,
+    subjects,
+    allocations,
+    allocationHistory,
+    availableClasses,
+    availableClassSubjects,
+    availableDepartments,
+    availableSubjects,
+    user: req.user,
+  });
+};
+
+
+exports.viewTeachers2 = async (req, res) => {
   const results = await teacherModel.getAll();
 
   res.render("./teacher/viewRegTeachers", {

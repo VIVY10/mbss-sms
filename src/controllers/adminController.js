@@ -305,7 +305,7 @@ exports.createHodPage = async (req, res) => {
   const [hod, department] = await model.getHodOptions();
 
   if (!hod.length || !department.length) {
-    return res.redirect("/Dashboard");
+    return response(res, "No teachers in the system yet. Register More teachers")
   }
 
   res.render("./hod/createHod", {
@@ -332,9 +332,8 @@ exports.viewHod = async (req, res) => {
   const results = await model.getHods();
 
   if (!results.length) {
-    return res.redirect("/Dashboard");
+    return response(res, "No HOD found");
   }
-
   res.render("./hod/viewHod", {
     results,
     user: req.user,

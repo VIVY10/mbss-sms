@@ -93,7 +93,7 @@ async function allocateDepartment(teacherid, departmentid) {
         departmentid
     );
 }
-
+ 
 
 async function addClassSubject(classid, subjectcode) {
     if (

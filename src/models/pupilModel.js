@@ -64,6 +64,47 @@ const pupilListSql2 = `
 exports.findByExamNo = (examno) =>
   query("SELECT examno FROM students WHERE examno = ?", [examno]);
 
+
+// ==================== FIND PUPIL ====================
+
+exports.statistics = (year, openTerm) =>
+  query(
+    `
+      SELECT
+      COUNT(*) AS totalStudents,
+
+      SUM(
+          CASE
+              WHEN s.status = 'active'
+              THEN 1
+              ELSE 0
+          END
+      ) AS activeStudents,
+
+      SUM(
+          CASE
+              WHEN YEAR(s.enrollmentdate) = ?
+              THEN 1
+              ELSE 0
+          END
+      ) AS newStudents,
+
+      (    SELECT COUNT(DISTINCT sc.examno)
+          FROM studentclass sc
+          WHERE sc.termid = ?
+            AND sc.enrollment_type = 'new'
+      ) AS newThisTerm,
+
+      (
+          SELECT COUNT(DISTINCT sc.examno)
+          FROM studentclass sc
+          WHERE sc.termid = ?
+            AND sc.enrollment_type = 'returning'
+      ) AS returningStudents
+
+      FROM students s;
+    `, [year, openTerm, openTerm]);
+
 // ==================== REGISTRATION OPTIONS ====================
 
 exports.getRegistrationOptions = async () => {
@@ -121,7 +162,7 @@ exports.getEditData = async (id) => {
       `SELECT guardiantypeid,
               guardiantypename AS relationship
        FROM guardiantype`,
-    ),
+    ), 
 
     query("SELECT schoolyearid, yearname FROM schoolyear"),
 
@@ -319,6 +360,25 @@ exports.createGuardian = (connection, data) =>
     [data.guardian_nrc_no, data.guardianFname, data.guardianLname, data.guardian_occupation,  data.phoneNumber, data.guardian_alt_phone, data.guardian_email, data.guardian_address],
   );
 
+exports.getStudentGuardian = (examno) =>
+  query(`
+      SELECT 
+          g.guardian_nrc_no,
+          g.fname,
+          g.lname,
+          g.phonenumber,
+          gt.guardiantypename AS relationship
+      FROM studentguardian sg
+      JOIN guardian g
+        ON g.guardian_nrc_no = sg.guardianid
+      JOIN guardiantype gt
+        ON gt.guardiantypeid = sg.guardiantypeid
+      JOIN students s 
+        ON s.examno = sg.examno
+      WHERE s.examno = ?
+    `, [examno])
+
+
 // ==================== LINK GUARDIAN ====================
 
 exports.linkGuardian = (connection, data) =>
@@ -454,6 +514,96 @@ exports.findEnrollmentOnConnection = (connection, examno, schoolyear, termid ) =
         LIMIT 1
     `, [examno, schoolyear, termid]
 )
+
+exports.findEnrollmentHistory = (examno) =>
+  query(`
+    SELECT
+        sc.studentclassid,
+        sc.examno,
+        sc.classid,
+        sc.termid,
+        sc.yearid,
+        sc.enrollment_type,
+        sc.enrollment_date,
+
+        c.class,
+
+        yl.levelorder,
+        yl.levelname,
+
+        sy.yearname,
+
+        t.termname
+
+    FROM studentclass AS sc
+
+    INNER JOIN class AS c
+        ON c.classid = sc.classid
+
+    INNER JOIN yearlevel AS yl
+        ON yl.levelorder = c.levelid
+
+    LEFT JOIN schoolyear AS sy
+        ON sy.schoolyearid = sc.yearid
+
+    LEFT JOIN terms AS t
+        ON t.termid = sc.termid
+
+    WHERE sc.examno = ?
+
+    ORDER BY
+        sc.yearid DESC,
+        sc.termid DESC;
+    `, [examno])
+
+
+
+
+exports.findCurrentEnrollment = (examno) =>
+  query(`
+    SELECT
+        sc.studentclassid,
+        sc.examno,
+        sc.classid,
+        sc.termid,
+        sc.yearid,
+        sc.enrollment_type,
+        sc.enrollment_date,
+
+        c.class,
+
+        yl.levelorder,
+        yl.levelname,
+
+        sy.yearname,
+
+        t.termname
+
+    FROM studentclass AS sc
+
+    INNER JOIN class AS c
+        ON c.classid = sc.classid
+
+    INNER JOIN yearlevel AS yl
+        ON yl.levelorder = c.levelid
+
+    LEFT JOIN schoolyear AS sy
+        ON sy.schoolyearid = sc.yearid
+
+    LEFT JOIN terms AS t
+        ON t.termid = sc.termid
+
+    WHERE sc.examno = ?
+
+    AND t.status = ?
+
+    ORDER BY
+        sc.yearid DESC,
+        sc.termid DESC;
+    `, [examno, 'open'])
+
+
+
 
 exports.findReturningStudent = (examno) => {
   const sql = `

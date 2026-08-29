@@ -68,22 +68,22 @@
                 STUDENTS
             </div>
 
-            <a href="/students" class="nav-link active">
+            <a href="/viewPupils" class="nav-link active">
                 <i class="bi bi-people"></i>
                 <span>Students</span>
             </a>
 
-            <a href="/students/register" class="nav-link">
+            <a href="/register" class="nav-link">
                 <i class="bi bi-person-plus"></i>
                 <span>New Student</span>
             </a>
 
-            <a href="/students/returning" class="nav-link">
+            <a href="/register" class="nav-link">
                 <i class="bi bi-arrow-repeat"></i>
                 <span>Returning Student</span>
             </a>
 
-            <a href="/students/promotion" class="nav-link">
+            <a href="#" class="nav-link">
                 <i class="bi bi-arrow-up-circle"></i>
                 <span>Promotion</span>
             </a>
@@ -99,7 +99,7 @@
 
             <div class="admin-info">
                 <strong>Administrator</strong>
-                <small>System Admin</small>
+                <small><%= user.username %></small>
             </div>
 
         </div>
@@ -140,7 +140,7 @@
 
             <!-- BACK -->
             <a
-                href="/students"
+                href="/viewPupils"
                 class="back-link"
             >
                 <i class="bi bi-arrow-left"></i>
@@ -163,9 +163,11 @@
                             >
 
                         <% } else { %>
+
                             <span>
-                                <%= (student && student.fname) ? student.fname.charAt(0) : '' %>
+                                <%= student.fname.charAt(0) %>
                             </span>
+
                         <% } %>
 
                     </div>
@@ -207,14 +209,14 @@
                                 Exam No: <strong><%= student.examno %></strong>
                             </span>
 
-                            <% if (student) { %>
+                            <% if (currentEnrollment) { %>
 
                                 <span>
                                     <i class="bi bi-building"></i>
 
                                     <strong>
-                                        <%= student.levelname %>
-                                        <%= student.class %>
+                                        <%= currentEnrollment.levelname %>
+                                        <%= currentEnrollment.class %>
                                     </strong>
                                 </span>
 
@@ -462,7 +464,7 @@
                         </div>
 
 
-                        <% if (student) { %>
+                        <% if (currentEnrollment) { %>
 
                             <div class="current-enrollment-card">
 
@@ -471,8 +473,8 @@
                                     <span>CLASS</span>
 
                                     <strong>
-                                        <%= student.levelname %>
-                                        <%= student.class %>
+                                        <%= currentEnrollment.levelname %>
+                                        <%= currentEnrollment.class %>
                                     </strong>
 
                                 </div>
@@ -484,7 +486,7 @@
                                         <span>Academic Year</span>
 
                                         <strong>
-                                            <%= student.yearname || '-' %>
+                                            <%= currentEnrollment.yearname || '-' %>
                                         </strong>
                                     </div>
 
@@ -492,7 +494,7 @@
                                         <span>Term</span>
 
                                         <strong>
-                                            <%= student.termname || '-' %>
+                                            <%= currentEnrollment.termname || '-' %>
                                         </strong>
                                     </div>
 
@@ -500,7 +502,7 @@
                                         <span>Year Level</span>
 
                                         <strong>
-                                            <%= student.levelname || '-' %>
+                                            <%= currentEnrollment.levelname || '-' %>
                                         </strong>
                                     </div>
 
@@ -508,7 +510,7 @@
                                         <span>Enrollment</span>
 
                                         <strong class="capitalize">
-                                            <%= student.enrollment_type || '-' %>
+                                            <%= currentEnrollment.enrollment_type || '-' %>
                                         </strong>
                                     </div>
 
@@ -530,11 +532,11 @@
                                     </strong>
 
                                     <span>
-                                        <% if (student.reporting_date) { %>
+                                        <% if (currentEnrollment.enrollment_date) { %>
 
                                             Reported on
                                             <%= new Date(
-                                                student.reporting_date
+                                                currentEnrollment.enrollment_date
                                             ).toLocaleString() %>
 
                                         <% } else { %>
@@ -650,7 +652,7 @@
                         </div>
 
 
-                        <% if (student) { %>
+                        <% if (guardian) { %>
 
                             <div class="guardian-summary">
 
@@ -661,17 +663,17 @@
                                 <div>
 
                                     <strong>
-                                        <%= student.guardianFname %>
-                                        <%= student.guardianLname %>
+                                        <%= guardian.fname %>
+                                        <%= guardian.lname %>
                                     </strong>
 
                                     <span>
-                                        <%= student.relationship || 'Guardian' %>
+                                        <%= guardian.relationship || 'Guardian' %>
                                     </span>
 
                                     <small>
                                         <i class="bi bi-telephone"></i>
-                                        <%= student.phonenumber || '-' %>
+                                        <%= guardian.phonenumber || '-' %>
                                     </small>
 
                                 </div>
@@ -732,12 +734,23 @@
 
                     <div class="timeline">
 
+                        <% if (academicHistory &&
+                               academicHistory.length) { %>
+
+                            <% academicHistory.forEach((record, index) => { %>
 
                                 <div class="timeline-item">
 
                                     <div class="timeline-marker">
 
+                                        <% if (index === 0) { %>
+                                            <i class="bi bi-star-fill"></i>
+                                        <% } else { %>
+                                            <i class="bi bi-check-lg"></i>
+                                        <% } %>
+
                                     </div>
+
 
                                     <div class="timeline-content">
 
@@ -746,12 +759,12 @@
                                             <div>
 
                                                 <span class="history-year">
-                                                    <%= student.yearname || '' %>
+                                                    <%= record.yearname || record.yearid %>
                                                 </span>
 
                                                 <h3>
-                                                    <%= student.levelname %>
-                                                    <%= student.class %>
+                                                    <%= record.levelname %>
+                                                    <%= record.class %>
                                                 </h3>
 
                                             </div>
@@ -759,13 +772,13 @@
 
                                             <span
                                                 class="enrollment-badge
-                                                <%= student.enrollment_type === 'new'
+                                                <%= record.enrollment_type === 'new'
                                                     ? 'new'
-                                                    : student.enrollment_type === 'promoted'
+                                                    : record.enrollment_type === 'promoted'
                                                         ? 'promoted'
                                                         : 'returning' %>"
                                             >
-                                                <%= student.enrollment_type || '' %>
+                                                <%= record.enrollment_type || 'Enrollment' %>
                                             </span>
 
                                         </div>
@@ -776,17 +789,17 @@
                                             <span>
                                                 <i class="bi bi-calendar3"></i>
 
-                                                <%= student.termname || '' %>
+                                                <%= record.termname || `Term ${record.termid}` %>
                                             </span>
 
-                                            <% if (student.enrollment_date) { %>
+                                            <% if (record.enrollment_date) { %>
 
                                                 <span>
                                                     <i class="bi bi-clock"></i>
 
                                                     Enrolled
                                                     <%= new Date(
-                                                        student.enrollment_date
+                                                        record.enrollment_date
                                                     ).toLocaleDateString() %>
                                                 </span>
 
@@ -797,6 +810,26 @@
                                     </div>
 
                                 </div>
+
+                            <% }) %>
+
+                        <% } else { %>
+
+                            <div class="empty-state">
+
+                                <i class="bi bi-clock-history"></i>
+
+                                <h3>No academic history</h3>
+
+                                <p>
+                                    No enrollment records have been
+                                    recorded for this student.
+                                </p>
+
+                            </div>
+
+                        <% } %>
+
                     </div>
 
                 </div>
@@ -830,7 +863,10 @@
 
                     <div class="guardian-list">
 
-                        <% if (student && student.length) { %>
+                        <% if (guardians && guardians.length) { %>
+
+                            <% guardians.forEach(item => { %>
+
                                 <div class="guardian-card">
 
                                     <div class="guardian-avatar">
@@ -840,24 +876,24 @@
                                     <div class="guardian-information">
 
                                         <h3>
-                                            <%= student.guardianFname %>
-                                            <%= student.guardianLname %>
+                                            <%= item.fname %>
+                                            <%= item.lname %>
                                         </h3>
 
                                         <span>
-                                            <%= student.relationship || 'Guardian' %>
+                                            <%= item.relationship || '' %>
                                         </span>
 
                                         <div>
 
                                             <span>
                                                 <i class="bi bi-credit-card"></i>
-                                                <%= student.guardian_nrc_no || '-' %>
+                                                <%= item.guardian_nrc_no || '-' %>
                                             </span>
 
                                             <span>
                                                 <i class="bi bi-telephone"></i>
-                                                <%= student.phonenumber || '-' %>
+                                                <%= item.phonenumber || '-' %>
                                             </span>
 
                                         </div>
@@ -865,6 +901,8 @@
                                     </div>
 
                                 </div>
+
+                            <% }) %>
 
                         <% } else { %>
 
@@ -932,7 +970,8 @@
 
                         <p>
                             The student's class subjects and
-                            teaching allocations will appear here.
+                            teaching allocations will appear here 
+                            once the subjects and teaching allocations module is connected.
                         </p>
 
                     </div>
@@ -957,7 +996,8 @@
                         <h2>Results</h2>
 
                         <p>
-                            Academic results will appear here.
+                            Academic results will appear here
+                            once the results module is connected.
                         </p>
 
                     </div>

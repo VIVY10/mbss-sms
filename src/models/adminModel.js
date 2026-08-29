@@ -223,7 +223,7 @@ exports.deleteClass = (id) =>
 
 
 // ==================== DEPARTMENTS ====================
-
+ 
 exports.getDepartments = () =>
   query(
     'SELECT * FROM department'
@@ -270,22 +270,6 @@ exports.getHodOptions = () =>
   ]);
 
 
-exports.findTeacherDepartment = (
-  teacherid,
-  departmentid
-) =>
-  query(
-    `SELECT teacherid
-     FROM teacher_department
-     WHERE teacherid = ?
-       AND departmentid = ?`,
-    [
-      teacherid,
-      departmentid
-    ]
-  );
-
-
 exports.createTeacherDepartment = (
   teacherid,
   departmentid
@@ -303,18 +287,23 @@ exports.createTeacherDepartment = (
 
 exports.getHods = () =>
   query(
-    `SELECT
-       trs.id,
-       trs.fname,
-       trs.lname,
-       dp.departmentname
-     FROM teacher_department AS td
-     JOIN teachers AS trs
-       ON td.teacherid = trs.teacherid
-     JOIN department AS dp
-       ON dp.departmentid = td.departmentid
-     WHERE trs.usertype = ?`,
-    ['HOD']
+    `
+    SELECT
+     t.teacherid,
+     t.employee_no,
+     t.fname,
+     t.middlename,
+     t.lname,
+     t.gender,
+     t.email,
+     d.departmentid,
+     d.departmentname
+     FROM hod_appointment hd 
+     JOIN teachers t
+     ON t.teacherid = hd.teacherid
+     JOIN department d
+     ON d.departmentid = hd.departmentid
+    `
   );
 
 
