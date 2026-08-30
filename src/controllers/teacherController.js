@@ -2,8 +2,8 @@ const { matchedData } = require("express-validator");
 
 const teacherModel = require("../models/teacherModel.js");
 const teacherService = require("../services/teacherService.js");
-const adminModel = require('../models/adminModel.js')
-const subjectModel = require('../models/subjectModel.js')
+const adminModel = require("../models/adminModel.js");
+const subjectModel = require("../models/subjectModel.js");
 // ==================== DIRECTORIES ====================
 const path = require("path");
 
@@ -32,7 +32,7 @@ exports.register = async (req, res) => {
 
 exports.viewTeachers = async (req, res) => {
   const teachers = await teacherModel.getAll();
-  const total = []
+  const total = [];
 
   res.render("./teacher/index", {
     teachers,
@@ -40,20 +40,23 @@ exports.viewTeachers = async (req, res) => {
   });
 };
 
-
 exports.findTeacher = async (req, res) => {
-  const {teacherid} = req.params;
-  
-  const [teacher] = await teacherModel.findById(teacherid);
-  const departments = await teacherModel.findTeacherDepartment(teacherid)
-  const subjects = await teacherModel.getTeacherSubjects(teacherid)
-  const allocations = await teacherModel.getTeacherSubjectAllocations(teacherid)
-  const allocationHistory = []
-  const availableClasses  = []
-  const availableClassSubjects  = []
-  const availableDepartments = []
-  const availableSubjects = await subjectModel.getAll()
+  const { teacherid } = req.params;
 
+  const [teacher] = await teacherModel.findById(teacherid);
+  const departments = await teacherModel.findTeacherDepartment(teacherid);
+  const subjects = await teacherModel.getTeacherSubjects(teacherid);
+  const allocations =
+    await teacherModel.getTeacherSubjectAllocations(teacherid);
+  const allocationHistory = [];
+  const availableClasses = [];
+  const availableClassSubjects = [];
+  const availableDepartments = await adminModel.getDepartments();
+  const availableSubjects = await subjectModel.getAll();
+
+  console.log(departments)
+
+  // console.log(availableDepartments)
   res.render("./teacher/teacher-profile", {
     teacher,
     departments,
@@ -67,7 +70,6 @@ exports.findTeacher = async (req, res) => {
     user: req.user,
   });
 };
-
 
 exports.viewTeachers2 = async (req, res) => {
   const results = await teacherModel.getAll();
@@ -142,42 +144,32 @@ exports.subjectAllocation = async (req, res) => {
   });
 };
 
-// ==================== ALLOCATE SUBJECT PAGE ====================
-
-exports.allocateSubjectPage = async (req, res) => {
-  const {
-    mherdngb: classSubjectid,
-    dhgbjjhggvvffjghftxderdcvbhjgkbjgfjvfj: departmentid,
-  } = req.query;
-
-  const [foundClass, foundTeacher] = await teacherModel.getAllocationDetails(
-    classSubjectid,
-    departmentid,
-  );
-
-  if (!foundClass.length) {
-    return res.status(404).send("Class subject not found");
-  }
-
-  if (!foundTeacher.length) {
-    return res.send("No teachers found");
-  }
-
-  res.render("./class/allocateSubject", {
-    foundClass,
-    foundTeacher,
-    user: req.user,
-  });
-};
-
 // ==================== ALLOCATE SUBJECT ====================
+exports.assignTeacherSubject = async (req, res) => {
+    const { teacherid, subjectcode } = req.body;
+    const approved_by = req.user.teacherid;
 
-exports.allocateSubject = async (req, res) => {
-  const { teacher, subjectid } = req.body;
+    try {
+        const result = await teacherService.assignSubject(
+            teacherid,
+            subjectcode,
+            approved_by
+        );
 
-  await teacherModel.allocateSubject(teacher, subjectid);
+        return res.status(result.status).json({
+            teacherid: teacherid,
+            success: result.success,
+            message: result.message
+        });
 
-  res.redirect("/subjectAllocation");
+    } catch (err) {
+        console.error("Subject allocation error:", err);
+
+        return res.status(500).json({
+            success: false,
+            message: "An unexpected error occurred while allocating the subject."
+        });
+    }
 };
 
 // ==================== REGISTERED PUPILS ====================
@@ -192,12 +184,12 @@ exports.registeredPupils = async (req, res) => {
     user: req.user,
   });
 };
- 
+
 // ==================== DELETE TEACHER ====================
 
 exports.deleteTeacher = async (req, res) => {
   await teacherService.deleteTeacher(
-    req.query.username, 
+    req.query.username,
     profileDirectory,
     backupDirectory,
   );
@@ -223,13 +215,11 @@ exports.lockTeacherAccount = async (req, res, next) => {
     await teacherService.lockAccount(req, res, username);
 
     return res.redirect("/viewTeachers");
-
   } catch (error) {
     req.flash("error", error.message);
     return res.redirect("/viewTeachers");
   }
 };
-
 
 // ==================== UNLOCK TEACHER ACCOUNT ====================
 exports.unlockTeacherAccount = async (req, res, next) => {
@@ -239,7 +229,6 @@ exports.unlockTeacherAccount = async (req, res, next) => {
     await teacherService.unlockAccount(username);
 
     return res.redirect("/viewTeachers");
-
   } catch (error) {
     console.log(error);
 

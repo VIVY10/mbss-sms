@@ -302,14 +302,14 @@ exports.viewDepartment = async (req, res) => {
 // ==================== HOD ====================
 
 exports.createHodPage = async (req, res) => {
-  const [hod, department] = await model.getHodOptions();
+  const [teacher, department] = await model.getHodOptions();
 
-  if (!hod.length || !department.length) {
+  if (!teacher.length || !department.length) {
     return response(res, "No teachers in the system yet. Register More teachers")
   }
 
   res.render("./hod/createHod", {
-    hod,
+    teacher,
     department,
     user: req.user,
   });
@@ -317,14 +317,15 @@ exports.createHodPage = async (req, res) => {
 
 exports.createHod = async (req, res) => {
   // const data = matchedData(req);
-  const data = req.body;
+  const {teacherid, departmentid, YearOfAppointment} = req.body;
+  const appointed_by = req.user.teacherid;
 
   try {
-    await service.createHod(data.hod, data.department);
-
-    res.redirect("/Dashboard");
-  } catch {
-    res.redirect("/Dashboard");
+    await service.createHod(teacherid, departmentid, YearOfAppointment, appointed_by);
+    res.redirect("/viewHod"); 
+  } catch(err) {
+    console.log(err)
+    return response(res, "Error Occured")
   }
 };
 
@@ -342,37 +343,39 @@ exports.viewHod = async (req, res) => {
 
 // ==================== DEPARTMENT ALLOCATION ====================
 
-exports.allocateDepartmentPage = async (req, res) => {
-  const [foundTeacher, foundDepartment] =
-    await model.getTeacherAllocationOptions();
-
-  if (!foundTeacher.length) {
-    return res.send("No Teachers in the system");
-  }
-
-  if (!foundDepartment.length) {
-    return res.redirect("/Dashboard");
-  }
-
-  res.render("./admin/allocateTrDepartment", {
-    foundTeacher,
-    foundDepartment,
-    user: req.user,
-  });
-};
-
 exports.allocateDepartment = async (req, res) => {
-  // const data = matchedData(req);
-  const data = req.body;
-
+  const { departmentid } = req.body;
+  const { teacherid } = req.params;
+ 
   try {
-    await service.allocateDepartment(data.teacher, data.department);
+    const result = await service.allocateDepartment(
+      teacherid,
+      departmentid
+    );
 
-    res.redirect("/allocateDepartment");
-  } catch {
-    res.redirect("/allocateDepartment");
+    if (!result.success) {
+      return res.status(409).json({
+        success: false,
+        message: result.message
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+      redirect: `/teachers/${teacherid}`
+    });
+
+  } catch (err) {
+    console.error("Department allocation error:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to allocate teacher to department."
+    });
   }
 };
+
 
 exports.viewDepartmentTeachers = async (req, res) => {
   const departments = await model.getDepartmentTeachers(req.user.id);

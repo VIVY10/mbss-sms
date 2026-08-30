@@ -745,13 +745,39 @@
                                             </a>
 
 
-                                            <a
+                                            <!-- <a
                                                 href="/teachers/edit/<%= teacher.teacherid %>"
                                                 class="action-btn"
                                                 title="Edit teacher"
                                             >
                                                 <i class="bi bi-pencil"></i>
-                                            </a>
+                                            </a> -->
+
+                                             <!-- Lock / Unlock -->
+
+                            <% if (Number(teacher.is_locked)) { %>
+
+                                <a
+                                    class="action-btn"
+                                    href="/unlockTeacherAccount?username=<%= encodeURIComponent(teacher.username) %>"
+                                    onclick="return confirm('Are you sure you want to unlock this account?')"
+                                >
+                                    <i class="bi bi-lock" title="unlock teacher account">
+                                    </i>
+                                </a>
+
+                            <% } else { %>
+
+                                <a
+                                    class="action-btn"
+                                    href="/lockTeacherAccount?username=<%= encodeURIComponent(teacher.username) %>"
+                                    onclick="return confirm('Are you sure you want to lock this account?')"
+                                >
+                                    <i class="bi bi-unlock" title="lock teacher account">
+                                    </i>
+                                </a>
+
+                            <% } %>
 
 
                                             <button

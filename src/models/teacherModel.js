@@ -154,11 +154,10 @@ exports.getTeacherSubjectAllocations = (teacherId) =>
     [teacherId],
   );
 
-
-  exports.getTeacherSubjects = (teacherid) =>
-    query(
-      `
-SELECT
+exports.getTeacherSubjects = (teacherid) =>
+  query(
+    `
+      SELECT
         ts.teacher_subjectid,
         s.subjectcode,
         s.subjectname,
@@ -177,8 +176,24 @@ SELECT
       
       WHERE t.teacherid = ?
       ORDER BY s.subjectcode ASC
-      `, [teacherid]
-    )
+      `,
+    [teacherid],
+  );
+
+exports.findTeacherAssignedSubject = (teacherid, subjectcode) =>
+  query(
+    `
+      SELECT
+        ts.subjectcode,
+        ts.teacherid
+        
+      FROM teacher_subject ts
+      
+      WHERE ts.teacherid = ?
+      AND ts.subjectcode = ?
+      `,
+    [teacherid, subjectcode],
+  );
 
 // ==================== GET TEACHER DEPARTMENT ====================
 
@@ -200,7 +215,6 @@ SELECT
 //     [teacherId],
 //   );
 
-
 exports.findTeacherDepartment = (teacherid) =>
   query(
     `
@@ -210,13 +224,16 @@ exports.findTeacherDepartment = (teacherid) =>
         t.lname,        
         d.departmentid,
         d.departmentname,        
-        td.teacher_departmentid
+        td.teacher_departmentid,
+        td.start_date
       FROM teacher_department td      
       JOIN department d
+        ON d.departmentid = td.departmentid
       JOIN teachers t
         ON t.teacherid = td.teacherid
       WHERE t.teacherid = ?
-    `, [teacherid]
+    `,
+    [teacherid],
   );
 
 // ==================== UNALLOCATED SUBJECTS ====================
@@ -336,14 +353,14 @@ exports.getAllocationDetails = (classSubjectId, departmentId) =>
 
 // ==================== ALLOCATE SUBJECT ====================
 
-exports.allocateSubject = (teacher, subjectId) =>
+exports.assignTeacherSubject = (teacherid, subjectcode, approved_by) =>
   query(
-    `
-    UPDATE class_subjects
-    SET teacherid = ?
-    WHERE class_subjectsid = ?
+    ` 
+    INSERT INTO 
+    teacher_subject(teacherid, subjectcode, approved_by) 
+    VALUES(?, ?, ?)
     `,
-    [teacher, subjectId],
+    [teacherid, subjectcode, approved_by],
   );
 
 // ==================== REGISTERED PUPILS ====================

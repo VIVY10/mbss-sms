@@ -1,38 +1,22 @@
-const { query } = require('../utils/db.js');
-
+const { query } = require("../utils/db.js");
 
 // ==================== SCHOOL YEARS ====================
 
-exports.getSchoolYears = () =>
-  query('SELECT * FROM schoolyear');
-
+exports.getSchoolYears = () => query("SELECT * FROM schoolyear");
 
 exports.findSchoolYear = (yearid) =>
-  query(
-    'SELECT * FROM schoolyear WHERE schoolyearid = ?',
-    [yearid]
-  );
-
+  query("SELECT * FROM schoolyear WHERE schoolyearid = ?", [yearid]);
 
 exports.createSchoolYear = (data) =>
   query(
     `INSERT INTO schoolyear
      (yearname, startdate, enddate)
      VALUES (?, ?, ?)`,
-    [
-      data.yearname,
-      data.startdate,
-      data.enddate
-    ]
+    [data.yearname, data.startdate, data.enddate],
   );
-
 
 exports.deleteSchoolYear = (id) =>
-  query(
-    'DELETE FROM schoolyear WHERE schoolyearid = ?',
-    [id]
-  );
-
+  query("DELETE FROM schoolyear WHERE schoolyearid = ?", [id]);
 
 // ==================== TERMS ====================
 
@@ -50,8 +34,9 @@ exports.getTerms = () =>
       ON sy.schoolyearid = tm.yearid
   `);
 
-  exports.getTermById = (termid) =>
-  query(`
+exports.getTermById = (termid) =>
+  query(
+    `
     SELECT
       tm.termid,
       sy.yearname,
@@ -63,10 +48,13 @@ exports.getTerms = () =>
     JOIN schoolyear AS sy
       ON sy.schoolyearid = tm.yearid
     WHERE tm.termid = ?
-  `, [termid]);
+  `,
+    [termid],
+  );
 
-  exports.get_Open_Terms = () =>
-  query(`
+exports.get_Open_Terms = () =>
+  query(
+    `
     SELECT
       tm.termid,
       sy.yearname,
@@ -78,58 +66,35 @@ exports.getTerms = () =>
     JOIN schoolyear AS sy
       ON sy.schoolyearid = tm.yearid
     WHERE tm.status = ?
-  `, ['OPEN']);
-
-
-exports.getSchoolYearsBasic = () =>
-  query(
-    'SELECT * FROM schoolyear'
+  `,
+    ["OPEN"],
   );
 
+exports.getSchoolYearsBasic = () => query("SELECT * FROM schoolyear");
 
 exports.findSchoolYearById = (yearid) =>
-  query(
-    'SELECT schoolyearid FROM schoolyear WHERE schoolyearid = ?',
-    [yearid]
-  );
+  query("SELECT schoolyearid FROM schoolyear WHERE schoolyearid = ?", [yearid]);
 
-  exports.findSchoolYearAndTermnumber = (yearid, termnumber) =>
+exports.findSchoolYearAndTermnumber = (yearid, termnumber) =>
   query(
-    'SELECT yearid, termnumber FROM terms WHERE yearid = ? AND termnumber = ?',
-    [yearid, termnumber]
+    "SELECT yearid, termnumber FROM terms WHERE yearid = ? AND termnumber = ?",
+    [yearid, termnumber],
   );
-
 
 exports.findTermNumber = (termnumber) =>
-  query(
-    'SELECT termnumber FROM terms WHERE termnumber = ?',
-    [termnumber]
-  );
-
+  query("SELECT termnumber FROM terms WHERE termnumber = ?", [termnumber]);
 
 exports.createTerm = (data) =>
   query(
     `INSERT INTO terms
      (yearid, termnumber, termname, startdate, enddate)
      VALUES (?, ?, ?, ?, ?)`,
-    [
-      data.yearid,
-      data.termnumber,
-      data.termname,
-      data.startdate,
-      data.enddate
-    ]
+    [data.yearid, data.termnumber, data.termname, data.startdate, data.enddate],
   );
 
+exports.deleteTerm = (id) => query("DELETE FROM terms WHERE termid = ?", [id]);
 
-exports.deleteTerm = (id) =>
-  query(
-    'DELETE FROM terms WHERE termid = ?',
-    [id]
-  );
-
-
-  exports.openTerm = (termid, opened_by) =>
+exports.openTerm = (termid, opened_by) =>
   query(
     `UPDATE terms
       SET
@@ -138,11 +103,10 @@ exports.deleteTerm = (id) =>
         closed_by = ?
       WHERE termid = ?
         AND (status = 'closed' OR status = 'upcoming')`,
-    [opened_by, termid]
+    [opened_by, termid],
   );
 
-
-  exports.closeTerm = (termid, closed_by) =>
+exports.closeTerm = (termid, closed_by) =>
   query(
     `UPDATE terms
       SET
@@ -151,9 +115,8 @@ exports.deleteTerm = (id) =>
         closed_by = ?
       WHERE termid = ?
         AND status = 'open'`,
-    [closed_by, termid]
+    [closed_by, termid],
   );
-
 
 // ==================== CLASSES ====================
 
@@ -171,89 +134,90 @@ exports.getClasses = () =>
       ON c.levelid = yl.levelorder
   `);
 
-
 exports.getClassOptions = () =>
   Promise.all([
-    query(
-      'SELECT termid, termnumber FROM terms'
-    ),
-    query(
-      'SELECT * FROM yearlevel'
-    )
+    query("SELECT termid, termnumber FROM terms"),
+    query("SELECT * FROM yearlevel"),
   ]);
 
-
-exports.findClass = (
-  grade,
-  section,
-  termid
-) =>
+exports.findClass = (grade, section, termid) =>
   query(
     `SELECT *
      FROM class
      WHERE grade = ?
        AND section = ?
        AND termid = ?`,
-    [
-      grade,
-      section,
-      termid
-    ]
+    [grade, section, termid],
   );
-
 
 exports.createClass = (data) =>
   query(
     `INSERT INTO class
      (termid, grade, section)
      VALUES (?, ?, ?)`,
-    [
-      data.termid,
-      data.grade,
-      data.section
-    ]
+    [data.termid, data.grade, data.section],
   );
-
 
 exports.deleteClass = (id) =>
-  query(
-    'DELETE FROM class WHERE classid = ?',
-    [id]
-  );
-
+  query("DELETE FROM class WHERE classid = ?", [id]);
 
 // ==================== DEPARTMENTS ====================
- 
-exports.getDepartments = () =>
-  query(
-    'SELECT * FROM department'
-  );
 
+exports.getDepartments = () => query("SELECT * FROM department");
 
 exports.findDepartment = (name) =>
-  query(
-    'SELECT * FROM department WHERE departmentname = ?',
-    [name]
-  );
-
+  query("SELECT * FROM department WHERE departmentname = ?", [name]);
 
 exports.createDepartment = (name) =>
   query(
     `INSERT INTO department
      (departmentname)
      VALUES (?)`,
-    [name]
+    [name],
   );
-
 
 exports.deleteDepartment = (id) =>
+  query("DELETE FROM department WHERE departmentid = ?", [id]);
+
+// ==================== HOD ====================
+exports.getDepartmentHod = (teacherid, departmentid) =>
   query(
-    'DELETE FROM department WHERE departmentid = ?',
-    [id]
+    `
+      SELECT 
+        hd.teacherid,
+        hd.departmentid
+      FROM hod_appointment hd
+      WHERE hd.teacherid = ?
+      AND hd.departmentid = ?
+    `,
+    [teacherid, departmentid],
   );
 
 
-// ==================== HOD ====================
+exports.getDepartmentHodByDepartment = (departmentid) =>
+  query(
+    `
+        SELECT *
+        FROM hod_appointment
+        WHERE departmentid = ?
+        `,
+    [departmentid],
+  );
+
+
+  exports.findTeacherDepartment = (teacherid, departmentid) =>
+  query(
+    `
+    SELECT        
+        td.departmentid,       
+        td.teacherid
+      FROM teacher_department td  
+      WHERE td.teacherid = ?
+      AND td.departmentid = ?
+    `,
+    [teacherid, departmentid],
+  );
+
 
 exports.getHodOptions = () =>
   Promise.all([
@@ -261,29 +225,24 @@ exports.getHodOptions = () =>
       `SELECT teacherid, fname, lname
        FROM teachers
        WHERE usertype = ?`,
-      ['HOD']
+      ["teacher"],
     ),
 
-    query(
-      'SELECT * FROM department'
-    )
+    query("SELECT * FROM department"),
   ]);
 
-
-exports.createTeacherDepartment = (
+exports.createDepartmentHod = (
   teacherid,
-  departmentid
+  departmentid,
+  YearOfAppointment,
+  appointed_by,
 ) =>
   query(
-    `INSERT INTO teacher_department
-     (teacherid, departmentid)
-     VALUES (?, ?)`,
-    [
-      teacherid,
-      departmentid
-    ]
+    `INSERT INTO hod_appointment
+     (teacherid, departmentid, YearOfAppointment, appointed_by)
+     VALUES (?, ?, ?, ?)`,
+    [teacherid, departmentid, YearOfAppointment, appointed_by],
   );
-
 
 exports.getHods = () =>
   query(
@@ -303,9 +262,8 @@ exports.getHods = () =>
      ON t.teacherid = hd.teacherid
      JOIN department d
      ON d.departmentid = hd.departmentid
-    `
+    `,
   );
-
 
 // ==================== TEACHER ALLOCATION ====================
 
@@ -315,14 +273,11 @@ exports.getTeacherAllocationOptions = () =>
       `SELECT teacherid, fname, lname
        FROM teachers
        WHERE usertype = ?`,
-      ['Teacher']
+      ["Teacher"],
     ),
 
-    query(
-      'SELECT * FROM department'
-    )
+    query("SELECT * FROM department"),
   ]);
-
 
 exports.getDepartmentTeachers = (teacherId) =>
   query(
@@ -331,13 +286,10 @@ exports.getDepartmentTeachers = (teacherId) =>
      JOIN department AS dp
        ON td.departmentid = dp.departmentid
      WHERE td.teacherid = ?`,
-    [teacherId]
+    [teacherId],
   );
 
-
-exports.getTeachersInDepartment = (
-  departmentName
-) =>
+exports.getTeachersInDepartment = (departmentName) =>
   query(
     `SELECT
        trs.fname,
@@ -350,42 +302,45 @@ exports.getTeachersInDepartment = (
        ON dp.departmentid = td.departmentid
      WHERE dp.departmentname = ?
        AND trs.usertype = ?`,
-    [
-      departmentName,
-      'Teacher'
-    ]
+    [departmentName, "Teacher"],
   );
 
+exports.findTeacherDepartmentAllocationOptions = (teacherid, departmentid) =>
+  query(
+    `
+    SELECT
+        td.teacherid,       
+        td.departmentid
+      FROM teacher_department td    
+      WHERE td.teacherid = ?
+      AND td.departmentid = ?
+    `,
+    [teacherid, departmentid],
+  );
 
 // ==================== GUARDIAN TYPES ====================
 
-exports.getGuardianTypes = () =>
-  query(
-    'SELECT * FROM guardiantype'
-  );
-
+exports.getGuardianTypes = () => query("SELECT * FROM guardiantype");
 
 exports.findGuardianType = (name) =>
   query(
     `SELECT guardiantypename
      FROM guardiantype
      WHERE guardiantypename = ?`,
-    [name]
+    [name],
   );
-
 
 exports.createGuardianType = (name) =>
   query(
     `INSERT INTO guardiantype
      (guardiantypename)
      VALUES (?)`,
-    [name]
+    [name],
   );
-
 
 exports.deleteGuardianType = (id) =>
   query(
     `DELETE FROM guardiantype
      WHERE guardiantypeid = ?`,
-    [id]
+    [id],
   );

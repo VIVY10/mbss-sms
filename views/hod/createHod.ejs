@@ -11,14 +11,14 @@
             <div class="card-body">
               <form class="row g-0" action="createHod" method="post">
                 <h3>HOD Department Allocation</h3>
-              <% if(locals.hod && locals.department){ %>
+              <% if(locals.teacher && locals.department){ %>
                           <div class="row">
                               <div class="col-md-12 mb-4">
                                 <label class="form-check-label" for="hod">HOD</label>
-                                <select class="select" name="hod">
+                                <select class="select" name="teacherid">
                                   <option selected disabled value="">Choose...</option>
-                                  <% hod.forEach(element => { %>
-                                    <option value=<%= element.id %>><%= element.lname %> <%= element.fname %></option>                              
+                                  <% teacher.forEach(element => { %>
+                                    <option value=<%= element.teacherid %>><%= element.lname %> <%= element.fname %></option>                              
                                   <% }); %>
                                 </select>
                               </div>
@@ -27,12 +27,18 @@
                             <div class="row">
                               <div class="col-md-12 mb-4">
                                 <label class="form-check-label" for="department">Department</label>
-                                <select class="select" name="department">
+                                <select class="select" name="departmentid">
                                   <option selected disabled value="">Choose...</option>
                                   <% department.forEach(element => { %>
                                     <option value=<%= element.departmentid %>> <%= element.departmentname %></option>                              
                                   <% }); %>
                                 </select>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12 mb-4">
+                                <label class="form-check-label" for="department">Year Appointed</label>
+                                <input type="date" name="YearOfAppointment">
                               </div>
                             </div>
                             <% } %>

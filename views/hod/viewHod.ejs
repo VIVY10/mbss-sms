@@ -1,8 +1,6 @@
 <% if(locals.user){ %>
-  <% if(user.usertype==="Admin"){ %>
+  <% if(user.usertype==="admin"){ %>
     <%- include("../partials/sidebar.ejs") %>
-  <% }else{ %>
-    <%- include("../partials/hodSidebar.ejs") %>
   <% } %>
 <% } %>
       <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->

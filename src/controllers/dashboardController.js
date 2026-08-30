@@ -2,9 +2,14 @@ const dashboardViews = require("../config/dashboardViews");
 
 exports.showDashboard = (req, res) => {
     const user = req.user;
+    let dashboard = "";
 
-    const dashboard = dashboardViews[req.user.usertype];
-    
+    if(req.user.usertype === 'admin'){
+      dashboard = dashboardViews['admin'];   
+    }
+
+    // const getHod = await 
+     
 
     if (!dashboard) {
         return res.redirect("/login");
@@ -14,19 +19,6 @@ exports.showDashboard = (req, res) => {
         [dashboard.dataKey]: user
     });
 };
-
-// exports.studentDashboard = (req, res) => {
-//   if (
-//     req.isAuthenticated?.() &&
-//     req.user?.usertype === 'Student'
-//   ) {
-//     return res.render('./pupil/pupilDashboard', {
-//       pupil: req.user
-//     });
-//   }
-
-//   res.redirect('/studentLogin');
-// };
 
 exports.ourTeam = (req, res) => {
   res.render('./main/ourteam');

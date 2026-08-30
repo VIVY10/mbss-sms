@@ -1,0 +1,2431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Department Dashboard | School Management System</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="/styles/hod-dashboard.css">
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3 2 8l10 5 8-4v6h2V8L12 3z"/>
+                    <path d="M6 11v5c0 2 3 4 6 4s6-2 6-4v-5l-6 3-6-3z"/>
+                </svg>
+            </div>
+
+            <div>
+                <h5>EduCore</h5>
+                <small>School Management</small>
+            </div>
+
+        </div>
+
+        <div class="sidebar-profile">
+
+            <div class="profile-avatar">
+                <% if (typeof user !== 'undefined' && user.profilePicture) { %>
+                    <img src="/uploads/profiles/<%= user.profilePicture %>" alt="Profile">
+                <% } else { %>
+                    <span>
+                        <%= typeof user !== 'undefined'
+                            ? (user.fname?.charAt(0) || 'H')
+                            : 'H' %>
+                    </span>
+                <% } %>
+            </div>
+
+            <div class="profile-info">
+
+                <strong>
+                    <%= typeof user !== 'undefined'
+                        ? `${user.fname || ''} ${user.lname || ''}`
+                        : 'Department Head' %>
+                </strong>
+
+                <small>Head of Department</small>
+
+            </div>
+
+            <button class="icon-button sidebar-profile-menu">
+                <i class="bi bi-three-dots-vertical"></i>
+            </button>
+
+        </div>
+
+
+        <!-- Navigation -->
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                MAIN
+            </div>
+
+            <a href="/hod/dashboard"
+               class="nav-item active">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                </svg>
+
+                <span>Dashboard</span>
+
+            </a>
+
+
+            <div class="nav-section-title">
+                ACADEMICS
+            </div>
+
+            <a href="#teachers"
+               class="nav-item"
+               data-section-target="teachers">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4z"/>
+                    <path d="M8 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3z"/>
+                    <path d="M16 13c-3.3 0-6 1.7-6 4v3h12v-3c0-2.3-2.7-4-6-4z"/>
+                    <path d="M2 20v-3c0-1.8 1.7-3.2 4-3.8"/>
+                </svg>
+
+                <span>Department Teachers</span>
+
+            </a>
+
+
+            <a href="#allocations"
+               class="nav-item"
+               data-section-target="allocations">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 5h16v14H4z"/>
+                    <path d="M8 9h8M8 13h5"/>
+                </svg>
+
+                <span>Subject Allocations</span>
+
+            </a>
+
+
+            <a href="#classes"
+               class="nav-item"
+               data-section-target="classes">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 4h16v16H4z"/>
+                    <path d="M8 8h8M8 12h8M8 16h5"/>
+                </svg>
+
+                <span>Class Subjects</span>
+
+            </a>
+
+
+            <a href="#marks"
+               class="nav-item"
+               data-section-target="marks">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M5 3v18"/>
+                    <path d="M5 18h14"/>
+                    <path d="m8 15 3-4 3 2 4-6"/>
+                </svg>
+
+                <span>Marks Schedule</span>
+
+            </a>
+
+
+            <div class="nav-section-title">
+                RESULTS
+            </div>
+
+            <a href="#results"
+               class="nav-item"
+               data-section-target="results">
+
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="6"/>
+                    <path d="m16 16 5 5"/>
+                </svg>
+
+                <span>Search Results</span>
+
+            </a>
+
+
+            <a href="#progress"
+               class="nav-item"
+               data-section-target="progress">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 19V5"/>
+                    <path d="M4 19h17"/>
+                    <path d="m7 15 4-4 3 2 5-7"/>
+                </svg>
+
+                <span>Progress Charts</span>
+
+            </a>
+
+
+            <div class="nav-section-title">
+                REPORTS
+            </div>
+
+            <a href="#reports"
+               class="nav-item"
+               data-section-target="reports">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 3h9l4 4v14H6z"/>
+                    <path d="M14 3v5h5"/>
+                    <path d="M9 13h6M9 17h6"/>
+                </svg>
+
+                <span>Academic Reports</span>
+
+            </a>
+
+
+            <a href="#analytics"
+               class="nav-item"
+               data-section-target="analytics">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M4 19V5"/>
+                    <path d="M4 19h17"/>
+                    <path d="M8 16v-4M12 16V8M16 16v-6M20 16v-9"/>
+                </svg>
+
+                <span>Department Analytics</span>
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="/settings" class="nav-item">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+                    <path d="M4 12H2m20 0h-2M12 4V2m0 20v-2"/>
+                </svg>
+
+                <span>Settings</span>
+
+            </a>
+
+            <a href="/logout" class="nav-item logout">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 17l5-5-5-5"/>
+                    <path d="M15 12H3"/>
+                    <path d="M13 4h6v16h-6"/>
+                </svg>
+
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <button id="menuBtn"
+                    class="mobile-menu-button">
+
+                <i class="bi bi-list"></i>
+
+            </button>
+
+
+            <div class="topbar-title">
+
+                <span class="eyebrow">
+                    ACADEMIC MANAGEMENT
+                </span>
+
+                <h1>Department Dashboard</h1>
+
+            </div>
+
+
+            <div class="topbar-actions">
+
+                <div class="academic-period">
+
+                    <span>Academic Year</span>
+
+                    <strong>
+                        <%= typeof currentYear !== 'undefined'
+                            ? currentYear
+                            : '2026' %>
+                    </strong>
+
+                </div>
+
+
+                <div class="academic-period">
+
+                    <span>Term</span>
+
+                    <strong>
+                        <%= typeof currentTerm !== 'undefined'
+                            ? currentTerm
+                            : 'Term 1' %>
+                    </strong>
+
+                </div>
+
+
+                <button class="icon-button notification-button">
+
+                    <i class="bi bi-bell"></i>
+
+                    <span class="notification-dot"></span>
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <div class="content-container">
+
+
+            <!-- =================================================
+                 DEPARTMENT HEADER
+            ================================================== -->
+
+            <section class="department-header">
+
+                <div>
+
+                    <div class="breadcrumb">
+                        Dashboard
+                        <span>/</span>
+                        Department
+                    </div>
+
+                    <h2>
+                        <%= typeof department !== 'undefined'
+                            ? department.departmentname
+                            : 'Department' %>
+                    </h2>
+
+                    <p>
+                        Manage teachers, subjects, classes,
+                        marks and academic reports.
+                    </p>
+
+                </div>
+
+
+                <div class="header-actions">
+
+                    <button class="btn btn-light"
+                            id="refreshDashboard">
+
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Refresh
+
+                    </button>
+
+                    <button class="btn btn-primary"
+                            data-section-target="reports">
+
+                        <i class="bi bi-file-earmark-text"></i>
+                        Generate Report
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 STATISTICS CARDS
+            ================================================== -->
+
+            <section class="statistics-grid">
+
+
+                <!-- Teachers -->
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon teachers-icon">
+
+                            <svg viewBox="0 0 24 24">
+                                <path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4z"/>
+                                <path d="M8 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3z"/>
+                                <path d="M16 13c-3.3 0-6 1.7-6 4v3h12v-3c0-2.3-2.7-4-6-4z"/>
+                            </svg>
+
+                        </div>
+
+                        <span class="stat-label">
+                            Department Teachers
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-value">
+
+                        <%= stats?.teachers ?? 0 %>
+
+                    </div>
+
+
+                    <div class="stat-footer">
+                        <span class="status-positive">
+                            <i class="bi bi-check-circle"></i>
+                            Active
+                        </span>
+
+                        <a href="#teachers"
+                           data-section-target="teachers">
+                            View teachers
+                        </a>
+                    </div>
+
+                </div>
+
+
+
+                <!-- Subjects -->
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon subjects-icon">
+
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4 4h16v16H4z"/>
+                                <path d="M8 8h8M8 12h8M8 16h5"/>
+                            </svg>
+
+                        </div>
+
+                        <span class="stat-label">
+                            Department Subjects
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-value">
+
+                        <%= stats?.subjects ?? 0 %>
+
+                    </div>
+
+
+                    <div class="stat-footer">
+
+                        <span class="status-neutral">
+                            Allocated subjects
+                        </span>
+
+                        <a href="#allocations"
+                           data-section-target="allocations">
+                            Manage
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Class Subjects -->
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon classes-icon">
+
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 5h18v14H3z"/>
+                                <path d="M7 9h10M7 13h7"/>
+                            </svg>
+
+                        </div>
+
+                        <span class="stat-label">
+                            Class Subjects
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-value">
+
+                        <%= stats?.classSubjects ?? 0 %>
+
+                    </div>
+
+
+                    <div class="stat-footer">
+
+                        <span class="status-positive">
+                            Allocated
+                        </span>
+
+                        <a href="#classes"
+                           data-section-target="classes">
+                            View
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Missing -->
+
+                <div class="stat-card alert-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon warning-icon">
+
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 3 2 21h20L12 3z"/>
+                                <path d="M12 9v5M12 18h.01"/>
+                            </svg>
+
+                        </div>
+
+                        <span class="stat-label">
+                            Classes Without Subjects
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-value">
+
+                        <%= stats?.classesWithoutSubjects ?? 0 %>
+
+                    </div>
+
+
+                    <div class="stat-footer">
+
+                        <span class="status-warning">
+                            Requires attention
+                        </span>
+
+                        <a href="#classes"
+                           data-section-target="classes">
+                            Resolve
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 QUICK ACTIONS
+            ================================================== -->
+
+            <section class="quick-actions">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="eyebrow">
+                            QUICK ACTIONS
+                        </span>
+
+                        <h3>Academic Management</h3>
+                    </div>
+
+                </div>
+
+
+                <div class="quick-action-grid">
+
+                    <button class="quick-action"
+                            data-section-target="teachers">
+
+                        <span class="quick-icon">
+                            <i class="bi bi-people"></i>
+                        </span>
+
+                        <span>
+                            <strong>Department Teachers</strong>
+                            <small>View assigned teachers</small>
+                        </span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </button>
+
+
+                    <button class="quick-action"
+                            data-section-target="allocations">
+
+                        <span class="quick-icon">
+                            <i class="bi bi-journal-bookmark"></i>
+                        </span>
+
+                        <span>
+                            <strong>Allocate Subjects</strong>
+                            <small>Manage class subjects</small>
+                        </span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </button>
+
+
+                    <button class="quick-action"
+                            data-section-target="marks">
+
+                        <span class="quick-icon">
+                            <i class="bi bi-pencil-square"></i>
+                        </span>
+
+                        <span>
+                            <strong>Marks Schedule</strong>
+                            <small>Review assessment schedule</small>
+                        </span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </button>
+
+
+                    <button class="quick-action"
+                            data-section-target="reports">
+
+                        <span class="quick-icon">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                        </span>
+
+                        <span>
+                            <strong>Generate Reports</strong>
+                            <small>Academic reports</small>
+                        </span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 TEACHERS
+            ================================================== -->
+
+            <section id="teachers"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            STAFF
+                        </span>
+
+                        <h3>Department Teachers</h3>
+
+                        <p>
+                            Teachers assigned to this department.
+                        </p>
+
+                    </div>
+
+                    <button class="btn btn-outline-primary">
+
+                        <i class="bi bi-person-plus"></i>
+                        View All Teachers
+
+                    </button>
+
+                </div>
+
+
+                <div class="data-card">
+
+                    <div class="table-toolbar">
+
+                        <div class="search-box">
+
+                            <i class="bi bi-search"></i>
+
+                            <input type="search"
+                                   id="teacherSearch"
+                                   placeholder="Search teacher...">
+
+                        </div>
+
+
+                        <select class="form-select"
+                                id="teacherStatusFilter">
+
+                            <option value="">All Teachers</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table dashboard-table"
+                               id="teacherTable">
+
+                            <thead>
+
+                            <tr>
+                                <th>Teacher</th>
+                                <th>Employee ID</th>
+                                <th>Subjects</th>
+                                <th>Classes</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                            <% if (typeof teachers !== 'undefined' && teachers.length) { %>
+
+                                <% teachers.forEach(teacher => { %>
+
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="person-cell">
+
+                                                <div class="table-avatar">
+                                                    <%= teacher.fname?.charAt(0) || 'T' %>
+                                                </div>
+
+                                                <div>
+                                                    <strong>
+                                                        <%= teacher.fname %>
+                                                        <%= teacher.lname %>
+                                                    </strong>
+
+                                                    <small>
+                                                        <%= teacher.email || 'No email' %>
+                                                    </small>
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+                                            <%= teacher.id %>
+                                        </td>
+
+                                        <td>
+                                            <span class="count-badge">
+                                                <%= teacher.subject_count || 0 %>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="count-badge">
+                                                <%= teacher.class_count || 0 %>
+                                            </span>
+                                        </td>
+
+                                        <td>
+
+                                            <% if (teacher.status === 'active') { %>
+
+                                                <span class="status-badge success">
+                                                    Active
+                                                </span>
+
+                                            <% } else { %>
+
+                                                <span class="status-badge">
+                                                    <%= teacher.status || 'Inactive' %>
+                                                </span>
+
+                                            <% } %>
+
+                                        </td>
+
+                                        <td>
+
+                                            <a href="/teachers/<%= teacher.id %>"
+                                               class="table-action">
+
+                                                <i class="bi bi-chevron-right"></i>
+
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+                                <% }) %>
+
+                            <% } else { %>
+
+                                <tr>
+
+                                    <td colspan="6"
+                                        class="empty-state">
+
+                                        <i class="bi bi-people"></i>
+
+                                        <strong>No teachers found</strong>
+
+                                        <span>
+                                            Teachers assigned to this department
+                                            will appear here.
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            <% } %>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 SUBJECT ALLOCATIONS
+            ================================================== -->
+
+            <section id="allocations"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            TEACHING STRUCTURE
+                        </span>
+
+                        <h3>Subject & Teaching Allocations</h3>
+
+                        <p>
+                            View which subjects belong to classes and
+                            which teachers are assigned to teach them.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="allocation-grid">
+
+                    <!-- Subject Allocation -->
+
+                    <div class="data-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h4>Subject Allocations</h4>
+                                <p>Subjects assigned to classes.</p>
+                            </div>
+
+                            <button class="btn btn-sm btn-primary">
+                                Allocate
+                            </button>
+
+                        </div>
+
+
+                        <div class="table-responsive">
+
+                            <table class="table dashboard-table">
+
+                                <thead>
+
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Class</th>
+                                    <th>Teacher</th>
+                                </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                <% if (typeof allocations !== 'undefined' && allocations.length) { %>
+
+                                    <% allocations.slice(0, 8).forEach(item => { %>
+
+                                        <tr>
+
+                                            <td>
+                                                <strong>
+                                                    <%= item.subjectname %>
+                                                </strong>
+
+                                                <small class="table-subtext">
+                                                    <%= item.subjectcode %>
+                                                </small>
+                                            </td>
+
+                                            <td>
+                                                <%= item.levelname || '' %>
+                                                <%= item.class || '' %>
+                                            </td>
+
+                                            <td>
+
+                                                <% if (item.fname) { %>
+
+                                                    <div class="mini-person">
+
+                                                        <span>
+                                                            <%= item.fname.charAt(0) %>
+                                                        </span>
+
+                                                        <%= item.fname %>
+                                                        <%= item.lname %>
+
+                                                    </div>
+
+                                                <% } else { %>
+
+                                                    <span class="status-badge warning">
+                                                        Not Assigned
+                                                    </span>
+
+                                                <% } %>
+
+                                            </td>
+
+                                        </tr>
+
+                                    <% }) %>
+
+                                <% } else { %>
+
+                                    <tr>
+                                        <td colspan="3"
+                                            class="empty-state">
+                                            No allocations found.
+                                        </td>
+                                    </tr>
+
+                                <% } %>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Classes without subjects -->
+
+                    <div class="data-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h4>Classes Without Subjects</h4>
+                                <p>Classes requiring subject allocation.</p>
+                            </div>
+
+                            <span class="danger-count">
+                                <%= stats?.classesWithoutSubjects ?? 0 %>
+                            </span>
+
+                        </div>
+
+
+                        <div class="attention-list">
+
+                            <% if (typeof classesWithoutSubjects !== 'undefined' &&
+                                   classesWithoutSubjects.length) { %>
+
+                                <% classesWithoutSubjects.forEach(item => { %>
+
+                                    <div class="attention-item">
+
+                                        <div class="attention-icon">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                        </div>
+
+                                        <div class="attention-info">
+
+                                            <strong>
+                                                <%= item.levelname %>
+                                                <%= item.class %>
+                                            </strong>
+
+                                            <small>
+                                                No subjects allocated
+                                            </small>
+
+                                        </div>
+
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            Allocate
+                                        </button>
+
+                                    </div>
+
+                                <% }) %>
+
+                            <% } else { %>
+
+                                <div class="success-message">
+
+                                    <i class="bi bi-check-circle"></i>
+
+                                    <div>
+                                        <strong>All classes configured</strong>
+                                        <small>
+                                            Every class has subjects allocated.
+                                        </small>
+                                    </div>
+
+                                </div>
+
+                            <% } %>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CLASS SUBJECT STATUS
+            ================================================== -->
+
+            <section id="classes"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            CLASS CONFIGURATION
+                        </span>
+
+                        <h3>Class Subject Status</h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="data-card">
+
+                    <div class="table-toolbar">
+
+                        <div class="search-box">
+
+                            <i class="bi bi-search"></i>
+
+                            <input type="search"
+                                   id="classSearch"
+                                   placeholder="Search class...">
+
+                        </div>
+
+
+                        <select class="form-select">
+
+                            <option>All Levels</option>
+
+                            <% if (typeof levels !== 'undefined') { %>
+
+                                <% levels.forEach(level => { %>
+
+                                    <option value="<%= level.levelorder %>">
+                                        <%= level.levelname %>
+                                    </option>
+
+                                <% }) %>
+
+                            <% } %>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table dashboard-table">
+
+                            <thead>
+
+                            <tr>
+                                <th>Class</th>
+                                <th>Level</th>
+                                <th>Subjects</th>
+                                <th>Teachers</th>
+                                <th>Configuration</th>
+                                <th></th>
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                            <% if (typeof classStatuses !== 'undefined' && classStatuses.length) { %>
+
+                                <% classStatuses.forEach(item => { %>
+
+                                    <tr>
+
+                                        <td>
+                                            <strong>
+                                                <%= item.class %>
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            <%= item.levelname %>
+                                        </td>
+
+                                        <td>
+                                            <%= item.subject_count || 0 %>
+                                        </td>
+
+                                        <td>
+                                            <%= item.teacher_count || 0 %>
+                                        </td>
+
+                                        <td>
+
+                                            <% if (!item.subject_count) { %>
+
+                                                <span class="status-badge danger">
+                                                    No Subjects
+                                                </span>
+
+                                            <% } else if (item.unassigned_count > 0) { %>
+
+                                                <span class="status-badge warning">
+                                                    <%= item.unassigned_count %>
+                                                    Unassigned
+                                                </span>
+
+                                            <% } else { %>
+
+                                                <span class="status-badge success">
+                                                    Complete
+                                                </span>
+
+                                            <% } %>
+
+                                        </td>
+
+                                        <td>
+
+                                            <button class="table-action">
+
+                                                <i class="bi bi-chevron-right"></i>
+
+                                            </button>
+
+                                        </td>
+
+                                    </tr>
+
+                                <% }) %>
+
+                            <% } else { %>
+
+                                <tr>
+                                    <td colspan="6"
+                                        class="empty-state">
+                                        No class data available.
+                                    </td>
+                                </tr>
+
+                            <% } %>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 MARKS SCHEDULE
+            ================================================== -->
+
+            <section id="marks"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            ASSESSMENTS
+                        </span>
+
+                        <h3>Marks Schedule</h3>
+
+                        <p>
+                            Monitor assessment and marks-entry progress.
+                        </p>
+
+                    </div>
+
+                    <button class="btn btn-primary">
+
+                        <i class="bi bi-calendar-plus"></i>
+                        Create Schedule
+
+                    </button>
+
+                </div>
+
+
+                <div class="data-card">
+
+                    <div class="schedule-header">
+
+                        <div class="schedule-period">
+
+                            <button class="period-arrow">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+
+                            <div>
+                                <strong>
+                                    <%= currentTerm || 'Term 1' %>
+                                </strong>
+
+                                <span>
+                                    Academic Year
+                                    <%= currentYear || '2026' %>
+                                </span>
+                            </div>
+
+                            <button class="period-arrow">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+
+                        </div>
+
+
+                        <div class="legend">
+
+                            <span>
+                                <i class="legend-dot completed"></i>
+                                Completed
+                            </span>
+
+                            <span>
+                                <i class="legend-dot pending"></i>
+                                Pending
+                            </span>
+
+                            <span>
+                                <i class="legend-dot upcoming"></i>
+                                Upcoming
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="schedule-list">
+
+                        <% if (typeof marksSchedule !== 'undefined' &&
+                               marksSchedule.length) { %>
+
+                            <% marksSchedule.forEach(item => { %>
+
+                                <div class="schedule-row">
+
+                                    <div class="schedule-date">
+
+                                        <strong>
+                                            <%= item.day || '15' %>
+                                        </strong>
+
+                                        <span>
+                                            <%= item.month || 'SEP' %>
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="schedule-info">
+
+                                        <strong>
+                                            <%= item.assessment_name ||
+                                                'Assessment' %>
+                                        </strong>
+
+                                        <span>
+                                            <%= item.subjectname || '' %>
+                                            ·
+                                            <%= item.class || '' %>
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="schedule-teacher">
+
+                                        <span>
+                                            Teacher
+                                        </span>
+
+                                        <strong>
+                                            <%= item.fname || '-' %>
+                                            <%= item.lname || '' %>
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <% if (item.status === 'completed') { %>
+
+                                            <span class="status-badge success">
+                                                Completed
+                                            </span>
+
+                                        <% } else if (item.status === 'pending') { %>
+
+                                            <span class="status-badge warning">
+                                                Pending
+                                            </span>
+
+                                        <% } else { %>
+
+                                            <span class="status-badge">
+                                                Upcoming
+                                            </span>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </div>
+
+                            <% }) %>
+
+                        <% } else { %>
+
+                            <div class="empty-state">
+
+                                <i class="bi bi-calendar3"></i>
+
+                                <strong>
+                                    No marks schedule
+                                </strong>
+
+                                <span>
+                                    Assessment schedules will appear here.
+                                </span>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 RESULT SEARCH
+            ================================================== -->
+
+            <section id="results"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            RESULTS
+                        </span>
+
+                        <h3>Search Pupil's Results</h3>
+
+                        <p>
+                            Search academic results for students in
+                            your department subjects.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="result-search-card">
+
+                    <form id="resultSearchForm">
+
+                        <div class="row g-3">
+
+                            <div class="col-lg-4">
+
+                                <label>
+                                    Exam Number
+                                </label>
+
+                                <div class="input-icon">
+
+                                    <i class="bi bi-person-badge"></i>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="resultExamNo"
+                                           placeholder="Enter exam number">
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-lg-3">
+
+                                <label>
+                                    Academic Year
+                                </label>
+
+                                <select class="form-select"
+                                        id="resultYear">
+
+                                    <option value="">
+                                        Select year
+                                    </option>
+
+                                    <% if (typeof schoolYears !== 'undefined') { %>
+
+                                        <% schoolYears.forEach(year => { %>
+
+                                            <option value="<%= year.schoolyearid %>">
+                                                <%= year.yearname %>
+                                            </option>
+
+                                        <% }) %>
+
+                                    <% } %>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="col-lg-3">
+
+                                <label>
+                                    Term
+                                </label>
+
+                                <select class="form-select"
+                                        id="resultTerm">
+
+                                    <option value="">
+                                        Select term
+                                    </option>
+
+                                    <% if (typeof terms !== 'undefined') { %>
+
+                                        <% terms.forEach(term => { %>
+
+                                            <option value="<%= term.termid %>">
+                                                <%= term.termname %>
+                                            </option>
+
+                                        <% }) %>
+
+                                    <% } %>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="col-lg-2 d-flex align-items-end">
+
+                                <button type="submit"
+                                        class="btn btn-primary w-100">
+
+                                    <i class="bi bi-search"></i>
+                                    Search
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+
+                    <div id="resultSearchMessage"
+                         class="search-message d-none">
+                    </div>
+
+
+                    <div id="resultContainer"
+                         class="result-container d-none">
+
+                        <!-- JavaScript populates this -->
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 PROGRESS CHART
+            ================================================== -->
+
+            <section id="progress"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            PERFORMANCE
+                        </span>
+
+                        <h3>Progress Chart</h3>
+
+                        <p>
+                            Track pupil performance across academic terms.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="data-card">
+
+                    <div class="chart-controls">
+
+                        <div>
+
+                            <label>Student</label>
+
+                            <select class="form-select"
+                                    id="progressStudent">
+
+                                <option value="">
+                                    Select student
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div>
+
+                            <label>Subject</label>
+
+                            <select class="form-select"
+                                    id="progressSubject">
+
+                                <option value="">
+                                    Select subject
+                                </option>
+
+                                <% if (typeof subjects !== 'undefined') { %>
+
+                                    <% subjects.forEach(subject => { %>
+
+                                        <option value="<%= subject.subjectcode %>">
+                                            <%= subject.subjectname %>
+                                        </option>
+
+                                    <% }) %>
+
+                                <% } %>
+
+                            </select>
+
+                        </div>
+
+
+                        <button id="loadProgress"
+                                class="btn btn-primary">
+
+                            View Progress
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="chart-area">
+
+                        <div class="chart-y-labels">
+
+                            <span>100</span>
+                            <span>80</span>
+                            <span>60</span>
+                            <span>40</span>
+                            <span>20</span>
+                            <span>0</span>
+
+                        </div>
+
+
+                        <div class="chart-content">
+
+                            <div class="chart-grid">
+
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+
+                            </div>
+
+
+                            <svg id="progressChart"
+                                 class="progress-svg"
+                                 viewBox="0 0 900 320"
+                                 preserveAspectRatio="none">
+
+                                <polyline
+                                    id="progressLine"
+                                    points=""
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="4"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"/>
+
+                                <g id="progressPoints"></g>
+
+                            </svg>
+
+
+                            <div class="chart-x-labels">
+
+                                <span>Term 1</span>
+                                <span>Term 2</span>
+                                <span>Term 3</span>
+                                <span>End Year</span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-summary">
+
+                        <div>
+                            <span>Term 1</span>
+                            <strong id="term1Score">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Term 2</span>
+                            <strong id="term2Score">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Term 3</span>
+                            <strong id="term3Score">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Final</span>
+                            <strong id="finalScore">—</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 REPORT GENERATOR
+            ================================================== -->
+
+            <section id="reports"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            ACADEMIC REPORTING
+                        </span>
+
+                        <h3>Report Generation</h3>
+
+                        <p>
+                            Generate official academic reports for
+                            your department subjects.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="report-layout">
+
+
+                    <!-- Report form -->
+
+                    <div class="data-card report-form-card">
+
+                        <div class="card-header">
+
+                            <div>
+
+                                <h4>Generate Academic Report</h4>
+
+                                <p>
+                                    Select the report parameters.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <form id="reportForm">
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+                                    Report Type
+                                </label>
+
+                                <select class="form-select"
+                                        id="reportType"
+                                        required>
+
+                                    <option value="">
+                                        Select report type
+                                    </option>
+
+                                    <option value="midterm">
+                                        Mid-Term Report
+                                    </option>
+
+                                    <option value="termly">
+                                        Termly Academic Report
+                                    </option>
+
+                                    <option value="endyear">
+                                        End-of-Year Academic Report
+                                    </option>
+
+                                    <option value="subject">
+                                        Subject Performance Report
+                                    </option>
+
+                                    <option value="department">
+                                        Department Performance Report
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+                                        Academic Year
+                                    </label>
+
+                                    <select class="form-select"
+                                            id="reportYear"
+                                            required>
+
+                                        <option value="">
+                                            Select year
+                                        </option>
+
+                                        <% if (typeof schoolYears !== 'undefined') { %>
+
+                                            <% schoolYears.forEach(year => { %>
+
+                                                <option value="<%= year.schoolyearid %>">
+                                                    <%= year.yearname %>
+                                                </option>
+
+                                            <% }) %>
+
+                                        <% } %>
+
+                                    </select>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+                                        Term
+                                    </label>
+
+                                    <select class="form-select"
+                                            id="reportTerm">
+
+                                        <option value="">
+                                            Select term
+                                        </option>
+
+                                        <% if (typeof terms !== 'undefined') { %>
+
+                                            <% terms.forEach(term => { %>
+
+                                                <option value="<%= term.termid %>">
+                                                    <%= term.termname %>
+                                                </option>
+
+                                            <% }) %>
+
+                                        <% } %>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="mb-3 mt-3">
+
+                                <label class="form-label">
+                                    Subject
+                                </label>
+
+                                <select class="form-select"
+                                        id="reportSubject">
+
+                                    <option value="">
+                                        All Department Subjects
+                                    </option>
+
+                                    <% if (typeof subjects !== 'undefined') { %>
+
+                                        <% subjects.forEach(subject => { %>
+
+                                            <option value="<%= subject.subjectcode %>">
+                                                <%= subject.subjectname %>
+                                            </option>
+
+                                        <% }) %>
+
+                                    <% } %>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Class
+                                </label>
+
+                                <select class="form-select"
+                                        id="reportClass">
+
+                                    <option value="">
+                                        All Classes
+                                    </option>
+
+                                    <% if (typeof classStatuses !== 'undefined') { %>
+
+                                        <% classStatuses.forEach(item => { %>
+
+                                            <option value="<%= item.classid %>">
+                                                <%= item.levelname %>
+                                                <%= item.class %>
+                                            </option>
+
+                                        <% }) %>
+
+                                    <% } %>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="report-options">
+
+                                <label class="form-check">
+
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           checked>
+
+                                    <span>
+                                        Include performance summary
+                                    </span>
+
+                                </label>
+
+
+                                <label class="form-check">
+
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           checked>
+
+                                    <span>
+                                        Include progress chart
+                                    </span>
+
+                                </label>
+
+
+                                <label class="form-check">
+
+                                    <input type="checkbox"
+                                           class="form-check-input">
+
+                                    <span>
+                                        Include teacher comments
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+
+                            <div class="report-actions">
+
+                                <button type="button"
+                                        id="previewReport"
+                                        class="btn btn-outline-primary">
+
+                                    <i class="bi bi-eye"></i>
+                                    Preview
+
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-primary">
+
+                                    <i class="bi bi-file-earmark-pdf"></i>
+                                    Generate PDF
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+
+
+                    <!-- Report preview -->
+
+                    <div class="data-card report-preview-card">
+
+                        <div class="card-header">
+
+                            <div>
+
+                                <h4>Report Preview</h4>
+
+                                <p>
+                                    Preview before generating the report.
+                                </p>
+
+                            </div>
+
+                            <span class="preview-status"
+                                  id="previewStatus">
+                                Draft
+                            </span>
+
+                        </div>
+
+
+                        <div class="report-paper"
+                             id="reportPreview">
+
+                            <div class="report-school-header">
+
+                                <div class="school-logo">
+
+                                    <svg viewBox="0 0 24 24">
+
+                                        <path d="M12 3 2 8l10 5 10-5-10-5z"/>
+                                        <path d="M5 11v5c0 2 3 4 7 4s7-2 7-4v-5"/>
+                                        <path d="M19 10v6"/>
+
+                                    </svg>
+
+                                </div>
+
+
+                                <div>
+
+                                    <strong>
+                                        SCHOOL MANAGEMENT SYSTEM
+                                    </strong>
+
+                                    <span>
+                                        Academic Department Report
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="report-title">
+
+                                <span>
+                                    ACADEMIC REPORT
+                                </span>
+
+                                <h3 id="previewReportTitle">
+                                    Report Preview
+                                </h3>
+
+                            </div>
+
+
+                            <div class="report-meta">
+
+                                <div>
+                                    <span>Department</span>
+                                    <strong>
+                                        <%= department?.departmentname ||
+                                            'Department' %>
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Academic Year</span>
+                                    <strong id="previewYear">
+                                        —
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Term</span>
+                                    <strong id="previewTerm">
+                                        —
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Class</span>
+                                    <strong id="previewClass">
+                                        All Classes
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <div class="report-placeholder">
+
+                                <div class="placeholder-icon">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </div>
+
+                                <strong>
+                                    Report preview will appear here
+                                </strong>
+
+                                <span>
+                                    Select the report parameters and
+                                    click Preview.
+                                </span>
+
+                            </div>
+
+
+                            <div class="report-signatures">
+
+                                <div>
+                                    <span>Prepared By</span>
+                                    <strong>
+                                        HOD
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Approved By</span>
+                                    <strong>
+                                        —
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ANALYTICS
+            ================================================== -->
+
+            <section id="analytics"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            DEPARTMENT ANALYTICS
+                        </span>
+
+                        <h3>Academic Performance</h3>
+
+                        <p>
+                            Overview of department subject performance.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="analytics-grid">
+
+
+                    <div class="data-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h4>Subject Performance</h4>
+                                <p>Average marks by subject.</p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="performance-bars">
+
+                            <% if (typeof subjectPerformance !== 'undefined' &&
+                                   subjectPerformance.length) { %>
+
+                                <% subjectPerformance.forEach(item => { %>
+
+                                    <div class="performance-item">
+
+                                        <div class="performance-label">
+
+                                            <span>
+                                                <%= item.subjectname %>
+                                            </span>
+
+                                            <strong>
+                                                <%= item.average || 0 %>%
+                                            </strong>
+
+                                        </div>
+
+                                        <div class="performance-track">
+
+                                            <span style="width:<%= item.average || 0 %>%"></span>
+
+                                        </div>
+
+                                    </div>
+
+                                <% }) %>
+
+                            <% } else { %>
+
+                                <div class="empty-state">
+
+                                    <i class="bi bi-bar-chart"></i>
+
+                                    <strong>
+                                        No performance data
+                                    </strong>
+
+                                    <span>
+                                        Subject performance will appear
+                                        after marks are recorded.
+                                    </span>
+
+                                </div>
+
+                            <% } %>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="data-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h4>Marks Completion</h4>
+                                <p>Department marks-entry progress.</p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="completion-chart">
+
+                            <div class="donut-chart"
+                                 style="--percentage:<%= stats?.marksCompletion || 0 %>%">
+
+                                <div>
+                                    <strong>
+                                        <%= stats?.marksCompletion || 0 %>%
+                                    </strong>
+
+                                    <span>
+                                        Complete
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="completion-details">
+
+                                <div>
+                                    <span class="legend-dot completed"></span>
+                                    <span>Completed</span>
+                                    <strong>
+                                        <%= stats?.marksCompleted || 0 %>
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span class="legend-dot pending"></span>
+                                    <span>Pending</span>
+                                    <strong>
+                                        <%= stats?.marksPending || 0 %>
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Footer -->
+
+            <footer class="dashboard-footer">
+
+                <span>
+                    © <%= new Date().getFullYear() %>
+                    School Management System
+                </span>
+
+                <span>
+                    Department Academic Dashboard
+                </span>
+
+            </footer>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     REPORT MODAL
+========================================================== -->
+
+<div class="modal fade"
+     id="reportModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Report Preview
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body"
+                 id="modalReportContent">
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+                <button type="button"
+                        class="btn btn-primary">
+
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    Generate PDF
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="/scripts/hod-dashboard.js"></script>
+
+</body>
+</html>

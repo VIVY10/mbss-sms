@@ -49,12 +49,12 @@ router.get('/createDepartment', ...adminOnly, controller.createDepartmentPage);
 router.post('/createDepartment', ...adminOnly, createDepartmentValidationRules(), validate, controller.createDepartment);
 router.post('/deleteDepartment', ...adminOnly, controller.deleteDepartment);
 router.get('/viewDepartment', ...adminOnly, controller.viewDepartment);
- 
+  
 router.get('/createHod', ...adminOnly, controller.createHodPage);
 router.post('/createHod', ...adminOnly, controller.createHod);
 router.get('/viewHod', ...adminOnly, controller.viewHod);
-router.get('/allocateDepartment', ...adminOnly, controller.allocateDepartmentPage);
-router.post('/allocateDepartment', ...adminOnly, controller.allocateDepartment);
+
+router.post('/allocateDepartment/:teacherid', ...adminOnly, controller.allocateDepartment);
 router.get('/viewDepartmentTrs', ...hodOnly, controller.viewDepartmentTeachers);
 
 router.get('/addGuardianType', ...adminOnly, controller.addGuardianTypePage);

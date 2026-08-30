@@ -1,11 +1,12 @@
 const bcrypt = require("bcrypt");
 const teacherModel = require("../models/teacherModel");
+const subjectModel = require("../models/subjectModel");
 const authModel = require("../models/authModel");
-const fs = require('fs').promises;
-const path = require('path');
-const { removeFileIfExists } = require('../utils/fileUtils.js');
+const fs = require("fs").promises;
+const path = require("path");
+const { removeFileIfExists } = require("../utils/fileUtils.js");
 const { response } = require("express");
- 
+
 async function registerTeacher({ data, file }) {
   const username = data.username.toLowerCase();
   const fname = data.Fname.toUpperCase();
@@ -80,6 +81,82 @@ async function getSubjectAllocation(teacherId, allocated) {
   };
 }
 
+
+async function assignSubject(teacherid, subjectcode, approved_by) {
+
+    // 1. Find the subject
+    const subject = await subjectModel.findByCode(subjectcode);
+
+    if (!subject || subject.length === 0) {
+        return {
+            success: false,
+            status: 404,
+            message: "Subject not found."
+        };
+    }
+
+    // 2. Find departments assigned to the teacher
+    const teacherDepartments =
+        await teacherModel.findTeacherDepartment(teacherid);
+
+    if (!teacherDepartments || teacherDepartments.length === 0) {
+        return {
+            success: false,
+            status: 409,
+            message:
+                "Allocate the teacher to a department before assigning subjects."
+        };
+    }
+
+    // 3. Check whether teacher belongs to subject's department
+    const belongsToDepartment = teacherDepartments.some(
+        (department) =>
+            Number(department.departmentid) ===
+            Number(subject[0].departmentid)
+    );
+
+    if (!belongsToDepartment) {
+        return {
+            success: false,
+            status: 403,
+            message:
+                "Teacher cannot be assigned this subject because the teacher is not allocated to its department."
+        };
+    }
+
+    // 4. Prevent duplicate subject allocation
+    const existing =
+        await teacherModel.findTeacherAssignedSubject(
+            teacherid,
+            subjectcode
+        );
+
+    if (existing.length > 0) {
+        return {
+            success: false,
+            status: 409,
+            message:
+                "Teacher is already allocated to this subject."
+        };
+    }
+
+    // 5. Assign subject
+    await teacherModel.assignTeacherSubject(
+        teacherid,
+        subjectcode,
+        approved_by
+    );
+
+    return {
+        success: true,
+        status: 201,
+        message:
+            "Subject successfully allocated to teacher."
+    };
+}
+
+
+
 async function deleteTeacher(username, profileDirectory, backupDirectory) {
   const teacher = await teacherModel.findByUsername(username);
   const profilePicture = teacher[0]?.profilePicture;
@@ -109,7 +186,7 @@ async function deleteTeacher(username, profileDirectory, backupDirectory) {
     try {
       await fs.mkdir(backupDirectory, { recursive: true });
       await fs.copyFile(imagePath, backupPath);
-      await removeFileIfExists(imagePath)
+      await removeFileIfExists(imagePath);
     } catch (error) {
       throw new Error(`Unable to back up profile picture: ${error.message}`);
     }
@@ -147,7 +224,10 @@ async function lockAccount(req, res, username) {
     const activeAdminCount = await teacherModel.countAdmins();
 
     if (activeAdminCount <= 1) {
-      return response(res, "This account cannot be locked because it is the last active Administrator account.");
+      return response(
+        res,
+        "This account cannot be locked because it is the last active Administrator account.",
+      );
     }
   }
 
@@ -167,6 +247,7 @@ async function unlockAccount(username) {
 module.exports = {
   registerTeacher,
   getSubjectAllocation,
+  assignSubject,
   deleteTeacher,
   lockAccount,
   unlockAccount,
