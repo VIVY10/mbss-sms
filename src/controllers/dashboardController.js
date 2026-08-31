@@ -3,30 +3,6 @@ const adminModel = require("../models/adminModel");
 const { countUnallocatedSubjects } = require("../models/dashboardModel");
 const dashboardService = require("../services/dashboardService");
 
-// exports.showDashboard = async (req, res) => {
-//   const user = req.user;
-//   let dashboard = "";
-
-//   if (user.usertype === "admin") {
-//     dashboard = dashboardViews["admin"];
-//   } else {
-//     const getHod = await adminModel.findHodById(user.teacherid);
-//     if (getHod) {
-//       dashboard = dashboardViews["HOD"];
-//     } else {
-//       dashboard = dashboardViews[user.usertype];
-//     }
-//   }
-
-//   if (!dashboard) {
-//     return res.redirect("/");
-//   }
-
-//   return res.render(dashboard.view, {
-//     [dashboard.dataKey]: user,
-//   });
-// };
-
 exports.showDashboard = async (req, res) => {
   const user = req.user;
 
@@ -68,7 +44,7 @@ exports.getHodDashboardStats = async (teacherid) => {
 
     const results = await dashboardService.getHodDashboardStats(departmentid, termid);
 
-    // console.log(results)
+  
 
     const stats = {
       teachers: results['teachers'][0].teachers,
@@ -81,8 +57,6 @@ exports.getHodDashboardStats = async (teacherid) => {
       currentYear: currentYear[0],
       currentTerm: currentTerm[0]
     }
-
-    console.log(stats)
     
     return stats;
   } catch (err) {

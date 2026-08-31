@@ -99,6 +99,30 @@ exports.getAll = () =>
   );
 
 // ==================== SUBJECTS TAUGHT ====================
+exports.createTeachingAllocations = (teacherid, class_subject_id, termid, allocated_by) =>
+query(
+  `
+  INSERT INTO teaching_allocations(teacherid, class_subject_id, termid, allocated_by)
+  VALUES(?, ?, ?, ?)
+  `, [teacherid, class_subject_id, termid, allocated_by]
+)
+
+exports.getCreateTeacherAllocationsOptions = (teacherid, class_subject_id, termid) =>
+  query(
+    `
+    SELECT
+      ta.allocation_id,
+      ta.class_subject_id,
+      ta.teacherid,
+      ta.termid,
+      ta.allocated_by
+    FROM teaching_allocations ta
+    WHERE ta.teacherid = ?
+    AND ta.class_subject_id = ?
+    AND ta.termid = ?
+    `,
+    [teacherid, class_subject_id, termid],
+  );
 
 exports.getTeacherSubjectAllocations = (teacherId) =>
   query(

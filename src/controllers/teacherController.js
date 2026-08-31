@@ -46,15 +46,21 @@ exports.findTeacher = async (req, res) => {
   const [teacher] = await teacherModel.findById(teacherid);
   const departments = await teacherModel.findTeacherDepartment(teacherid);
   const subjects = await teacherModel.getTeacherSubjects(teacherid);
-  const allocations =
-    await teacherModel.getTeacherSubjectAllocations(teacherid);
+  const allocations = await teacherModel.getTeacherSubjectAllocations(teacherid);
   const allocationHistory = [];
   const availableClasses = [];
-  const availableClassSubjects = [];
+  const availableClassSubjects = await subjectModel.getClassSubjects();
   const availableDepartments = await adminModel.getDepartments();
   const availableSubjects = await subjectModel.getAll();
 
-  // console.log(availableDepartments)
+  const teacherSubjectCodes = new Set(
+    subjects.map((ts) => ts.subjectcode),
+  );
+
+  const availableTeacherClassSubjects = availableClassSubjects.filter((cs) =>
+    teacherSubjectCodes.has(cs.subjectcode),
+  );
+
   res.render("./teacher/teacher-profile", {
     teacher,
     departments,
@@ -62,7 +68,7 @@ exports.findTeacher = async (req, res) => {
     allocations,
     allocationHistory,
     availableClasses,
-    availableClassSubjects,
+    availableTeacherClassSubjects,
     availableDepartments,
     availableSubjects,
     user: req.user,
@@ -79,6 +85,42 @@ exports.viewTeachers2 = async (req, res) => {
 };
 
 // ==================== SUBJECTS TAUGHT ====================
+exports.createTeachingAllocation = async (req, res) => {
+    try {
+        const { teacherid, class_subject_id } = req.body;
+
+        // Get the currently open term
+        const foundTerm = await adminModel.get_Open_Terms();
+
+        if (!foundTerm || foundTerm.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "There is currently no open term."
+            });
+        }
+
+        const termid = foundTerm[0].termid;
+
+        // Create teaching allocation
+        const result = await teacherService.create_teaching_allocations(
+            teacherid,
+            class_subject_id,
+            termid,
+            req.user.teacherid
+        );
+
+        return res.status(result.status).json(result);
+
+    } catch (err) {
+        console.error("Create teaching allocation error:", err);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to create teaching allocation."
+        });
+    }
+};
+
 
 exports.subjectsTaught = async (req, res) => {
   const response = await teacherModel.getSubjectsTaught(req.user.id);
@@ -144,30 +186,29 @@ exports.subjectAllocation = async (req, res) => {
 
 // ==================== ALLOCATE SUBJECT ====================
 exports.assignTeacherSubject = async (req, res) => {
-    const { teacherid, subjectcode } = req.body;
-    const approved_by = req.user.teacherid;
+  const { teacherid, subjectcode } = req.body;
+  const approved_by = req.user.teacherid;
 
-    try {
-        const result = await teacherService.assignSubject(
-            teacherid,
-            subjectcode,
-            approved_by
-        );
+  try {
+    const result = await teacherService.assignSubject(
+      teacherid,
+      subjectcode,
+      approved_by,
+    );
 
-        return res.status(result.status).json({
-            teacherid: teacherid,
-            success: result.success,
-            message: result.message
-        });
+    return res.status(result.status).json({
+      teacherid: teacherid,
+      success: result.success,
+      message: result.message,
+    });
+  } catch (err) {
+    console.error("Subject allocation error:", err);
 
-    } catch (err) {
-        console.error("Subject allocation error:", err);
-
-        return res.status(500).json({
-            success: false,
-            message: "An unexpected error occurred while allocating the subject."
-        });
-    }
+    return res.status(500).json({
+      success: false,
+      message: "An unexpected error occurred while allocating the subject.",
+    });
+  }
 };
 
 // ==================== REGISTERED PUPILS ====================

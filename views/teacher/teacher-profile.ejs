@@ -35,7 +35,9 @@
             </div>
         </div>
 
-        <a href="/viewTeachers" class="btn btn-light border">
+        <a 
+        href="<%= user.usertype === 'admin' ? '/viewTeachers' : '/Dashboard' %>"
+        class="btn btn-light border">
             <i class="bi bi-arrow-left"></i>
             Back to Teachers
         </a>
@@ -103,7 +105,7 @@
 
 
             <!-- ACTIONS -->
-
+            <% if(user.usertype === "admin") { %>
             <div class="profile-actions">
 
                 <a
@@ -113,7 +115,7 @@
                     <i class="bi bi-pencil"></i>
                     Edit
                 </a>
-
+                <% } %>
                 <button
                     class="btn btn-primary-custom"
                     data-bs-toggle="modal"
@@ -124,6 +126,7 @@
                 </button>
 
             </div>
+
 
         </div>
 
@@ -472,7 +475,7 @@
                         <i class="bi bi-building"></i>
                         Assigned Departments
                     </div>
-
+                     <% if(user.usertype === "admin") { %>
                     <button
                         class="btn btn-primary-custom btn-sm"
                         data-bs-toggle="modal"
@@ -481,7 +484,7 @@
                         <i class="bi bi-plus-lg"></i>
                         Assign Department
                     </button>
-
+                    <% } %>
                 </div>
 
 
@@ -566,7 +569,7 @@
                         <i class="bi bi-book"></i>
                         Assigned Subjects
                     </div>
-
+                     <% if(user.usertype === "admin") { %>
                     <button
                         class="btn btn-primary-custom btn-sm"
                         data-bs-toggle="modal"
@@ -575,7 +578,7 @@
                         <i class="bi bi-plus-lg"></i>
                         Assign Subject
                     </button>
-
+                    <% } %>
                 </div>
 
                 <div class="table-responsive">
@@ -905,11 +908,7 @@
 
             </div>
 
-            <form
-                method="POST"
-                action="/teachers/<%= teacher.id %>/allocations"
-                id="allocationForm"
-            >
+            <form id="allocationForm">
 
                 <div class="modal-body">
 
@@ -918,15 +917,15 @@
                         <i class="bi bi-info-circle"></i>
 
                         Select the class subject this teacher should teach.
-                        The class subject must already exist in
-                        <strong>class_subjects</strong>.
+                        The subject must already exist in
+                        <strong>teacher assigned subjects</strong>.
 
                     </div>
 
 
                     <div class="row g-3">
 
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
 
                             <label class="form-label">
                                 Class
@@ -940,7 +939,7 @@
                             >
 
                                 <option value="">
-                                    Select class
+                                    Select class 
                                 </option>
 
                                 <% availableClasses?.forEach(item => { %>
@@ -956,10 +955,11 @@
 
                             </select>
 
-                        </div>
+                        </div> -->
 
 
                         <div class="col-md-6">
+                            <input type="hidden" name="teacherid" value="<%= teacher.teacherid %>">
 
                             <label class="form-label">
                                 Subject
@@ -975,7 +975,7 @@
                                     Select class subject
                                 </option>
 
-                                <% availableClassSubjects?.forEach(item => { %>
+                                <% availableTeacherClassSubjects?.forEach(item => { %>
 
                                     <option
                                         value="<%= item.class_subject_id %>"
@@ -985,7 +985,7 @@
                                         -
                                         <%= item.subjectname %>
                                         /
-                                        <%= item.class %>
+                                         <%= item.levelname %><%= item.class %>
 
                                     </option>
 

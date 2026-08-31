@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/login", (req, res) => {
   if (req.isAuthenticated()) {
-    return res.redirect("/Dashboard");
+    return res.redirect("/dashboard");
   }
 
   return controller.showStaffLogin(req, res);
@@ -16,7 +16,7 @@ router.get("/login", (req, res) => {
 router.post(
   "/login",
   passport.authenticate("staff", {
-    successRedirect: "/Dashboard",
+    successRedirect: "/dashboard",
     failureRedirect: "/login",
     failureFlash: true,
   }),
@@ -27,7 +27,7 @@ router.get("/studentLogin", controller.showStudentLogin);
 router.post(
   "/studentLogin",
   passport.authenticate("pupil", {
-    successRedirect: "/Dashboard",
+    successRedirect: "/dashboard",
     failureRedirect: "/studentLogin",
     failureFlash: true,
   }),

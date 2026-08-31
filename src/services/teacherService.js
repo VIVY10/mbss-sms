@@ -81,6 +81,64 @@ async function getSubjectAllocation(teacherId, allocated) {
   };
 }
 
+async function create_teaching_allocations(
+    teacherid,
+    class_subject_id,
+    termid,
+    allocated_by
+) {
+    try {
+        // Check whether the teacher is already allocated
+        const results =
+            await teacherModel.getCreateTeacherAllocationsOptions(
+                teacherid,
+                class_subject_id,
+                termid
+            );
+
+        if (results && results.length > 0) {
+            return {
+                success: false,
+                status: 409,
+                message: "Teacher is already allocated to this class subject."
+            };
+        }
+
+        // Create allocation
+        const allocation =
+            await teacherModel.createTeachingAllocations(
+                teacherid,
+                class_subject_id,
+                termid,
+                allocated_by
+            );
+
+        if (!allocation) {
+            return {
+                success: false,
+                status: 500,
+                message: "Teacher class allocation failed."
+            };
+        }
+
+        return {
+            success: true,
+            status: 201,
+            message: "Teacher class allocation was successful.",
+            data: allocation
+        };
+
+    } catch (err) {
+        console.error("Teaching allocation error:", err);
+
+        return {
+            success: false,
+            status: 500,
+            message: "An error occurred while creating the teaching allocation."
+        };
+    }
+}
+
 
 async function assignSubject(teacherid, subjectcode, approved_by) {
 
@@ -247,6 +305,7 @@ async function unlockAccount(username) {
 module.exports = {
   registerTeacher,
   getSubjectAllocation,
+  create_teaching_allocations,
   assignSubject,
   deleteTeacher,
   lockAccount,

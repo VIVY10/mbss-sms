@@ -26,6 +26,7 @@ router.get('/subjectsTaught', authChecker, controller.subjectsTaught);
 router.get('/trSubjectAllocation', authChecker, controller.unallocatedSubjectAllocation);
 router.get('/subjectAllocation', authChecker, controller.subjectAllocation);
 router.post('/allocateSubject', authChecker, controller.assignTeacherSubject);
+router.post('/teacher/class/allocation', authChecker, controller.createTeachingAllocation);
 
 router.post('/registeredPupils', authChecker, controller.registeredPupils);
 

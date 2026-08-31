@@ -184,7 +184,6 @@ exports.department_teaching_allocation = (termid, departmentid) =>
 
         CONCAT(tchr.fname, ' ', tchr.lname) AS teacher_name,
 
-        ta.start_date,
         ta.end_date
 
     FROM class_subjects AS cs
@@ -248,7 +247,6 @@ exports.class_subjects = (termid, departmentid) =>
 
         CONCAT(tchr.fname, ' ', tchr.lname) AS teacher_name,
 
-        ta.start_date,
         ta.end_date
 
     FROM class_subjects AS cs
