@@ -1,21 +1,61 @@
+// module.exports = {
+//     admin: {
+//         view: "admin/adminDashboard",
+//         dataKey: "user"
+//     },
+
+//     teacher: {
+//         view: "teacher/teacherDashboard",
+//         dataKey: "user",
+        
+//     },
+
+//     HOD: {
+//         view: "hod/hod-dashboard",
+//         dataKey: "user",
+//     },
+
+//     Student: {
+//         view: "pupil/pupilDashboard",
+//         dataKey: "pupil"
+//     }
+// };
+
+
+const dashboardService = require("../services/dashboardService");
+const dashboardController = require("../controllers/dashboardController")
+
 module.exports = {
-    admin: {
-        view: "admin/adminDashboard",
-        dataKey: "user"
-    },
 
-    teacher: {
-        view: "teacher/teacherDashboard",
-        dataKey: "user"
-    },
+  admin: {
+    view: "admin/adminDashboard",
+    dataKey: "user",
 
-    HOD: {
-        view: "hod/hodDashboard",
-        dataKey: "user"
-    },
+    getStats: () =>
+      dashboardService.getAdminDashboardStats()
+  },
 
-    Student: {
-        view: "pupil/pupilDashboard",
-        dataKey: "pupil"
-    }
+  teacher: {
+    view: "teacher/teacherDashboard",
+    dataKey: "user",
+
+    getStats: (user) =>
+      dashboardService.getTeacherDashboardStats(user.teacherid)
+  },
+
+  HOD: {
+    view: "hod/hod-dashboard",
+    dataKey: "user",
+
+    getStats: (user) =>
+      dashboardController.getHodDashboardStats(user.teacherid)
+  },
+
+  Student: {
+    view: "pupil/pupilDashboard",
+    dataKey: "pupil",
+
+    getStats: (user) =>
+      dashboardService.getStudentDashboardStats(user.id)
+  }
 };

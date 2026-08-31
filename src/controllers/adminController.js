@@ -346,6 +346,9 @@ exports.viewHod = async (req, res) => {
 exports.allocateDepartment = async (req, res) => {
   const { departmentid } = req.body;
   const { teacherid } = req.params;
+
+  console.log(departmentid)
+    console.log(teacherid)
  
   try {
     const result = await service.allocateDepartment(

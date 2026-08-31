@@ -116,18 +116,12 @@ async function allocateDepartment(teacherid, departmentid) {
   );
 
   if (results.length > 0) {
-    return {
-      success: false,
-      message: "Teacher is already assigned to this department.",
-    };
+    return {message: "Teacher is already assigned to this department."};
   }
 
   await model.createTeacherDepartment(teacherid, departmentid);
 
-  return {
-    success: true,
-    message: "Teacher successfully assigned to department.",
-  };
+  return {message: "Teacher successfully assigned to department."};
 }
 
 async function addClassSubject(classid, subjectcode) {

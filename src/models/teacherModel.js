@@ -284,7 +284,7 @@ exports.getAllocatedByDepartment = (departmentId) =>
       d.departmentname,
       s.departmentid,
       t.fname,
-      t.lname,
+      t.lname, 
       s.subjectname
 
     FROM class_subjects AS cs

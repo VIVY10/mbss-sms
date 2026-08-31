@@ -228,6 +228,8 @@ exports.teaching_allocation = (termid) =>{
   )
 }
 
+
+
 // ==================== DELETE CLASS SUBJECT ====================
 
 exports.deleteClassSubject = (id) =>

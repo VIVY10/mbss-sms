@@ -49,7 +49,7 @@
 
             <div class="profile-avatar">
                 <% if (typeof user !== 'undefined' && user.profilePicture) { %>
-                    <img src="/uploads/profiles/<%= user.profilePicture %>" alt="Profile">
+                    <img src="/images/profile/<%= user.profilePicture %>" alt="Profile">
                 <% } else { %>
                     <span>
                         <%= typeof user !== 'undefined'
@@ -64,7 +64,7 @@
                 <strong>
                     <%= typeof user !== 'undefined'
                         ? `${user.fname || ''} ${user.lname || ''}`
-                        : 'Department Head' %>
+                        : 'HOD' %>
                 </strong>
 
                 <small>Head of Department</small>
@@ -86,7 +86,7 @@
                 MAIN
             </div>
 
-            <a href="/hod/dashboard"
+            <a href="/hod/hod-dashboard"
                class="nav-item active">
 
                 <svg viewBox="0 0 24 24">
@@ -265,6 +265,7 @@
     ====================================================== -->
 
     <main class="main-content">
+        <% let department = [] %>
 
         <!-- TOP BAR -->
 
@@ -296,9 +297,7 @@
                     <span>Academic Year</span>
 
                     <strong>
-                        <%= typeof currentYear !== 'undefined'
-                            ? currentYear
-                            : '2026' %>
+                        <%= stats.currentYear.yearname || '' %>
                     </strong>
 
                 </div>
@@ -309,9 +308,7 @@
                     <span>Term</span>
 
                     <strong>
-                        <%= typeof currentTerm !== 'undefined'
-                            ? currentTerm
-                            : 'Term 1' %>
+                        <%= stats.currentTerm.termname || '' %>
                     </strong>
 
                 </div>
@@ -754,9 +751,9 @@
 
                             <tbody>
 
-                            <% if (typeof teachers !== 'undefined' && teachers.length) { %>
+                            <% if (typeof stats.departmentTeachers !== 'undefined' && stats.departmentTeachers.length) { %>
 
-                                <% teachers.forEach(teacher => { %>
+                                <% stats.departmentTeachers.forEach(teacher => { %>
 
                                     <tr>
 
@@ -784,7 +781,7 @@
                                         </td>
 
                                         <td>
-                                            <%= teacher.id %>
+                                            <%= teacher.employee_no %>
                                         </td>
 
                                         <td>
@@ -819,7 +816,7 @@
 
                                         <td>
 
-                                            <a href="/teachers/<%= teacher.id %>"
+                                            <a href="/teachers/<%= teacher.teacherid %>"
                                                class="table-action">
 
                                                 <i class="bi bi-chevron-right"></i>
@@ -1155,9 +1152,9 @@
 
                             <tbody>
 
-                            <% if (typeof classStatuses !== 'undefined' && classStatuses.length) { %>
+                            <% if (typeof stats.classStatuses !== 'undefined' && stats.classStatuses.length) { %>
 
-                                <% classStatuses.forEach(item => { %>
+                                <% stats.classStatuses.forEach(item => { %>
 
                                     <tr>
 
@@ -1172,22 +1169,24 @@
                                         </td>
 
                                         <td>
-                                            <%= item.subject_count || 0 %>
+                                            <!-- <%= item.subject_count || 0 %> -->
+                                              <%= item.subjectname || '' %>
                                         </td>
 
                                         <td>
-                                            <%= item.teacher_count || 0 %>
+                                            <!-- <%= item.teacher_count || 0 %> -->
+                                             <%= item.allocation_status || '' %>
                                         </td>
 
                                         <td>
 
-                                            <% if (!item.subject_count) { %>
-
+                                            
+                                              <% if (!item.allocation_status) { %>
                                                 <span class="status-badge danger">
                                                     No Subjects
                                                 </span>
 
-                                            <% } else if (item.unassigned_count > 0) { %>
+                                               <% } else if (item.allocation_status === 'Not Allocated') { %>
 
                                                 <span class="status-badge warning">
                                                     <%= item.unassigned_count %>
@@ -1286,12 +1285,12 @@
 
                             <div>
                                 <strong>
-                                    <%= currentTerm || 'Term 1' %>
+                                    <%= stats.currentTerm.termname || '' %>
                                 </strong>
 
                                 <span>
                                     Academic Year
-                                    <%= currentYear || '2026' %>
+                                    <%= stats.currentYear.yearname || '' %>
                                 </span>
                             </div>
 
@@ -1496,15 +1495,11 @@
                                         Select year
                                     </option>
 
-                                    <% if (typeof schoolYears !== 'undefined') { %>
+                                    <% if (typeof stats.currentYear !== 'undefined') { %>
 
-                                        <% schoolYears.forEach(year => { %>
-
-                                            <option value="<%= year.schoolyearid %>">
-                                                <%= year.yearname %>
+                                            <option value="<%= stats.currentYear.schoolyearid %>">
+                                                <%= stats.currentYear.yearname %>
                                             </option>
-
-                                        <% }) %>
 
                                     <% } %>
 
@@ -1526,15 +1521,11 @@
                                         Select term
                                     </option>
 
-                                    <% if (typeof terms !== 'undefined') { %>
+                                    <% if (typeof stats.currentTerm !== 'undefined') { %>
 
-                                        <% terms.forEach(term => { %>
-
-                                            <option value="<%= term.termid %>">
-                                                <%= term.termname %>
+                                            <option value="<%= stats.currentTerm.termid %>">
+                                                <%= stats.currentTerm.termname %>
                                             </option>
-
-                                        <% }) %>
 
                                     <% } %>
 
@@ -2187,7 +2178,7 @@
             </section>
 
 
-
+            
             <!-- =================================================
                  ANALYTICS
             ================================================== -->

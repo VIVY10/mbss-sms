@@ -54,8 +54,6 @@ exports.findTeacher = async (req, res) => {
   const availableDepartments = await adminModel.getDepartments();
   const availableSubjects = await subjectModel.getAll();
 
-  console.log(departments)
-
   // console.log(availableDepartments)
   res.render("./teacher/teacher-profile", {
     teacher,

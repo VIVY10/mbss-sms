@@ -4,6 +4,9 @@ const { query } = require("../utils/db.js");
 
 exports.getSchoolYears = () => query("SELECT * FROM schoolyear");
 
+exports.get_Open_schoolYear = () => 
+  query(`SELECT * FROM schoolyear sy WHERE sy.status = ?`, ['open']);
+
 exports.findSchoolYear = (yearid) =>
   query("SELECT * FROM schoolyear WHERE schoolyearid = ?", [yearid]);
 
@@ -193,6 +196,18 @@ exports.getDepartmentHod = (teacherid, departmentid) =>
     [teacherid, departmentid],
   );
 
+  exports.findHodById = (teacherid) =>
+  query(
+    `
+      SELECT 
+        hd.teacherid,
+        hd.departmentid
+      FROM hod_appointment hd
+      WHERE hd.teacherid = ?
+    `,
+    [teacherid],
+  );
+
 
 exports.getDepartmentHodByDepartment = (departmentid) =>
   query(
@@ -218,6 +233,15 @@ exports.getDepartmentHodByDepartment = (departmentid) =>
     [teacherid, departmentid],
   );
 
+exports.createTeacherDepartment = (teacherid, departmentid) =>
+  query(
+    `
+      INSERT INTO teacher_department
+        (departmentid, teacherid)
+      VALUES (?, ?)
+    `,
+    [departmentid, teacherid]
+  );
 
 exports.getHodOptions = () =>
   Promise.all([
