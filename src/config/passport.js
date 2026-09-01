@@ -66,14 +66,14 @@ passport.use(
           const lockTime = new Date();
           lockTime.setMinutes(lockTime.getMinutes() + LOCK_MINUTES);
 
-          await authModel.lock(user.id, attempts, lockTime);
+          await authModel.lock(user.teacherid, attempts, lockTime);
 
           return done(null, false, {
             message: `Too many failed attempts. Account locked for ${LOCK_MINUTES} minutes.`,
           });
         }
 
-        await authModel.updateAttempts(user.id, attempts);
+        await authModel.updateAttempts(user.teacherid, attempts);
 
         return done(null, false, {
           message: `Incorrect username or password. ${MAX_ATTEMPTS - attempts} attempts remaining.`,
@@ -81,7 +81,7 @@ passport.use(
       }
 
       // Success
-      await authModel.resetAttempts(user.id);
+      await authModel.resetAttempts(user.teacherid);
 
       return done(null, user);
     } catch (error) {

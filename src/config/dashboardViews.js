@@ -36,11 +36,11 @@ module.exports = {
   },
 
   teacher: {
-    view: "teacher/teacherDashboard",
-    dataKey: "user",
+    view: "teacher/teacher-dashboard",
+    dataKey: "teacher",
 
-    getStats: (user) =>
-      dashboardService.getTeacherDashboardStats(user.teacherid)
+    getStats: (teacher) =>
+      dashboardController.getTeacherDashboardStats(teacher.teacherid)
   },
 
   HOD: {

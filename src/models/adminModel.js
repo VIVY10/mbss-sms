@@ -196,14 +196,33 @@ exports.getDepartmentHod = (teacherid, departmentid) =>
     [teacherid, departmentid],
   );
 
-  exports.findHodById = (teacherid) =>
+  exports.findActiveHodByTeacherId = (teacherid) =>
   query(
     `
-      SELECT 
-        hd.teacherid,
-        hd.departmentid
-      FROM hod_appointment hd
-      WHERE hd.teacherid = ?
+        SELECT
+            dh.teacherid AS hod_id,
+            dh.teacherid,
+            dh.departmentid,
+            dh.YearOfAppointment,
+            dh.start_date,
+            dh.end_date,
+            dh.status,
+            d.departmentname
+
+        FROM hod_appointment AS dh
+
+        JOIN department AS d
+            ON d.departmentid = dh.departmentid
+
+        WHERE dh.teacherid = ?
+          AND dh.status = 'active'
+          AND dh.start_date <= CURDATE()
+          AND (
+                dh.end_date IS NULL
+                OR dh.end_date >= CURDATE()
+              )
+
+        LIMIT 1;
     `,
     [teacherid],
   );

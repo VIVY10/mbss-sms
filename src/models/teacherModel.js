@@ -124,10 +124,10 @@ exports.getCreateTeacherAllocationsOptions = (teacherid, class_subject_id, termi
     [teacherid, class_subject_id, termid],
   );
 
-exports.getTeacherSubjectAllocations = (teacherId) =>
+exports.getTeacherSubjectAllocations = (teacherid) =>
   query(
     `
-    SELECT
+        SELECT
       ta.allocation_id,
       ta.class_subject_id,
       ta.teacherid,
@@ -140,7 +140,10 @@ exports.getTeacherSubjectAllocations = (teacherId) =>
       d.departmentname,
       
       c.class,
+      c.classid,
+      c.status,
       yl.levelname,
+      yl.levelorder,
       t.termid,
       t.termname,      
       t.status,
@@ -175,7 +178,7 @@ exports.getTeacherSubjectAllocations = (teacherId) =>
     WHERE ta.teacherid = ?
     AND t.status = 'open'
     `,
-    [teacherId],
+    [teacherid],
   );
 
 exports.getTeacherSubjects = (teacherid) =>
@@ -220,25 +223,6 @@ exports.findTeacherAssignedSubject = (teacherid, subjectcode) =>
   );
 
 // ==================== GET TEACHER DEPARTMENT ====================
-
-// exports.getDepartment = (teacherId) =>
-//   query(
-//     `
-//     SELECT
-//       td.teacherid,
-//       dp.departmentid,
-//       dp.departmentname
-
-//     FROM teacher_department AS td
-
-//     JOIN department AS dp
-//       ON td.departmentid = dp.departmentid
-
-//     WHERE td.teacherid = ?
-//     `,
-//     [teacherId],
-//   );
-
 exports.findTeacherDepartment = (teacherid) =>
   query(
     `

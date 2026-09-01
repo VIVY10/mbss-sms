@@ -1,7 +1,9 @@
 // services/dashboardService.js
 
 const dashboardModel = require("../models/dashboardModel");
- 
+const teacherModel = require('../models/teacherModel');
+const examModel = require('../models/examModel');
+
 exports.getAdminDashboardStats = async () => {
 
   const [
@@ -61,18 +63,20 @@ exports.getTeacherDashboardStats = async (teacherid) => {
 
   const [
     allocations,
-    subjects,
-    classes
+    examtype,
+    // subjects,
+    // classes
   ] = await Promise.all([
-    dashboardModel.countTeacherAllocations(teacherid),
-    dashboardModel.countTeacherSubjects(teacherid),
-    dashboardModel.countTeacherClasses(teacherid)
+    teacherModel.getTeacherSubjectAllocations(teacherid),
+    examModel.findAll(),
+    // dashboardModel.countTeacherClasses(teacherid)
   ]);
 
   return {
     allocations,
-    subjects,
-    classes
+    examtype,
+    // subjects,
+    // classes
   };
 };
 

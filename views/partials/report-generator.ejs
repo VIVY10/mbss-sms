@@ -1,0 +1,328 @@
+<div class="content-card report-generator-card">
+
+    <div class="report-generator-header">
+
+        <div class="report-generator-icon">
+
+            <% if (reportType === 'midterm') { %>
+                <i class="bi bi-file-earmark-text"></i>
+            <% } else if (reportType === 'termly') { %>
+                <i class="bi bi-file-earmark-bar-graph"></i>
+            <% } else { %>
+                <i class="bi bi-award"></i>
+            <% } %>
+
+        </div>
+
+        <div>
+
+            <h3>
+
+                <% if (reportType === 'midterm') { %>
+                    Mid-Term Report Generator
+                <% } else if (reportType === 'termly') { %>
+                    Termly Report Generator
+                <% } else { %>
+                    End-of-Year Academic Report
+                <% } %>
+
+            </h3>
+
+            <p>
+                Select the required information and generate the report.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <form class="report-form"
+          data-report-type="<%= reportType %>">
+
+        <div class="row g-4">
+
+            <!-- Academic Year -->
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Academic Year
+                </label>
+
+                <select
+                    class="form-select"
+                    name="yearid"
+                    required>
+
+                    <option value="">
+                        Select academic year
+                    </option>
+
+                    <% if (typeof schoolyears !== 'undefined') { %>
+
+                        <% schoolyears.forEach(year => { %>
+
+                            <option value="<%= year.schoolyearid %>">
+
+                                <%= year.yearname %>
+
+                            </option>
+
+                        <% }) %>
+
+                    <% } else { %>
+
+                        <option value="1">
+                            2026 Academic Year
+                        </option>
+
+                    <% } %>
+
+                </select>
+
+            </div>
+
+
+            <!-- Term -->
+
+            <% if (reportType !== 'annual') { %>
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Term
+                    </label>
+
+                    <select
+                        class="form-select"
+                        name="termid"
+                        required>
+
+                        <option value="">
+                            Select term
+                        </option>
+
+                        <option value="1">
+                            Term 1
+                        </option>
+
+                        <option value="2">
+                            Term 2
+                        </option>
+
+                        <option value="3">
+                            Term 3
+                        </option>
+
+                    </select>
+
+                </div>
+
+            <% } %>
+
+
+            <!-- Class -->
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Class
+                </label>
+
+                <select
+                    class="form-select report-class"
+                    name="classid"
+                    required>
+
+                    <option value="">
+                        Select class
+                    </option>
+
+                    <% if (typeof allocations !== 'undefined') { %>
+
+                        <% allocations.forEach(item => { %>
+
+                            <option value="<%= item.classid %>">
+
+                                <%= item.class %>
+                                -
+                                <%= item.levelname %>
+
+                            </option>
+
+                        <% }) %>
+
+                    <% } %>
+
+                </select>
+
+            </div>
+
+
+            <!-- Report Scope -->
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Report Scope
+                </label>
+
+                <select
+                    class="form-select"
+                    name="scope">
+
+                    <option value="class">
+                        Entire Class
+                    </option>
+
+                    <option value="individual">
+                        Individual Pupil
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Individual pupil -->
+
+            <div class="col-md-6 individual-pupil-field d-none">
+
+                <label class="form-label">
+                    Pupil
+                </label>
+
+                <select
+                    class="form-select"
+                    name="examno">
+
+                    <option value="">
+                        Select pupil
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Format -->
+
+            <div class="col-md-6">
+
+                <label class="form-label">
+                    Output Format
+                </label>
+
+                <select
+                    class="form-select"
+                    name="format">
+
+                    <option value="pdf">
+                        PDF
+                    </option>
+
+                    <option value="print">
+                        Print
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Include charts -->
+
+            <div class="col-12">
+
+                <div class="report-options">
+
+                    <label class="form-check">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="includeProgress"
+                            checked>
+
+                        <span class="form-check-label">
+                            Include performance/progress analysis
+                        </span>
+
+                    </label>
+
+
+                    <label class="form-check">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="includeRemarks"
+                            checked>
+
+                        <span class="form-check-label">
+                            Include teacher remarks
+                        </span>
+
+                    </label>
+
+
+                    <% if (reportType === 'annual') { %>
+
+                        <label class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                name="includePromotion"
+                                checked>
+
+                            <span class="form-check-label">
+                                Include promotion recommendation
+                            </span>
+
+                        </label>
+
+                    <% } %>
+
+                </div>
+
+            </div>
+
+
+            <!-- Generate -->
+
+            <div class="col-12">
+
+                <div class="report-form-footer">
+
+                    <div class="report-security-note">
+
+                        <i class="bi bi-shield-check"></i>
+
+                        <span>
+                            You can only generate reports for classes
+                            assigned to you.
+                        </span>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-lg">
+
+                        <i class="bi bi-file-earmark-pdf"></i>
+
+                        Generate Report
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
