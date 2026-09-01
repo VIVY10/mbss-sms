@@ -515,6 +515,30 @@ exports.findEnrollmentOnConnection = (connection, examno, schoolyear, termid ) =
     `, [examno, schoolyear, termid]
 )
 
+
+exports.findEnrollmentByClassId = (classid) => 
+  query(
+      `
+        SELECT
+            s.examno,
+            s.fname,
+            s.middlename,
+            s.lname,
+            sc.studentclassid,
+            sc.examno,
+            sc.classid,
+            sc.termid,
+            sc.yearid
+        FROM studentclass sc
+        JOIN students s 
+        ON s.examno = sc.examno
+        JOIN terms t 
+        ON t.termid = sc.termid
+        WHERE sc.classid = ?
+        AND t.status = 'open'
+    `, [classid]
+)
+
 exports.findEnrollmentHistory = (examno) =>
   query(`
     SELECT

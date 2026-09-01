@@ -85,7 +85,7 @@ async function create_teaching_allocations(
     teacherid,
     class_subject_id,
     termid,
-    allocated_by
+    allocated_by 
 ) {
     try {
         // Check whether the teacher is already allocated

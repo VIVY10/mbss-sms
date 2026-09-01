@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"> 
 <head>
     <meta charset="UTF-8">
 
@@ -1204,245 +1204,329 @@
             <!-- =================================================
                  MARKS
             ================================================== -->
+<!-- =================================================
+     MARKS
+================================================== -->
 
-            <section
-                id="section-marks"
-                class="dashboard-section">
+<section
+    id="section-marks"
+    class="dashboard-section">
 
-                <div class="page-heading">
+    <div class="page-heading">
 
-                    <div>
+        <div>
 
-                        <span class="eyebrow">
-                            ASSESSMENT
-                        </span>
+            <span class="eyebrow">
+                ASSESSMENT
+            </span>
 
-                        <h1>
-                            Marks Schedule
-                        </h1>
+            <h1>
+                Marks Schedule
+            </h1>
 
-                        <p>
-                            Manage and submit marks for your allocated classes.
-                        </p>
+            <p>
+                Manage and submit marks for your allocated classes.
+            </p>
 
-                    </div>
+        </div>
+
+    </div>
+
+
+    <div class="content-card mb-4">
+
+        <div class="filter-bar marks-filter">
+
+            <div class="filter-field">
+
+                <label for="marksClass">
+                    Class &amp; Subject
+                </label>
+
+                <select
+                    id="marksClass"
+                    class="form-select">
+
+                    <option value="">
+                        Select class &amp; subject
+                    </option>
+
+                    <% if (typeof stats.allocations !== 'undefined') { %>
+
+                        <% stats.allocations.forEach(item => { %>
+
+                            <option
+                                value="<%= item.class_subject_id %>"
+                                data-classid="<%= item.classid %>"
+                                data-subjectcode="<%= item.subjectcode %>"
+                                data-levelname="<%= item.levelname %>"
+                                data-classname="<%= item.class %>"
+                                data-subjectname="<%= item.subjectname %>">
+
+                                <%= item.levelname %>
+                                <%= item.class %>
+                                -
+                                <%= item.subjectname %>
+
+                            </option>
+
+                        <% }) %>
+
+                    <% } %>
+
+                </select>
+
+                <small class="text-muted">
+                    Select one of your allocated class subjects.
+                </small>
+
+            </div>
+
+
+            <div class="filter-field">
+
+                <label for="marksExamType">
+                    Assessment
+                </label>
+
+                <select
+                    id="marksExamType"
+                    name="examType"
+                    class="form-select">
+
+                    <option value="">
+                        Select assessment
+                    </option>
+
+                     <% if (typeof stats.examtype !== 'undefined') { %>
+
+                        <% stats.examtype.forEach(item => { %>
+
+                            <option
+                                value="<%= item.examid %>">
+
+                                <%= item.exam_title %>
+
+                            </option>
+
+                        <% }) %>
+
+                    <% } %>
+
+                </select>
+
+            </div>
+
+
+            <div class="filter-action">
+
+                <button
+                    type="button"
+                    id="loadMarksBtn"
+                    class="btn btn-primary marks-load-btn">
+
+                    <i class="bi bi-arrow-repeat me-1"></i>
+
+                    Load Marks
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="content-card">
+
+        <div class="card-header-custom">
+
+            <div>
+
+                <div class="d-flex align-items-center gap-2 mb-1">
+
+                    <h3 id="marksScheduleTitle">
+                        Marks Schedule
+                    </h3>
+
+                    <span
+                        id="marksStudentCount"
+                        class="badge bg-light text-dark">
+
+                        0 pupils
+
+                    </span>
 
                 </div>
 
+                <p id="marksScheduleSubtitle">
+                    Select a class and assessment to load pupils.
+                </p>
 
-                <div class="content-card mb-4">
+            </div>
 
-                    <div class="filter-bar marks-filter">
 
-                        <div>
+            <div>
 
-                            <label>
-                                Class
-                            </label>
+                <span
+                    id="marksStatus"
+                    class="status-badge warning">
 
-                            <select
-                                id="marksClass"
-                                class="form-select">
+                    Draft
 
-                                <option value="">
-                                    Select class
-                                </option>
+                </span>
 
-                                <% if (typeof stats.allocations !== 'undefined') { %>
+            </div>
 
-                                    <% stats.allocations.forEach(item => { %>
+        </div>
 
-                                        <option
-                                            value="<%= item.classid %>">
 
-                                            <%= item.levelname %><%= item.class %>
-                                            -
-                                            <%= item.subjectname %>
+        <!-- Loading State -->
+        <div
+            id="marksLoading"
+            class="marks-loading d-none">
 
-                                        </option>
+            <div class="spinner-border text-primary"
+                 role="status">
 
-                                    <% }) %>
+                <span class="visually-hidden">
+                    Loading...
+                </span>
 
-                                <% } %>
+            </div>
 
-                            </select>
+            <span>
+                Loading pupils...
+            </span>
 
-                        </div>
+        </div>
 
 
-                        <div>
+        <!-- Empty State -->
+        <div
+            id="marksEmptyState"
+            class="marks-empty-state">
 
-                            <label>
-                                Assessment
-                            </label>
+            <div class="empty-icon">
 
-                            <select name="examType" class="form-select">
-                                <option value="">
-                                    Select exam
-                                </option>
+                <i class="bi bi-people"></i>
 
-                                 <% if (typeof stats.examtype !== 'undefined') { %>
+            </div>
 
-                                    <% stats.examtype.forEach(item => { %>
+            <h5>
+                No marks schedule loaded
+            </h5>
 
-                                        <option
-                                            value="<%= item.examid %>">
+            <p>
+                Select your class, subject and assessment
+                above, then click <strong>Load Marks</strong>.
+            </p>
 
-                                            <%= item.exam_title %>
+        </div>
 
-                                        </option>
 
-                                    <% }) %>
+        <!-- Table -->
+        <div
+            id="marksTableContainer"
+            class="table-responsive d-none">
 
-                                <% } %>
+            <table
+                class="table professional-table marks-table">
 
-                            </select>
+                <thead>
 
-                        </div>
+                    <tr>
 
+                        <th style="width:60px;">
+                            #
+                        </th>
 
-                        <button class="btn btn-primary marks-load-btn">
+                        <th>
+                            EXAM NO.
+                        </th>
 
-                            <i class="bi bi-arrow-repeat"></i>
+                        <th>
+                            PUPIL
+                        </th>
 
-                            Load Marks
+                        <th style="width:150px;">
+                            MARK
+                        </th>
 
-                        </button>
+                        <th style="width:100px;">
+                            GRADE
+                        </th>
 
-                    </div>
+                        <th>
+                            REMARK
+                        </th>
 
-                </div>
+                    </tr>
 
+                </thead>
 
-                <div class="content-card">
+                <tbody id="marksTableBody">
 
-                    <div class="card-header-custom">
+                    <!-- Students inserted by JavaScript -->
 
-                        <div>
+                </tbody>
 
-                            <h3>
-                                Marks Schedule
-                            </h3>
+            </table>
 
-                            <p>
-                                Enter marks for the selected assessment.
-                            </p>
+        </div>
 
-                        </div>
 
-                        <span class="status-badge warning">
-                            Draft
-                        </span>
+        <!-- Footer -->
+        <div
+            id="marksFooter"
+            class="marks-footer d-none">
 
-                    </div>
+            <div>
 
+                <span>
+                    Last saved:
+                </span>
 
-                    <div class="table-responsive">
+                <strong id="lastSaved">
+                    Not saved
+                </strong>
 
-                        <table class="table professional-table marks-table">
+            </div>
 
-                            <thead>
 
-                            <tr>
+            <div class="d-flex gap-2">
 
-                                <th>#</th>
-                                <th>EXAM NO.</th>
-                                <th>PUPIL</th>
-                                <th>MARK</th>
-                                <th>GRADE</th>
-                                <th>REMARK</th>
+                <button
+                    type="button"
+                    id="saveDraftBtn"
+                    class="btn btn-outline-secondary">
 
-                            </tr>
+                    <i class="bi bi-save me-1"></i>
 
-                            </thead>
+                    Save Draft
 
-                            <tbody>
+                </button>
 
-                            <% for(let i=1; i<=8; i++) { %>
 
-                                <tr>
+                <button
+                    type="button"
+                    id="submitMarksBtn"
+                    class="btn btn-primary">
 
-                                    <td>
-                                        <%= i %>
-                                    </td>
+                    <i class="bi bi-check-circle me-1"></i>
 
-                                    <td>
-                                        2026000<%= i %>
-                                    </td>
+                    Submit Marks
 
-                                    <td>
-                                        Pupil <%= i %>
-                                    </td>
+                </button>
 
-                                    <td>
+            </div>
 
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            max="100"
-                                            class="form-control mark-input"
-                                            value="">
+        </div>
 
-                                    </td>
+    </div>
 
-                                    <td>
-
-                                        <span class="grade-display">
-                                            -
-                                        </span>
-
-                                    </td>
-
-                                    <td>
-
-                                        <span class="remark-display">
-                                            -
-                                        </span>
-
-                                    </td>
-
-                                </tr>
-
-                            <% } %>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-
-                    <div class="marks-footer">
-
-                        <div>
-
-                            <span>
-                                Last saved:
-                            </span>
-
-                            <strong>
-                                Not saved
-                            </strong>
-
-                        </div>
-
-                        <div class="d-flex gap-2">
-
-                            <button class="btn btn-outline-secondary">
-                                Save Draft
-                            </button>
-
-                            <button class="btn btn-primary">
-                                Submit Marks
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
+</section>
 
 
             <!-- =================================================

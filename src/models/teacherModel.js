@@ -108,7 +108,7 @@ query(
 )
 
 exports.getCreateTeacherAllocationsOptions = (teacherid, class_subject_id, termid) =>
-  query(
+  query( 
     `
     SELECT
       ta.allocation_id,

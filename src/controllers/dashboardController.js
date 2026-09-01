@@ -68,7 +68,7 @@ exports.getHodDashboardStats = async (teacherid) => {
       currentYear: currentYear[0],
       currentTerm: currentTerm[0],
     };
-
+ 
     return stats;
   } catch (err) {
     console.log(err);

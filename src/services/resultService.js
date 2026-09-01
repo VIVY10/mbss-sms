@@ -1,4 +1,10 @@
 const resultModel = require('../models/resultModel.js');
+const {
+  getConnection,
+  beginTransaction,
+  commit,
+  rollback,
+} = require("../utils/db.js");
 
 
 const getFilters = () =>
@@ -104,23 +110,105 @@ async function getMissingMarks(teacherid, classid, subjectcode, examid) {
 }
 
 
-async function processStudentMarks(termid, yearid, examid, subjectcode, examData) {
-    try {
-      // Check for existing records and insert new ones
-      const results = await resultModel.insertStudentMarks(
-        termid,
-        yearid,
-        examid,
-        subjectcode,
-        examData
-      );
-
-      return results;
-      
-    } catch (error) {
-      throw error;
+async function processStudentMarks(examid, subjectCode, marks, entered_by) {
+  const connection = await getConnection();  
+  try {
+    // Validate input
+    if (!examid || !subjectCode || !marks || !marks.length) {
+      throw new Error("Missing required parameters");
     }
+    
+    const validMarks = marks.filter(m => m.studentclassid && m.mark !== undefined);
+    if (validMarks.length === 0) {
+      throw new Error("No valid marks data provided");
+    }
+    
+    await beginTransaction(connection);
+    
+    // Get existing records
+    const studentIds = validMarks.map(m => m.studentclassid);
+    const existingRecordsResult = await resultModel.getExistingMarks(
+      connection, 
+      examid, 
+      subjectCode, 
+      studentIds
+    );
+    
+    // Handle different return formats from connectionQuery
+    let existingRecords = [];
+    if (Array.isArray(existingRecordsResult)) {
+      // If it returns [rows, fields]
+      existingRecords = existingRecordsResult[0] || [];
+    } else if (existingRecordsResult && existingRecordsResult.rows) {
+      // If it returns { rows, fields }
+      existingRecords = existingRecordsResult.rows || [];
+    } else if (Array.isArray(existingRecordsResult)) {
+      // If it returns just the rows array
+      existingRecords = existingRecordsResult;
+    } else {
+      // Fallback
+      existingRecords = [];
+    }
+    
+    // Ensure we have an array
+    if (!Array.isArray(existingRecords)) {
+      existingRecords = [];
+    }
+    
+    const existingIds = new Set(existingRecords.map(r => r.studentclassid));
+    
+    const toInsert = validMarks.filter(m => !existingIds.has(m.studentclassid));
+    const toUpdate = validMarks.filter(m => existingIds.has(m.studentclassid));
+    
+    const results = [];
+    
+    // Insert new records
+    if (toInsert.length > 0) {
+      const insertValues = toInsert.flatMap(m => [
+        m.studentclassid, subjectCode, examid, m.mark, entered_by
+      ]);
+      
+      await resultModel.insertMarks(connection, toInsert.length, insertValues);
+      
+      toInsert.forEach(m => {
+        results.push({
+          status: "inserted",
+          studentclassid: m.studentclassid,
+          message: "Record inserted successfully"
+        });
+      });
+    }
+    
+    // Update existing records
+    for (const m of toUpdate) {
+      await resultModel.updateExistingMarks(
+        connection, m.mark, entered_by, examid, subjectCode, m.studentclassid
+      );
+      
+      results.push({
+        status: "updated",
+        studentclassid: m.studentclassid,
+        message: "Record updated successfully"
+      });
+    }
+    
+    await commit(connection);
+    
+    return {
+      message: "Marks processed successfully",
+      totalProcessed: results.length,
+      inserted: toInsert.length,
+      updated: toUpdate.length,
+      results
+    };
+    
+  } catch (error) {
+    await rollback(connection);
+    throw error;
+  } finally {
+    if (connection) connection.release();
   }
+};
 
 
 async function getClassInfoPage(teacherid) {

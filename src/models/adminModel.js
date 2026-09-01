@@ -293,7 +293,7 @@ exports.getHods = () =>
     SELECT
      t.teacherid,
      t.employee_no,
-     t.fname,
+     t.fname, 
      t.middlename,
      t.lname,
      t.gender,

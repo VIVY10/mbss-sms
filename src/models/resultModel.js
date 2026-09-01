@@ -1,5 +1,4 @@
-const { query } = require("../utils/db.js");
-
+const { query, connectionQuery } = require("../utils/db.js");
 // ==================== RESULT FILTERS ====================
 
 exports.getResultFilters = () =>
@@ -144,30 +143,7 @@ exports.updateResult = (data) =>
     [data.score, data.id, data.examid, data.subjectcode],
   );
 
-exports.getTeacherClass = (teacherid) =>
-  query(
-    `SELECT
-        s.subjectname,
-        cs.subjectcode,
-        cs.classid,
-        c.grade,
-        c.class,
-        tm.termid,
-        tm.termnumber,
-        sy.schoolyearid,
-        sy.yearname
-     FROM class_subjects AS cs
-     JOIN class AS c
-       ON cs.classid = c.classid
-     JOIN terms as tm
-       ON c.termid = tm.termid
-     JOIN schoolyear sy
-       ON sy.schoolyearid = tm.yearid
-     JOIN subjects AS s
-       ON cs.subjectcode = s.subjectcode
-     WHERE cs.teacherid = ?`,
-    [teacherid]
-  );
+
 
 exports.getExams = () =>
   query(
@@ -175,8 +151,8 @@ exports.getExams = () =>
      FROM exams`,
   );
 
-exports.getMissingMarks = async({ teacherid, classid, subjectcode, examid }) =>
-  query(
+exports.getMissingMarks = (teacherid, classid, subjectcode, examid) =>
+  query( 
     `
         SELECT DISTINCT
             s.id,
@@ -220,60 +196,66 @@ exports.getMissingMarks = async({ teacherid, classid, subjectcode, examid }) =>
     [teacherid, classid, subjectcode, examid],
   );
 
-exports.insertStudentMarks = async (
-  termid,
-  yearid,
-  examid,
-  subjectcode,
-  examData,
-) => {
-  try {
-    const promises = examData.map(({ examno, score }) => {
-      // Check if record exists
-      const resp = query(
-        `SELECT * FROM student_results 
-            WHERE examno = ? AND subjectcode = ? AND examid = ? AND yearid = ? AND termid = ? AND score IS NOT NULL
-          `,
-        [examno, subjectcode, examid, yearid, termid],
-      );
 
-      if (resp.length > 0) {
-        return resolve({
-          status: "skipped",
-          examno,
-          message: "Record already exists",
-        });
-      }
+// exports.getExistingMarks = (connection, examid, subjectCode, studentIds) =>
+//    connectionQuery(
+//       connection,
+//       `SELECT studentclassid FROM student_results 
+//        WHERE examid = ? AND subjectcode = ? AND studentclassid IN (?) AND score IS NOT NULL`,
+//       [examid, subjectCode, studentIds]
+//     );
 
-      // Insert new record
-      query(
-        `
-              INSERT INTO student_results (examno, subjectcode, examid, termid, yearid, score) 
-              VALUES (?, ?, ?, ?, ?, ?)
-            `,
-        [examno, subjectcode, examid, termid, yearid, score],
-      );
-    });
+// exports.insertMarks = (connection, insertValues) =>
+//     connectionQuery(
+//       connection,
+//       `        
+//         INSERT INTO student_results (studentclassid, subjectcode, examid, score, entered_by) 
+//          VALUES (?, ?, ?, ?, ?)
+//       `, [`${insertValues}`]
+//     );
 
-    const results = await Promise.all(promises);
 
-    return {
-      message: "Record already exists",
-    };
-  } catch (error) {
-    throw error;
-  }
+// exports.updateExistingMarks = (connection, mark, entered_by, examid, subjectCode, studentclassid) =>
+//   connectionQuery(
+//         connection,
+//         `UPDATE student_results 
+//          SET score = ?, entered_by = ?, updated_at = CURRENT_TIMESTAMP()
+//          WHERE examid = ? AND subjectcode = ? AND studentclassid = ?`,
+//         [mark, entered_by, examid, subjectCode, studentclassid]
+//       );
+
+
+
+exports.getExistingMarks = (connection, examid, subjectCode, studentIds) => {
+  connectionQuery(
+    connection,
+    `SELECT studentclassid FROM student_results 
+     WHERE examid = ? AND subjectcode = ? AND studentclassid IN (?) AND score IS NOT NULL`,
+    [examid, subjectCode, studentIds]
+  );
 };
-// Additional repository methods if needed
-// exports.getStudentResults = async(examid, subjectcode) =>
-//   query(`
-//       SELECT * FROM student_results
-//       WHERE examid = ? AND subjectcode = ?
-//     `,[examid, subjectcode])
 
-/**
- * Get classes and subjects allocated to a teacher.
- */
+exports.insertMarks = (connection, count, values) => {
+  const placeholders = Array(count).fill('(?, ?, ?, ?, ?)').join(', ');
+  
+  connectionQuery(
+    connection,
+    `INSERT INTO student_results (studentclassid, subjectcode, examid, score, entered_by) 
+     VALUES ${placeholders}`,
+    values
+  );
+};
+
+exports.updateExistingMarks = (connection, mark, entered_by, examid, subjectCode, studentclassid) => {
+  connectionQuery(
+    connection,
+    `UPDATE student_results 
+     SET score = ?, entered_by = ?, updated_at = CURRENT_TIMESTAMP()
+     WHERE examid = ? AND subjectcode = ? AND studentclassid = ?`,
+    [mark, entered_by, examid, subjectCode, studentclassid]
+  );
+};
+
 exports.getTeacherClasses = (teacherid) =>
   query(
     `SELECT

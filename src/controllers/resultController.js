@@ -1,13 +1,15 @@
 const { matchedData } = require("express-validator");
 
-const service = require("../services/resultService.js");
-
 const resultService = require("../services/resultService");
+
+
+const subjectModel = require('../models/subjectModel.js');
+const pupilModel = require('../models/pupilModel.js');
 
 // ==================== STUDENT RESULTS PAGE ====================
 
 exports.page = async (req, res) => {
-  const [term, year, exam] = await service.getFilters();
+  const [term, year, exam] = await resultService.getFilters();
 
   if (!year.length) {
     return res.send("Error fetching support information");
@@ -32,7 +34,7 @@ exports.page = async (req, res) => {
 exports.search = async (req, res) => {
   const { year, term, exam } = matchedData(req);
 
-  const results = await service.getStudentResults(
+  const results = await resultService.getStudentResults(
     exam,
     req.user.id,
     term,
@@ -54,7 +56,7 @@ exports.search = async (req, res) => {
 // ==================== PUPIL PROFILE ====================
 
 exports.profile = async (req, res) => {
-  const rows = await service.getProfile(req.user.id);
+  const rows = await resultService.getProfile(req.user.id);
 
   if (!rows.length) {
     return res.send("No ID information");
@@ -72,7 +74,7 @@ exports.deleteResult = async (req, res) => {
   const { id, subjectcode, examid, score } = req.body.data;
 
   try {
-    await service.deleteResult({
+    await resultService.deleteResult({
       id,
       subjectcode,
       examid,
@@ -89,7 +91,7 @@ exports.deleteResult = async (req, res) => {
 
 exports.updateResult = async (req, res) => {
   try {
-    await service.updateResult(req.body);
+    await resultService.updateResult(req.body);
 
     res.status(200).json("success");
   } catch (error) {
@@ -285,6 +287,70 @@ exports.getResults = async (req, res) => {
 
     return res.status(error.status || 500).json({
       message: error.message || "Database error.",
+    });
+  }
+};
+
+
+exports.getStudents = async(req, res) => {
+  const {class_subject_id, examid} = req.query
+
+
+  const findClassId = await subjectModel.findClassIdInClassSubject(class_subject_id)
+
+  if(findClassId && findClassId.length > 0){
+    const results = await pupilModel.findEnrollmentByClassId(findClassId[0].classid)
+
+    return res.status(201).json(results)
+  }
+}
+
+exports.saveMarks = async(req, res) =>{
+  console.log(req.body)
+  res.status(200).json({message: 'marks saved successfully'})
+}
+ 
+
+exports.submitMarks = async(req, res) => {
+  try {
+    const { class_subject_id, examid, subjectCode, marks } = req.body;
+    
+    // Validate input
+    if (!examid || !subjectCode || !marks || !Array.isArray(marks)) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing or invalid required fields: examid, subjectCode, marks array"
+      });
+    }
+    
+    if (!req.user || !req.user.teacherid) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized - Teacher ID not found"
+      });
+    }
+    
+    const entered_by = req.user.teacherid;
+    
+    const result = await resultService.processStudentMarks(
+      examid, 
+      subjectCode, 
+      marks, 
+      entered_by
+    );
+    
+    res.status(200).json({
+      success: true,
+      message: "Marks entered successfully",
+      data: result
+    });
+    
+  } catch (error) {
+    console.error("Error submitting marks:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to submit marks",
+      error: error.message
     });
   }
 };

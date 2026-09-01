@@ -116,6 +116,20 @@ exports.getClassSubjects = () =>
     `,
   );
 
+
+
+
+  exports.findClassIdInClassSubject = (class_subject_id) =>
+  query(
+    `
+    SELECT
+      cs.class_subject_id,
+      cs.classid
+    FROM class_subjects cs
+    WHERE cs.class_subject_id = ?
+    `, [class_subject_id]
+  );
+
 // ==================== UNALLOCATED CLASS SUBJECTS ====================
 
 exports.getUnallocatedClassSubjects = (termid) =>
@@ -210,7 +224,7 @@ exports.teaching_allocation = (termid) =>{
           ta.teacherid,
           CONCAT(tchr.fname, ' ', tchr.lname) AS teacher_name,
           ta.start_date,
-          ta.end_date
+          ta.end_date 
       FROM class_subjects cs
       INNER JOIN class c ON cs.classid = c.classid
       INNER JOIN yearlevel yl ON c.levelid = yl.levelorder

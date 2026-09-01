@@ -1,7 +1,7 @@
 (() => {
 
     'use strict';
-
+ 
 
     /* =========================================================
        ELEMENTS
@@ -816,7 +816,7 @@
 
 
                 /*
-                 * Later connect this to your backend:
+                 * backend:
                  *
                  * POST /teacher/reports/generate
                  *
@@ -893,6 +893,1136 @@
 
         }
     );
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ELEMENTS
+    |--------------------------------------------------------------------------
+    */
+
+    const classSelect =
+        document.getElementById('marksClass');
+
+    const examSelect =
+        document.getElementById('marksExamType');
+
+    const loadBtn =
+        document.getElementById('loadMarksBtn');
+
+    const tableContainer =
+        document.getElementById('marksTableContainer');
+
+    const tableBody =
+        document.getElementById('marksTableBody');
+
+    const emptyState =
+        document.getElementById('marksEmptyState');
+
+    const loading =
+        document.getElementById('marksLoading');
+
+    const footer =
+        document.getElementById('marksFooter');
+
+    const studentCount =
+        document.getElementById('marksStudentCount');
+
+    const scheduleTitle =
+        document.getElementById('marksScheduleTitle');
+
+    const scheduleSubtitle =
+        document.getElementById('marksScheduleSubtitle');
+
+    const statusBadge =
+        document.getElementById('marksStatus');
+
+    const lastSaved =
+        document.getElementById('lastSaved');
+
+    const saveDraftBtn =
+        document.getElementById('saveDraftBtn');
+
+    const submitMarksBtn =
+        document.getElementById('submitMarksBtn');
+
+
+    if (!classSelect || !examSelect || !loadBtn) {
+        return;
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CURRENT STATE
+    |--------------------------------------------------------------------------
+    */
+
+    let currentSchedule = {
+        classSubjectId: null,
+        classId: null,
+        subjectCode: null,
+        examId: null
+    };
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOAD MARKS
+    |--------------------------------------------------------------------------
+    */
+
+    loadBtn.addEventListener('click', loadMarks);
+
+
+    async function loadMarks() {
+
+        const selectedClass =
+            classSelect.options[
+                classSelect.selectedIndex
+            ];
+
+        const classSubjectId =
+            classSelect.value;
+
+        const examId =
+            examSelect.value;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDATION
+        |--------------------------------------------------------------------------
+        */
+
+        if (!classSubjectId) {
+
+            showAlert(
+                'Please select a class and subject.',
+                'warning'
+            );
+
+            classSelect.focus();
+
+            return;
+        }
+
+
+        if (!examId) {
+
+            showAlert(
+                'Please select an assessment.',
+                'warning'
+            );
+
+            examSelect.focus();
+
+            return;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | STORE CURRENT SELECTION
+        |--------------------------------------------------------------------------
+        */
+
+        currentSchedule = {
+
+            classSubjectId,
+
+            classId:
+                selectedClass.dataset.classid,
+
+            subjectCode:
+                selectedClass.dataset.subjectcode,
+
+            examId
+        };
+
+
+        setLoading(true);
+
+
+        try {
+
+            const params = new URLSearchParams({
+
+                class_subject_id:
+                    classSubjectId,
+
+                examid:
+                    examId
+            });
+
+
+            const response = await fetch(
+                `/teacher/marks/students?${params.toString()}`,
+                {
+                    method: 'GET',
+
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }
+            );
+
+
+            const result =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    result.message ||
+                    'Unable to load students.'
+                );
+            }
+
+
+            renderMarksSchedule(
+                selectedClass,
+                examId,
+                result
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                'Load marks error:',
+                error
+            );
+
+
+            showAlert(
+                error.message ||
+                'Unable to load marks.',
+                'danger'
+            );
+
+
+            showEmptyState();
+
+        } finally {
+
+            setLoading(false);
+
+        }
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RENDER STUDENTS
+    |--------------------------------------------------------------------------
+    */
+
+    function renderMarksSchedule(
+        selectedClass,
+        examId,
+        result
+    ) {
+
+
+        if (!result.length) {
+
+            showEmptyState();
+
+            scheduleTitle.textContent =
+                'Marks Schedule';
+
+            scheduleSubtitle.textContent =
+                'No pupils were found for this class.';
+
+            return;
+        }
+
+
+        emptyState.classList.add('d-none');
+
+        tableContainer.classList.remove('d-none');
+
+        footer.classList.remove('d-none');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HEADER
+        |--------------------------------------------------------------------------
+        */
+
+        const className =
+            `${selectedClass.dataset.levelname}
+             ${selectedClass.dataset.classname}`.trim();
+
+        const subjectName =
+            selectedClass.dataset.subjectname ||
+            'Subject';
+
+
+        scheduleTitle.textContent =
+            `${className} — ${subjectName}`;
+
+
+        scheduleSubtitle.textContent =
+            `${examSelect.options[
+                examSelect.selectedIndex
+            ].text} • Enter marks from 0 to 100`;
+
+
+        studentCount.textContent =
+            `${result.length} pupil${result.length === 1 ? '' : 's'}`;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TABLE
+        |--------------------------------------------------------------------------
+        */
+
+        tableBody.innerHTML = '';
+
+
+        result.forEach((result, index) => {
+
+            const row =
+                document.createElement('tr');
+
+
+            const mark =
+                result.mark !== null &&
+                result.mark !== undefined
+                    ? result.mark
+                    : '';
+
+
+            const grade =
+                mark === ''
+                    ? '-'
+                    : calculateGrade(Number(mark));
+
+
+            const remark =
+                mark === ''
+                    ? '-'
+                    : calculateRemark(Number(mark));
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${index + 1}
+                </td>
+
+
+                <td>
+                    <span class="exam-number">
+                        ${escapeHtml(result.examno)}
+                    </span>
+                </td>
+
+
+                <td>
+
+                    <div class="student-name">
+
+                        ${escapeHtml(result.fname)}
+
+                        ${
+                            result.middlename
+                                ? ` ${escapeHtml(result.middlename)}`
+                                : ''
+                        }
+
+                        ${escapeHtml(result.lname)}
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <input
+                        type="number"
+                        class="form-control mark-input"
+                        min="0"
+                        max="100"
+                        step="0.01"
+                        inputmode="decimal"
+                        data-examno="${escapeHtml(result.examno)}"
+                        data-studentclassid="${result.studentclassid}"
+                        value="${mark}"
+                        placeholder="0 - 100"
+                    >
+
+                </td>
+
+
+                <td>
+
+                    <span class="grade-display">
+                        ${grade}
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <span class="remark-display">
+                        ${escapeHtml(remark)}
+                    </span>
+
+                </td>
+
+            `;
+
+
+            tableBody.appendChild(row);
+
+        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | MARK INPUT EVENTS
+        |--------------------------------------------------------------------------
+        */
+
+        tableBody
+            .querySelectorAll('.mark-input')
+            .forEach(input => {
+
+                input.addEventListener(
+                    'input',
+                    () => {
+
+                        updateMarkDisplay(input);
+
+                    }
+                );
+
+            });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | STATUS
+        |--------------------------------------------------------------------------
+        */
+
+        statusBadge.textContent =
+            result.status || 'Draft';
+
+
+        lastSaved.textContent =
+            result.lastSaved
+                ? formatDate(result.lastSaved)
+                : 'Not saved';
+
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE GRADE / REMARK
+    |--------------------------------------------------------------------------
+    */
+
+    function updateMarkDisplay(input) {
+
+        const row =
+            input.closest('tr');
+
+        const gradeDisplay =
+            row.querySelector('.grade-display');
+
+        const remarkDisplay =
+            row.querySelector('.remark-display');
+
+
+        const value =
+            input.value.trim();
+
+
+        if (value === '') {
+
+            gradeDisplay.textContent = '-';
+
+            remarkDisplay.textContent = '-';
+
+            input.classList.remove(
+                'is-invalid'
+            );
+
+            return;
+        }
+
+
+        const mark =
+            Number(value);
+
+
+        if (
+            Number.isNaN(mark) ||
+            mark < 0 ||
+            mark > 100
+        ) {
+
+            input.classList.add(
+                'is-invalid'
+            );
+
+            gradeDisplay.textContent = '-';
+
+            remarkDisplay.textContent =
+                'Invalid mark';
+
+            return;
+        }
+
+
+        input.classList.remove(
+            'is-invalid'
+        );
+
+
+        gradeDisplay.textContent =
+            calculateGrade(mark);
+
+
+        remarkDisplay.textContent =
+            calculateRemark(mark);
+
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GRADE CALCULATION
+    |--------------------------------------------------------------------------
+    |
+    | IMPORTANT:
+    | Replace these ranges with the school's official grading scale.
+    |
+    */
+
+    function calculateGrade(mark) {
+
+        if (mark >= 75) return 'A';
+
+        if (mark >= 65) return 'B';
+
+        if (mark >= 55) return 'C';
+
+        if (mark >= 40) return 'D';
+
+        if (mark >= 0) return 'F';
+
+        return '-';
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | REMARK
+    |--------------------------------------------------------------------------
+    */
+
+    function calculateRemark(mark) {
+
+        if (mark >= 75) {
+            return 'Distinction';
+        }
+
+        if (mark >= 65) {
+            return 'Merit';
+        }
+
+        if (mark >= 55) {
+            return 'Credit';
+        }
+
+        if (mark >= 45) {
+            return 'Pass';
+        }
+
+        return 'Fail';
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SAVE DRAFT
+    |--------------------------------------------------------------------------
+    */
+
+    saveDraftBtn?.addEventListener(
+        'click',
+        () => saveMarks('draft')
+    );
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SUBMIT MARKS
+    |--------------------------------------------------------------------------
+    */
+
+    submitMarksBtn?.addEventListener(
+        'click',
+        () => saveMarks('submit')
+    );
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SAVE MARKS
+    |--------------------------------------------------------------------------
+    */
+
+    async function saveMarks(mode) {
+
+        if (!currentSchedule.classSubjectId) {
+
+            showAlert(
+                'Load a marks schedule first.',
+                'warning'
+            );
+
+            return;
+        }
+
+
+        const markInputs =
+            [
+                ...tableBody.querySelectorAll(
+                    '.mark-input'
+                )
+            ];
+
+
+        const marks = [];
+
+
+        for (const input of markInputs) {
+
+            const value =
+                input.value.trim();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | EMPTY MARK
+            |--------------------------------------------------------------------------
+            */
+
+            if (value === '') {
+                continue;
+            }
+
+
+            const mark =
+                Number(value);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | VALIDATE MARK
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                Number.isNaN(mark) ||
+                mark < 0 ||
+                mark > 100
+            ) {
+
+                input.focus();
+
+                showAlert(
+                    'All marks must be between 0 and 100.',
+                    'danger'
+                );
+
+                return;
+            }
+
+
+            marks.push({
+
+                studentclassid:
+                    input.dataset.studentclassid,
+
+                subjectcode:
+                    input.dataset.subjectcode,
+
+                mark
+
+            });
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | REQUIRE MARKS
+        |--------------------------------------------------------------------------
+        */
+
+        if (!marks.length) {
+
+            showAlert(
+                'Enter at least one mark before saving.',
+                'warning'
+            );
+
+            return;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CONFIRM SUBMISSION
+        |--------------------------------------------------------------------------
+        */
+
+        if (mode === 'submit') {
+
+            const confirmed =
+                window.confirm(
+                    'Submit these marks? Once submitted, editing may be restricted.'
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+        }
+
+
+        const button =
+            mode === 'draft'
+                ? saveDraftBtn
+                : submitMarksBtn;
+
+
+        const originalText =
+            button.innerHTML;
+
+
+        button.disabled = true;
+
+
+        button.innerHTML = `
+
+            <span
+                class="spinner-border spinner-border-sm me-1">
+            </span>
+
+            ${
+                mode === 'draft'
+                    ? 'Saving...'
+                    : 'Submitting...'
+            }
+
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    mode === 'draft'
+                        ? '/teacher/marks/draft'
+                        : '/teacher/marks/submit',
+                    {
+
+                        method: 'POST',
+
+                        headers: {
+
+                            'Content-Type':
+                                'application/json',
+
+                            'Accept':
+                                'application/json'
+
+                        },
+
+                        body: JSON.stringify({
+
+                            class_subject_id:
+                                currentSchedule.classSubjectId,
+
+                            examid:
+                                currentSchedule.examId,
+                            
+                            subjectCode: currentSchedule.subjectCode,
+
+                            marks
+
+                        })
+
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    result.message ||
+                    'Unable to save marks.'
+                );
+
+            }
+
+
+            showAlert(
+                result.message ||
+                (
+                    mode === 'draft'
+                        ? 'Marks saved as draft.'
+                        : 'Marks successfully submitted.'
+                ),
+                'success'
+            );
+
+
+            statusBadge.textContent =
+                mode === 'draft'
+                    ? 'Draft'
+                    : 'Submitted';
+
+
+            statusBadge.classList.remove(
+                'warning',
+                'success'
+            );
+
+
+            statusBadge.classList.add(
+                mode === 'draft'
+                    ? 'warning'
+                    : 'success'
+            );
+
+
+            lastSaved.textContent =
+                result.savedAt
+                    ? formatDate(result.savedAt)
+                    : 'Just now';
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | DISABLE EDITING AFTER SUBMISSION
+            |--------------------------------------------------------------------------
+            */
+
+            if (mode === 'submit') {
+
+                markInputsDisabled();
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                'Save marks error:',
+                error
+            );
+
+
+            showAlert(
+                error.message ||
+                'Unable to save marks.',
+                'danger'
+            );
+
+
+        } finally {
+            // disable submit button
+            button.disabled = true;
+
+            button.innerHTML =
+                originalText;
+
+        }
+
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DISABLE MARK INPUTS
+    |--------------------------------------------------------------------------
+    */
+
+    function markInputsDisabled() {
+
+        tableBody
+            .querySelectorAll('.mark-input')
+            .forEach(input => {
+
+                input.disabled = true;
+
+            });
+
+
+        saveDraftBtn.disabled = true;
+
+        submitMarksBtn.disabled = true;
+
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LOADING STATE
+    |--------------------------------------------------------------------------
+    */
+
+    function setLoading(isLoading) {
+
+        if (isLoading) {
+
+            loading.classList.remove(
+                'd-none'
+            );
+
+            emptyState.classList.add(
+                'd-none'
+            );
+
+            tableContainer.classList.add(
+                'd-none'
+            );
+
+            footer.classList.add(
+                'd-none'
+            );
+
+            loadBtn.disabled = true;
+
+            loadBtn.innerHTML = `
+
+                <span
+                    class="spinner-border spinner-border-sm me-1">
+                </span>
+
+                Loading...
+
+            `;
+
+        } else {
+
+            loading.classList.add(
+                'd-none'
+            );
+
+            loadBtn.disabled = false;
+
+            loadBtn.innerHTML = `
+
+                <i class="bi bi-arrow-repeat me-1"></i>
+
+                Load Marks
+
+            `;
+
+        }
+
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EMPTY STATE
+    |--------------------------------------------------------------------------
+    */
+
+    function showEmptyState() {
+
+        emptyState.classList.remove(
+            'd-none'
+        );
+
+        tableContainer.classList.add(
+            'd-none'
+        );
+
+        footer.classList.add(
+            'd-none'
+        );
+
+        tableBody.innerHTML = '';
+
+        studentCount.textContent =
+            '0 pupils';
+
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ALERT
+    |--------------------------------------------------------------------------
+    */
+
+    function showAlert(message, type = 'info') {
+
+        let container =
+            document.getElementById(
+                'marksAlertContainer'
+            );
+
+
+        if (!container) {
+
+            container =
+                document.createElement('div');
+
+            container.id =
+                'marksAlertContainer';
+
+            container.className =
+                'position-fixed top-0 end-0 p-3';
+
+            container.style.zIndex =
+                '1080';
+
+            document.body.appendChild(
+                container
+            );
+
+        }
+
+
+        const alert =
+            document.createElement('div');
+
+        alert.className =
+            `alert alert-${type} alert-dismissible fade show shadow`;
+
+
+        alert.innerHTML = `
+
+            ${escapeHtml(message)}
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+            </button>
+
+        `;
+
+
+        container.appendChild(alert);
+
+
+        setTimeout(() => {
+
+            alert.remove();
+
+        }, 5000);
+
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ESCAPE HTML
+    |--------------------------------------------------------------------------
+    */
+
+    function escapeHtml(value) {
+
+        return String(value ?? '')
+            .replace(
+                /[&<>"']/g,
+                character => ({
+
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+
+                })[character]
+            );
+
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FORMAT DATE
+    |--------------------------------------------------------------------------
+    */
+
+    function formatDate(value) {
+
+        if (!value) {
+            return 'Not saved';
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (Number.isNaN(
+            date.getTime()
+        )) {
+
+            return String(value);
+
+        }
+
+
+        return date.toLocaleString();
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 })();
