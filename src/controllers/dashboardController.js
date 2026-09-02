@@ -80,7 +80,7 @@ exports.getHodDashboardStats = async (teacherid) => {
 exports.getTeacherDashboardStats = async (teacherid) => {
   try{
     const stats = await dashboardService.getTeacherDashboardStats(teacherid)
-    console.log(stats)
+    // console.log(stats)
 // add term and year
     return stats;
 

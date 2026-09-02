@@ -1,4 +1,4 @@
-const { matchedData } = require("express-validator");
+const { matchedData, body } = require("express-validator");
 
 const resultService = require("../services/resultService");
 
@@ -32,25 +32,31 @@ exports.page = async (req, res) => {
 // ==================== SEARCH RESULTS ====================
 
 exports.search = async (req, res) => {
-  const { year, term, exam } = matchedData(req);
+  // const { year, term, exam } = matchedData(req);
+  const { termid, classid, subjectcode } = req.query;
+
+  // console.log(req.query)
 
   const results = await resultService.getStudentResults(
-    exam,
-    req.user.id,
-    term,
-    year,
+    termid,
+    classid,
+    subjectcode
   );
 
-  if (!results.length) {
-    return res.render("./response/response", {
-      message: "Record not found.",
-    });
+  console.log(results)
+
+  if (!results && results.length === 0) {
+    return res.json({message: 'no results found'})
   }
 
-  res.render("./pupil/resultsReport1", {
-    results,
-    user: req.user,
-  });
+  return res.json(results)
+
+
+
+  // res.render("./pupil/resultsReport1", {
+  //   results,
+  //   user: req.user,
+  // });
 };
 
 // ==================== PUPIL PROFILE ====================

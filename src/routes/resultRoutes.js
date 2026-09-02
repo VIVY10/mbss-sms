@@ -23,7 +23,8 @@ router.post('/teacher/marks/submit', authChecker,  controller.submitMarks)
 router.post('/getDetails', authChecker, resultController.getDetails);
 router.get('/resultsEntry', authChecker, resultController.resultsEntry)
 router.get('/studentResults', authChecker, controller.page);
-router.post('/studentResults', authChecker, controller.search);
+router.get('/teacher/results/search', authChecker, controller.search);
+
 router.get('/getID', authChecker, controller.profile);
 router.post('/deleteResult', authChecker, controller.deleteResult);
 router.post('/updateResult', authChecker, controller.updateResult);

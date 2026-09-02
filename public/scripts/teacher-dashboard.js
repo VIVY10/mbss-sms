@@ -2010,4 +2010,369 @@
 
     }
 
+
+    /* =========================================================
+   PUPIL RESULTS SEARCH
+========================================================= */
+
+const resultSearchBtn = document.getElementById('resultSearchBtn');
+const resultClearBtn = document.getElementById('resultClearBtn');
+const resultClassFilter = document.getElementById('resultClassFilter');
+const resultSubjectFilter = document.getElementById('resultSubjectFilter');
+const resultTermFilter = document.getElementById('resultTermFilter');
+const resultsContainer = document.getElementById('resultsContainer');
+const resultsLoading = document.getElementById('resultsLoading');
+const resultCount = document.getElementById('resultCount');
+const resultSubtitle = document.getElementById('resultSubtitle');
+const resultActions = document.getElementById('resultActions');
+
+
+/* =========================================================
+   SEARCH RESULTS
+========================================================= */
+
+async function searchResults() {
+    const query = pupilSearch?.value?.trim() || '';
+    const classId = resultClassFilter?.value || '';
+    const subjectCode = resultSubjectFilter?.value || '';
+    const termId = resultTermFilter?.value || '';
+
+    // Check if we have at least one search criteria
+    if (!query && !classId && !subjectCode && !termId) {
+        showResultsEmpty(
+            'Enter a search term or select a filter',
+            'Please provide at least one search criteria to find results.'
+        );
+        return;
+    }
+
+    // Show loading state
+    if (resultsLoading) resultsLoading.classList.remove('d-none');
+    if (resultsContainer) resultsContainer.innerHTML = '';
+
+    try {
+        // Build query parameters
+        const params = new URLSearchParams();
+        if (query) params.append('q', query);
+        if (classId) params.append('classid', classId);
+        if (subjectCode) params.append('subjectcode', subjectCode);
+        if (termId) params.append('termid', termId);
+
+        const response = await fetch(
+            `/teacher/results/search?${params.toString()}`,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }
+        );
+
+        const result = await response.json();
+
+        console.log(result)
+
+        if (!response.ok) {
+            throw new Error(result.message || 'Unable to search results.');
+        }
+
+        renderResults(result);
+
+    } catch (error) {
+        console.error('Search error:', error);
+        showResultsEmpty(
+            'Error searching results',
+            error.message || 'Unable to complete the search. Please try again.'
+        );
+    } finally {
+        if (resultsLoading) resultsLoading.classList.add('d-none');
+    }
+}
+
+
+/* =========================================================
+   RENDER RESULTS
+========================================================= */
+
+function renderResults(results) {
+
+    if (!resultsContainer) return;
+
+    if (!results || results.length === 0) {
+        showResultsEmpty(
+            'No results found',
+            'Try adjusting your search criteria or filters.'
+        );
+        return;
+    }
+
+    // Build table
+    let html = `
+        <div class="table-responsive">
+            <table class="table professional-table result-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>EXAM NO.</th>
+                        <th>PUPIL</th>
+                        <th>CLASS</th>
+                        <th>SUBJECT</th>
+                        <th>MARK</th>
+                        <th>GRADE</th>
+                        <th>REMARK</th>  
+                        <th>TERM</th>                                              
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    results.forEach((item, index) => {
+        const mark = item.score !== null && item.score !== undefined ? item.score : '-';
+        const grade = mark !== '-' ? calculateGradeForResults(Number(mark)) : '-';
+        const gradeClass = grade !== '-' ? `grade-${grade}` : '';
+        const passClass = mark !== '-' && Number(mark) >= 50 ? 'pass' : (mark !== '-' ? 'fail' : '');
+        const remark = mark !== '-' ? generateRemark(Number(mark)) : '';
+
+        html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td><span class="exam-number">${escapeHtml(item.examno || '-')}</span></td>
+                <td>
+                    <span class="pupil-name">
+                        ${escapeHtml(item.fname || '')} ${escapeHtml(item.lname || '')}
+                    </span>
+                    ${item.middlename ? `<small class="text-muted d-block">${escapeHtml(item.middlename)}</small>` : ''}
+                </td>
+                <td>${escapeHtml(item.levelname || '-')}${escapeHtml(item.class || '-')}</td>
+                <td>${escapeHtml(item.subjectname || '-')}</td>
+                <td class="mark-cell ${passClass}">${mark !== '-' ? mark : '-'}</td>
+                <td><span class="grade-cell ${gradeClass}">${grade}</span></td>
+                <td>${generateRemark(item.score) || '-'}</td>
+                <td>${escapeHtml(item.termname || '-')}</td>                
+            </tr>
+        `;
+    });
+
+    html += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    resultsContainer.innerHTML = html;
+
+    // Update header
+    if (resultCount) resultCount.textContent = `${results.length} result${results.length === 1 ? '' : 's'}`;
+    if (resultSubtitle) resultSubtitle.textContent = `Showing ${results.length} result${results.length === 1 ? '' : 's'}`;
+    if (resultActions) resultActions.classList.remove('d-none');
+}
+
+
+/* =========================================================
+   SHOW EMPTY STATE
+========================================================= */
+
+function showResultsEmpty(title, message) {
+    if (!resultsContainer) return;
+
+    resultsContainer.innerHTML = `
+        <div class="no-results">
+            <i class="bi bi-search"></i>
+            <h4>${escapeHtml(title)}</h4>
+            <p>${escapeHtml(message)}</p>
+        </div>
+    `;
+
+    if (resultCount) resultCount.textContent = '0 results';
+    if (resultSubtitle) resultSubtitle.textContent = 'No results to display';
+    if (resultActions) resultActions.classList.add('d-none');
+}
+
+
+/* =========================================================
+   GRADE CALCULATION AND REMARK GENERATION FOR RESULTS
+========================================================= */
+
+function calculateGradeForResults(mark) {
+    if (mark >= 75) return 'A';
+    if (mark >= 65) return 'B';
+    if (mark >= 55) return 'C';
+    if (mark >= 45) return 'D';
+    if (mark >= 0) return 'F';
+    return '-';
+}
+
+function generateRemark(mark) {
+    if (mark >= 75) return 'Distinction';
+    if (mark >= 65) return 'Merit';
+    if (mark >= 55) return 'Credit';
+    if (mark >= 40) return 'Pass';
+    if (mark >= 0) return 'Fail';
+    return '-';
+}
+
+
+/* =========================================================
+   CLEAR SEARCH
+========================================================= */
+
+function clearSearch() {
+    if (pupilSearch) pupilSearch.value = '';
+    if (resultClassFilter) resultClassFilter.value = '';
+    if (resultSubjectFilter) resultSubjectFilter.value = '';
+    if (resultTermFilter) resultTermFilter.value = '';
+
+    showResultsEmpty(
+        'Search for a pupil',
+        'Enter an exam number or pupil name above, or use the filters to narrow your search.'
+    );
+}
+
+
+/* =========================================================
+   EVENT LISTENERS
+========================================================= */
+
+// Search button click
+resultSearchBtn?.addEventListener('click', searchResults);
+
+// Clear button click
+resultClearBtn?.addEventListener('click', clearSearch);
+
+// Enter key on search input
+pupilSearch?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        searchResults();
+    }
+});
+
+// Filter changes - auto-search when any filter changes
+// resultClassFilter?.addEventListener('change', searchResults);
+// resultSubjectFilter?.addEventListener('change', searchResults);
+// resultTermFilter?.addEventListener('change', searchResults);
+
+
+/* =========================================================
+   EXPORT RESULTS
+========================================================= */
+
+// document.getElementById('exportResultsBtn')?.addEventListener('click', function() {
+//     // Get the current table data
+//     const rows = document.querySelectorAll('.result-table tbody tr');
+//     if (!rows || rows.length === 0) {
+//         showAlert('No results to export.', 'warning');
+//         return;
+//     }
+
+//     // Build CSV data
+//     let csv = 'Exam No.,Pupil,Class,Subject,Mark,Grade,Remark,Term\n';
+//     rows.forEach(row => {
+//         const cells = row.querySelectorAll('td');
+//         if (cells.length >= 8) {
+//             const examNo = cells[1]?.textContent?.trim() || '';
+//             const pupil = cells[2]?.textContent?.trim() || '';
+//             const className = cells[3]?.textContent?.trim() || '';
+//             const subject = cells[4]?.textContent?.trim() || '';
+//             const mark = cells[5]?.textContent?.trim() || '';
+//             const grade = cells[6]?.textContent?.trim() || '';
+//             const remark = cells[7]?.textContent?.trim() || '';
+//             const term = cells[8]?.textContent?.trim() || '';
+//             csv += `"${examNo}","${pupil}","${className}","${subject}","${mark}","${grade}","${remark}","${term}"\n`;
+//         }
+//     });
+
+//     // Download CSV
+//     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+//     const link = document.createElement('a');
+//     link.href = URL.createObjectURL(blob);
+//     link.download = `pupil_results_${new Date().toISOString().slice(0,10)}.csv`;
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+//     URL.revokeObjectURL(link.href);
+// });
+
+/* =========================================================
+   EXPORT RESULTS
+========================================================= */
+
+document.getElementById('exportResultsBtn')?.addEventListener('click', function() {
+    // Get the current table data
+    const rows = document.querySelectorAll('.result-table tbody tr');
+    if (!rows || rows.length === 0) {
+        showAlert('No results to export.', 'warning');
+        return;
+    }
+
+    // Get filter values for filename
+    const classFilter = document.getElementById('resultClassFilter');
+    const subjectFilter = document.getElementById('resultSubjectFilter');
+    const termFilter = document.getElementById('resultTermFilter');
+
+    // Build filename parts
+    let filenameParts = ['pupil_results'];
+
+    // Add subject if selected
+    if (subjectFilter && subjectFilter.value) {
+        const subjectName = subjectFilter.options[subjectFilter.selectedIndex]?.textContent?.trim();
+        if (subjectName) filenameParts.push(subjectName);
+    }
+
+    // Add class if selected
+    if (classFilter && classFilter.value) {
+        const className = classFilter.options[classFilter.selectedIndex]?.textContent?.trim();
+        if (className) filenameParts.push(className);
+    }
+
+    // Add term if selected
+    if (termFilter && termFilter.value) {
+        const termName = termFilter.options[termFilter.selectedIndex]?.textContent?.trim();
+        if (termName) filenameParts.push(termName);
+    }
+
+    // Add date
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const filename = `${filenameParts.join('_')}_${dateStr}.csv`;
+
+    // Build CSV data with headers
+    let headers = ['Exam No.', 'Pupil', 'Class', 'Subject', 'Mark', 'Grade', 'Remark', 'Term'];
+    let csv = headers.join(',') + '\n';
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 9) {
+            const examNo = cells[1]?.textContent?.trim() || '';
+            const pupil = cells[2]?.textContent?.trim() || '';
+            const className = cells[3]?.textContent?.trim() || '';
+            const subject = cells[4]?.textContent?.trim() || '';
+            const mark = cells[5]?.textContent?.trim() || '';
+            const grade = cells[6]?.textContent?.trim() || '';
+            const remark = cells[7]?.textContent?.trim() || '';
+            const term = cells[8]?.textContent?.trim() || '';
+            
+            // Escape fields that might contain commas or quotes
+            const rowData = [examNo, pupil, className, subject, mark, grade, remark, term]
+                .map(field => `"${field.replace(/"/g, '""')}"`);
+            
+            csv += rowData.join(',') + '\n';
+        }
+    });
+
+    // Create and download the file
+    const blob = new Blob(['\uFEFF' + csv], { 
+        type: 'text/csv;charset=utf-8;' 
+    });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+
+    // Show success message
+    showAlert(`Exported ${rows.length} results to ${filename}`, 'success');
+});
+
 })();

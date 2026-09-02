@@ -12,16 +12,14 @@ const getFilters = () =>
 
 
 const getStudentResults = (
-    examid,
-    pupilId,
     termid,
-    yearid
+    classid,
+    subjectcode
 ) =>
     resultModel.getStudentResults(
-        examid,
-        pupilId,
-        termid,
-        yearid
+    termid,
+    classid,
+    subjectcode
     );
 
 

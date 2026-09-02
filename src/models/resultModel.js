@@ -30,63 +30,46 @@ exports.getResultFilters = () =>
 
 // ==================== GET STUDENT RESULTS ====================
 
-exports.getStudentResults = (examid, pupilId, termid, yearid) =>
+exports.getStudentResults = (termid, classid, subjectcode) =>
   query(
     `
     SELECT
-      sub.subjectcode,
-      stsub.examno,
+      su.subjectcode,
+      su.subjectname,
+      s.examno,
       IFNULL(sr.score, 'Absent') AS score,
-      st.fname,
-      st.lname,
-      st.profilePicture,
-      c.grade,
-      c.section,
+      s.fname,
+      s.middlename,
+      s.lname,
+      yl.levelname,
+      c.class,
       ex.exam_title,
-      sub.subjectname,
-      sy.yearname
+      ex.examid,
+      tm.termname
 
-    FROM studentsubject AS stsub
-
-    JOIN students AS st
-      ON st.examno = stsub.examno
-
-    JOIN class AS c
-      ON c.classid = (
-        SELECT classid
-        FROM studentclass
-        WHERE examno = stsub.examno
-        LIMIT 1
-      )
-
+    FROM student_results sr
+    JOIN studentclass sc
+      ON sc.studentclassid = sr.studentclassid
+    JOIN students s 
+      ON s.examno = sc.examno
+    JOIN subjects su 
+      ON su.subjectcode = sr.subjectcode
     JOIN terms AS tm
-      ON tm.termid = c.termid
-
-    JOIN schoolyear AS sy
+      ON tm.termid = sc.termid
+    JOIN schoolyear sy 
       ON sy.schoolyearid = tm.yearid
-
-    JOIN class_subjects AS cs
-      ON cs.classid = c.classid
-      AND cs.subjectcode = stsub.subjectcode
-
-    JOIN subjects AS sub
-      ON sub.subjectcode = stsub.subjectcode
-
-    LEFT JOIN student_results AS sr
-      ON sr.examno = stsub.examno
-      AND sr.subjectcode = stsub.subjectcode
-      AND sr.examid = ?
-
-    LEFT JOIN exams AS ex
-      ON ex.examid = ?
-
-    WHERE st.examno = ?
+    JOIN class c 
+      ON c.classid = sc.classid
+    JOIN yearlevel yl
+      ON yl.levelorder = c.levelid
+    LEFT JOIN exams ex
+      ON ex.examid = sr.examid
+    WHERE sr.subjectcode = ?
       AND tm.termid = ?
-      AND sy.schoolyearid = ?
-
-    ORDER BY sub.subjectcode
+      AND sc.classid = ?
+    ORDER BY su.subjectcode
     `,
-    [examid, examid, pupilId, termid, yearid],
+    [subjectcode, termid, classid]
   );
 
 // ==================== GET STUDENT PROFILE ====================
