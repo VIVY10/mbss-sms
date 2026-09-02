@@ -1412,10 +1412,6 @@
     |--------------------------------------------------------------------------
     | GRADE CALCULATION
     |--------------------------------------------------------------------------
-    |
-    | IMPORTANT:
-    | Replace these ranges with the school's official grading scale.
-    |
     */
 
     function calculateGrade(mark) {
@@ -1769,6 +1765,7 @@
             button.innerHTML =
                 originalText;
 
+            
         }
 
     }
@@ -1950,7 +1947,7 @@
         setTimeout(() => {
 
             alert.remove();
-
+            window.location.reload(); // UI not very good
         }, 5000);
 
     }
@@ -2012,17 +2009,5 @@
         return date.toLocaleString();
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 })();

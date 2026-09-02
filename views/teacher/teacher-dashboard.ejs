@@ -1588,9 +1588,16 @@
 
                         <select class="form-select filter-control">
 
-                            <option>Term 1</option>
-                            <option>Term 2</option>
-                            <option>Term 3</option>
+                            <% if (typeof stats.allocations !== 'undefined' && stats.allocations.length) { %>
+                                <% stats.allocations.forEach(a => { %>
+                                    <!-- must fix to avoid multiple same terms being displayed -->
+                                    <option value="<%= a.termid %>">
+                                        <%= a.termname %>
+                                    </option>
+
+                                <% }) %>
+
+                            <% } %>
 
                         </select>
 
