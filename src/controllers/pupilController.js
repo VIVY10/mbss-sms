@@ -56,10 +56,9 @@ exports.returningPupils = async (req, res) => {
 
 
 exports.register = async (req, res) => {
-  // const data = matchedData(req);
-  const data = req.body;
-  //console.log(req.body)
-
+  const data = matchedData(req);
+  // const data = req.body;
+  console.log(data)
   try {
     const reported_by = req.user.teacherid;
     const reporting_status = "reported";
@@ -83,7 +82,7 @@ exports.register = async (req, res) => {
         profileDirectory,
       });
     }
-
+ 
     return res.status(201).json(result);
   } catch (err) {
     console.error("Registration error:", err);
