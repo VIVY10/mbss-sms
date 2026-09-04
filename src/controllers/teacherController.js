@@ -226,13 +226,10 @@ exports.registeredPupils = async (req, res) => {
 
 // ==================== DELETE TEACHER ====================
 
-exports.deleteTeacher = async (req, res) => {
-  await teacherService.deleteTeacher(
-    req.query.username,
-    profileDirectory,
-    backupDirectory,
+exports.softDeleteTeachers = async (req, res) => {
+  await teacherService.softDeleteTeacher(
+    req.query.teacherid
   );
-
   res.redirect("/viewTeachers");
 };
 

@@ -744,19 +744,27 @@
                                                 <i class="bi bi-eye"></i>
                                             </a>
 
-
-                                            <!-- <a
-                                                href="/teachers/edit/<%= teacher.teacherid %>"
-                                                class="action-btn"
-                                                title="Edit teacher"
-                                            >
-                                                <i class="bi bi-pencil"></i>
-                                            </a> -->
+                            <% if(teacher.status === "active") { %>
+                                <!-- Active teacher: Show deactivate/delete option -->
+                                <a href="/deactivateTeacher?teacherid=<%= encodeURIComponent(teacher.teacherid) %>" 
+                                class="action-btn deactivate-btn" 
+                                title="Deactivate Teacher"
+                                onclick="return confirmDeactivate('<%= teacher.fname %> <%= teacher.lname %>')">
+                                    <i class="bi bi-person-x"></i>
+                                </a>
+                            <% } else { %>
+                                <!-- Inactive/Left teacher: Show reactivate option -->
+                                <a href="/reactivateTeacher?teacherid=<%= encodeURIComponent(teacher.teacherid) %>" 
+                                class="action-btn reactivate-btn" 
+                                title="Reactivate Teacher"
+                                onclick="return confirmReactivate('<%= teacher.fname %> <%= teacher.lname %>')">
+                                    <i class="bi bi-person-plus"></i>
+                                </a>
+                            <% } %>
 
                                              <!-- Lock / Unlock -->
 
                             <% if (Number(teacher.is_locked)) { %>
-
                                 <a
                                     class="action-btn"
                                     href="/unlockTeacherAccount?username=<%= encodeURIComponent(teacher.username) %>"
@@ -765,9 +773,7 @@
                                     <i class="bi bi-lock" title="unlock teacher account">
                                     </i>
                                 </a>
-
                             <% } else { %>
-
                                 <a
                                     class="action-btn"
                                     href="/lockTeacherAccount?username=<%= encodeURIComponent(teacher.username) %>"

@@ -6,6 +6,12 @@ const fs = require("fs").promises;
 const path = require("path");
 const { removeFileIfExists } = require("../utils/fileUtils.js");
 const { response } = require("express");
+const {
+  getConnection,
+  beginTransaction,
+  commit,
+  rollback,
+} = require("../utils/db.js");
 
 async function registerTeacher({ data, file }) {
   const username = data.username.toLowerCase();
@@ -214,6 +220,83 @@ async function assignSubject(teacherid, subjectcode, approved_by) {
 }
 
 
+async function softDeleteTeacher(teacherid) {
+    // Start a database transaction
+    const connection = await getConnection();
+    
+    try {
+        await beginTransaction(connection);
+        
+        // 1. Find teacher
+        const teacher = await teacherModel.findByIdOnConnection(teacherid, connection);
+        
+        if (!teacher || teacher.length === 0) {
+            throw new Error("Teacher not found.");
+        }
+        
+        const teacherData = teacher[0];
+
+        // console.log(teacherData.usertype)
+        
+        // 2. Prevent deletion of the last admin
+        if (teacherData.usertype === "admin") {
+            const [adminCount] = await teacherModel.countAdminsOnConnection(connection);
+
+            // console.log(adminCount.count <= 1)
+            
+            if (adminCount.count <= 1) {
+                throw new Error("Cannot delete the last admin user. At least one admin must remain.");
+            }
+        }
+        
+        // 3. Check if teacher has active assignments
+        const hasActiveAssignments = await teacherModel.hasActiveAssignments(teacherid, connection);
+        
+        if (hasActiveAssignments) {
+            // Option A: Throw error and let user decide
+            // throw new Error("Teacher has active assignments. Please reassign or end them first.");
+            
+            // Option B: Automatically end active assignments
+            await teacherModel.endActiveAssignments(teacherid, connection);
+        }
+        
+        // 4. Perform soft deletes in the correct order
+        await teacherModel.softDeleteById(teacherid, connection);
+        await teacherModel.softDeleteClassTeacherAppointment(teacherid, connection);
+        await teacherModel.softDeleteHodAppointment(teacherid, connection);
+        await teacherModel.softDeleteTeacherDepartment(teacherid, connection);
+        await teacherModel.softDeleteTeacherSubject(teacherid, connection);
+        await teacherModel.softDeleteTeacherAllocations(teacherid, connection);
+        
+        // 5. Log the action
+        // await teacherModel.logTeacherDeletion(teacherid, {
+        //     deleted_by: getCurrentUserId(),
+        //     reason: 'Manual soft delete',
+        //     timestamp: new Date()
+        // }, connection);
+        
+        // Commit transaction
+         await commit(connection);
+        
+        return {
+            success: true,
+            message: `Teacher ${teacherData.fname} ${teacherData.lname} has been deactivated successfully.`,
+            teacherId: teacherid
+        };
+        
+    } catch (error) {
+        // Rollback on error
+        if (connection) {
+            await rollback(connection);
+        }
+        throw error;
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+}
+
 
 async function deleteTeacher(username, profileDirectory, backupDirectory) {
   const teacher = await teacherModel.findByUsername(username);
@@ -307,6 +390,7 @@ module.exports = {
   getSubjectAllocation,
   create_teaching_allocations,
   assignSubject,
+  softDeleteTeacher,
   deleteTeacher,
   lockAccount,
   unlockAccount,

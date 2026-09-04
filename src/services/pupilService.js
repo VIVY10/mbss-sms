@@ -275,6 +275,7 @@ async function updatePupil(data) {
   }
 }
 
+
 async function deletePupil(examNumber, profileDirectory, backupDirectory) {
   const pictureRows = await pupilModel.getProfilePicture(examNumber);
   const profilePicture = pictureRows[0]?.profilePicture;

@@ -1,4 +1,4 @@
-const { query } = require("../utils/db.js");
+const { query, connectionQuery } = require("../utils/db.js");
 
 // ==================== FIND TEACHER ====================
 
@@ -19,9 +19,17 @@ exports.findById = (teacherid) =>
     SELECT
       *
     FROM teachers
-    WHERE teacherid = ?
+    WHERE teacherid = ? AND status != "left"
     `,
     [teacherid],
+  );
+
+// Find teacher by ID (with connection for transactions)
+exports.findByIdOnConnection = (teacherid, connection = null) =>
+  connectionQuery(
+    connection,
+    `SELECT * FROM teachers WHERE teacherid = ?`,
+    [teacherid, "left"],
   );
 
 exports.findByEmail = (email) =>
@@ -99,16 +107,26 @@ exports.getAll = () =>
   );
 
 // ==================== SUBJECTS TAUGHT ====================
-exports.createTeachingAllocations = (teacherid, class_subject_id, termid, allocated_by) =>
-query(
-  `
+exports.createTeachingAllocations = (
+  teacherid,
+  class_subject_id,
+  termid,
+  allocated_by,
+) =>
+  query(
+    `
   INSERT INTO teaching_allocations(teacherid, class_subject_id, termid, allocated_by)
   VALUES(?, ?, ?, ?)
-  `, [teacherid, class_subject_id, termid, allocated_by]
-)
+  `,
+    [teacherid, class_subject_id, termid, allocated_by],
+  );
 
-exports.getCreateTeacherAllocationsOptions = (teacherid, class_subject_id, termid) =>
-  query( 
+exports.getCreateTeacherAllocationsOptions = (
+  teacherid,
+  class_subject_id,
+  termid,
+) =>
+  query(
     `
     SELECT
       ta.allocation_id,
@@ -413,8 +431,14 @@ exports.countAdmins = () =>
     ["admin"],
   );
 
-// ==================== DELETE TEACHER ====================
+// Count admins (excluding the one being deleted)
+exports.countAdminsOnConnection = (connection = null) =>
+  connectionQuery(
+    connection,
+    `SELECT COUNT(*) as count FROM teachers WHERE usertype = "admin" AND status = "active"`,
+  );
 
+// ==================== DELETE TEACHER ====================
 exports.deleteByUsername = (username) =>
   query(
     `
@@ -422,4 +446,142 @@ exports.deleteByUsername = (username) =>
     WHERE username = ?
     `,
     [username],
+  );
+
+// Soft delete teaching allocations
+exports.softDeleteTeacherAllocations = (teacherid, connection = null) =>
+  connectionQuery(
+    connection,
+    `UPDATE teaching_allocations
+            SET status = ?, 
+              end_date = NOW() 
+            WHERE teacherid = ? AND status = ?
+          `,
+    ["ended", teacherid, "active"],
+  );
+
+// Check if teacher has active assignments
+exports.hasActiveAssignments = async(teacherid, connection = null) => {
+  // Check various active assignments
+  const classAssignments = connectionQuery(
+    connection,
+    'SELECT COUNT(*) as count FROM class_teacher_assignment WHERE teacherid = ? AND status = "ACTIVE"',
+    [teacherid],
+  );
+
+  const hodAppointments = connectionQuery(
+    connection,
+    'SELECT COUNT(*) as count FROM hod_appointment WHERE teacherid = ? AND status = "active"',
+    [teacherid],
+  );
+
+  const teachingAllocations = connectionQuery(
+    connection,
+    "SELECT COUNT(*) as count FROM teaching_allocations WHERE teacherid = ? AND end_date IS NULL",
+    [teacherid],
+  );
+
+  const total =
+    classAssignments.count +
+    hodAppointments.count +
+    teachingAllocations.count;
+
+  return total > 0;
+};
+
+// End active assignments
+exports.endActiveAssignments = async(teacherid, connection = null) => {
+  const now = new Date();
+
+  // End class teacher assignments
+  connectionQuery(
+    connection,
+    `UPDATE class_teacher_assignment 
+             SET status = 'ENDED', ended_at = ? 
+             WHERE teacherid = ? AND status = 'ACTIVE'`,
+    [now, teacherid],
+  );
+
+  // End HOD appointments
+  connectionQuery(
+    connection,
+    `UPDATE hod_appointment 
+             SET status = 'ended', end_date = ? 
+             WHERE teacherid = ? AND status = 'active'`,
+    [now, teacherid],
+  );
+
+  // End teaching allocations (set end date to now)
+  connectionQuery(
+    connection,
+    `UPDATE teaching_allocations 
+             SET end_date = ? 
+             WHERE teacherid = ? AND end_date IS NULL`,
+    [now, teacherid],
+  );
+};
+
+// Soft delete teacher
+exports.softDeleteById = (teacherid, connection = null) => 
+  connectionQuery(
+    connection,
+    `UPDATE teachers 
+             SET status = 'left', 
+                 is_locked = 1,
+                 updated_at = NOW() 
+             WHERE teacherid = ?`,
+    [teacherid],
+  );
+
+// Soft delete class teacher appointments
+exports.softDeleteClassTeacherAppointment = (teacherid, connection = null) => 
+  connectionQuery(
+    connection,
+    `UPDATE class_teacher_assignment 
+             SET status = 'CANCELLED', 
+                 ended_at = NOW() 
+             WHERE teacherid = ? AND status = 'ACTIVE'`,
+    [teacherid],
+  );
+
+// Soft delete HOD appointments
+exports.softDeleteHodAppointment = (teacherid, connection = null) => 
+  connectionQuery(
+    connection,
+    `UPDATE hod_appointment 
+             SET status = 'cancelled', 
+                 end_date = NOW() 
+             WHERE teacherid = ? AND status = 'active'`,
+    [teacherid],
+  );
+
+// Soft delete teacher departments
+exports.softDeleteTeacherDepartment = (teacherid, connection = null) => 
+  connectionQuery(
+    connection,
+    `UPDATE teacher_department 
+             SET status = 'ended', 
+                 end_date = NOW() 
+             WHERE teacherid = ? AND status = 'active'`,
+    [teacherid],
+  );
+
+// Soft delete teacher subjects
+exports.softDeleteTeacherSubject = (teacherid, connection = null) => 
+  connectionQuery(
+    connection,
+    `UPDATE teacher_subject 
+             SET status = 'inactive' 
+             WHERE teacherid = ? AND status = 'approved'`,
+    [teacherid],
+  );
+
+// Log teacher deletion
+exports.logTeacherDeletion = (teacherid, data, connection = null) =>
+  connectionQuery(
+    connection,
+    `INSERT INTO teacher_audit_logs 
+             (teacherid, action, details, performed_by, performed_at) 
+             VALUES (?, 'SOFT_DELETE', ?, ?, ?)`,
+    [teacherid, JSON.stringify(data), data.deleted_by, data.timestamp],
   );
