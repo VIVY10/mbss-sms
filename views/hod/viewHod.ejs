@@ -11,6 +11,7 @@
             <th>Fname</th>
             <th>Lname</th>
             <th>DepartmentName</th>
+            <th>DepartmentName</th>
             <th colspan="2" style="text-align: center;">Action</th>
           </tr>
         </thead>
@@ -21,10 +22,11 @@
                 <td><%= element.fname %></th>
                 <td><%= element.lname %></td>
                 <td><%= element.departmentname %></th>
-                <% if(user.usertype==="Admin"){ %>
-                  <td  style="text-align: center;" ><a href="/updateHod/<%= element.id %>"><i class="material-icons">edit</i></a>
-                  <a href="/deleteHod/<%= element.id %>"><i class="material-icons">delete</i></a>
-                  <% }else if(user.usertype==="HOD"){%>
+                <td><%= element.status %></th>
+                <% if(user.usertype==="admin"){ %>
+                  <td  style="text-align: center;" ><a href="/updateHod/<%= element.hodappointmentid %>"><i class="material-icons">edit</i></a>
+                  <a href="/deleteHod/<%= element.hodappointmentid %>"><i class="material-icons">delete</i></a>
+                  <% }else { %>
                     <td  style="text-align: center;" ><a href="#"><i class="material-icons">edit</i></a>
                     <a href="#"><i class="material-icons">delete</i></a>
                     <% } %>                  

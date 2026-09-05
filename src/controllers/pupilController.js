@@ -38,8 +38,6 @@ exports.showRegistration = async (req, res) => {
   });
 };
 
-
-
 exports.returningPupils = async (req, res) => {
   const data = await pupilService.getRegistrationData();
 
@@ -53,12 +51,8 @@ exports.returningPupils = async (req, res) => {
   });
 };
 
-
-
 exports.register = async (req, res) => {
   const data = matchedData(req);
-  // const data = req.body;
-  console.log(data)
   try {
     const reported_by = req.user.teacherid;
     const reporting_status = "reported";
@@ -66,29 +60,88 @@ exports.register = async (req, res) => {
 
     let result;
 
-    if (enrollment_type === "returning") {
-      result = await pupilService.registerReturningPupil({
-        reported_by,
-        reporting_status,
-        data,
-      });
-    } else {
-      result = await pupilService.registerPupil({
-        reported_by,
-        reporting_status,
-        enrollment_type,
-        data,
-        file: req.file,
-        profileDirectory,
-      });
-    }
- 
+    result = await pupilService.registerPupil({
+      reported_by,
+      reporting_status,
+      enrollment_type,
+      data,
+      file: req.file,
+      profileDirectory,
+    });
+
     return res.status(201).json(result);
   } catch (err) {
     console.error("Registration error:", err);
 
     return res.status(400).json({
       message: err.message || "Student registration failed.",
+    });
+  }
+};
+
+//============ returning pupils enrollment ========================
+exports.registerReturningPupil = async (req, res) => {
+  console.log("returning pupil");
+  const data = matchedData(req);
+  console.log(data);
+  // const data = req.body;
+  try {
+    const reported_by = req.user.teacherid;
+    const reporting_status = "reported";
+
+    let result;
+
+    result = await pupilService.registerReturningPupil({
+      reported_by,
+      reporting_status,
+      data,
+    });
+
+    return res.status(201).json(result);
+  } catch (err) {
+    console.error("Registration error:", err);
+
+    return res.status(400).json({
+      message: err.message || "Student registration failed.",
+    });
+  }
+};
+
+exports.changeClass = async (req, res) => {
+  console.log(req.body);
+  try {
+    const { previousStudentClassid, newClassid } = req.body;
+    const currentEnrollment = await pupilModel.findEnrollmentByStudentClassId(
+      previousStudentClassid,
+    );
+    const term = await adminModel.get_Open_Terms();
+    const year = await adminModel.get_Open_schoolYear();
+
+    const termid = term[0].termid;
+    const yearid = year[0].schoolyearid;
+    const examno = currentEnrollment[0].examno;
+
+    const enrollment_type = "returning";
+    const reporting_status = "reported";
+    const reported_by = req.user.teacherid;
+
+    const result = await pupilService.changeStudentClass(
+      examno,
+      termid,
+      yearid,
+      previousStudentClassid,
+      newClassid,
+      enrollment_type,
+      reported_by,
+      reporting_status,
+    );
+
+    return res.status(201).json(result);
+  } catch (err) {
+    console.error("class update error:", err);
+
+    return res.status(400).json({
+      message: err.message || "Student class change failed.",
     });
   }
 };
@@ -131,16 +184,16 @@ exports.searchReturningStudent = async (req, res) => {
 
 exports.viewPupils = async (req, res) => {
   // get current date
-  const currentDate = new Date()
+  const currentDate = new Date();
   // extract current year
-  const currentYear = currentDate.getFullYear()
+  const currentYear = currentDate.getFullYear();
 
   const students = await pupilModel.getAll2();
-  const schoolyear = await adminModel.getSchoolYears()
-  const foundTerm = await adminModel.getTerms()
-  const [openTerm] = await adminModel.get_Open_Terms()
-  const foundClass = await adminModel.getClasses()
-  const [stats] = await pupilModel.statistics(currentYear, openTerm.termid)
+  const schoolyear = await adminModel.getSchoolYears();
+  const foundTerm = await adminModel.getTerms();
+  const [openTerm] = await adminModel.get_Open_Terms();
+  const foundClass = await adminModel.getClasses();
+  const [stats] = await pupilModel.statistics(currentYear, openTerm.termid);
 
   return res.render("./pupil/index", {
     students,
@@ -159,37 +212,37 @@ exports.searchPage = (req, res) => {
 };
 
 exports.studentProfile = async (req, res) => {
-  const { examno } = req.params
+  const { examno } = req.params;
 
   const [student] = await pupilModel.search(examno);
   const [currentEnrollment] = await pupilModel.findCurrentEnrollment(examno);
   const academicHistory = await pupilModel.findEnrollmentHistory(examno);
-  const guardians = await pupilModel.getStudentGuardian(examno)
-  const guardian = await pupilModel.getStudentGuardian(examno)
+  const guardians = await pupilModel.getStudentGuardian(examno);
+  const guardian = await pupilModel.getStudentGuardian(examno);
+  const availableClasses = await adminModel.getClasses();
 
   return res.render("./pupil/profile", {
     student,
     currentEnrollment,
     academicHistory,
+    availableClasses,
     guardians,
     guardian,
     user: req.user,
   });
 };
 
-
 // not worked on. fix later
 exports.studentHistory = async (req, res) => {
-  const { examno } = req.params
+  const { examno } = req.params;
 
-  const student = await pupilModel.search(examno);
+  const [student] = await pupilModel.search(examno);
 
   return res.render("./pupil/profile", {
     student,
     user: req.user,
   });
 };
-
 
 exports.searchPupil = async (req, res) => {
   const { examno } = matchedData(req);

@@ -17,16 +17,17 @@ router.get('/registerTeacher', authChecker, controller.showRegistration);
 router.post('/registerTeacher', authChecker, profilePicUpload.single('file'), registerTeacherValidationRules(), validate, controller.register);
 router.get('/viewTeachers', authChecker, controller.viewTeachers); 
 router.get('/teachers/:teacherid', authChecker, controller.findTeacher); 
-// router.get('/deleteTeacher', authChecker, controller.deleteTeacher);
-router.get('/deactivateTeacher', authChecker, controller.softDeleteTeachers);
+router.get('/deactivateTeacher', authChecker, controller.deactivateTeacher);
+router.get('/reactivateTeacher', authChecker, controller.reactivateTeacher);
 router.post('/updateTeacherRecord', authChecker, controller.updateTeacher);
 router.get('/lockTeacherAccount', authChecker, controller.lockTeacherAccount);
 router.get('/unlockTeacherAccount', authChecker, controller.unlockTeacherAccount); 
- 
+
 router.get('/subjectsTaught', authChecker, controller.subjectsTaught);
 router.get('/trSubjectAllocation', authChecker, controller.unallocatedSubjectAllocation);
 router.get('/subjectAllocation', authChecker, controller.subjectAllocation);
 router.post('/allocateSubject', authChecker, controller.assignTeacherSubject);
+router.get('/teacher-subject/:teacher_subjectid', authChecker, controller.removeTeacherSubject)
 router.post('/teacher/class/allocation', authChecker, controller.createTeachingAllocation);
 
 router.post('/registeredPupils', authChecker, controller.registeredPupils);

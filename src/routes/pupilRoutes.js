@@ -21,11 +21,13 @@ const router = express.Router();
 router.post('/checkExamno', authChecker, checkexamnoValidationRules(), validate, controller.checkExamNo);
 router.get('/register', authChecker, controller.showRegistration);
 router.post('/register', authChecker, profilePicUpload.single('file'), pupilValidationRules(), validatePupilRegistration, controller.register);
+router.post('/registerReturningPupils', authChecker, returningPupilValidationRules(), validatePupilRegistration, controller.registerReturningPupil);
+router.post('/student/change/class', authChecker, controller.changeClass)
 router.get("/register/returning/search", controller.searchReturningStudent);
 router.post('/registerReturningPupils', authChecker, controller.register);
 router.get('/viewPupils', authChecker, controller.viewPupils);
 router.get('/students/:examno', authChecker, controller.studentProfile); // test route for new UI
-router.get('/students/:examno/history', authChecker, controller.studentHistory); // test route for new UI
+//router.get('/students/:examno/history', authChecker, controller.studentHistory); // test route for new UI
 router.get('/searchPupil', authChecker, controller.searchPage);
 router.post('/searchPupil', authChecker, checkexamnoValidationRules(), validate, controller.searchPupil);
 router.get('/updatePupilRecord/:id', authChecker, controller.editPage);

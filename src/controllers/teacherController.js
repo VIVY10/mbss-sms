@@ -32,10 +32,18 @@ exports.register = async (req, res) => {
 
 exports.viewTeachers = async (req, res) => {
   const teachers = await teacherModel.getAll();
-  const total = [];
+  const activeTeachers = await teacherModel.getAllActiveTeachers()
+  const hodCount = await teacherModel.hodCount()
+  const departments = await adminModel.getAllActiveDepartment()
+
+  console.log(departments)
 
   res.render("./teacher/index", {
     teachers,
+    activeTeachers,
+    hodCount: hodCount[0].count,
+    departmentCount: departments.length,
+    departments,
     user: req.user,
   });
 };
@@ -47,7 +55,7 @@ exports.findTeacher = async (req, res) => {
   const departments = await teacherModel.findTeacherDepartment(teacherid);
   const subjects = await teacherModel.getTeacherSubjects(teacherid);
   const allocations = await teacherModel.getTeacherSubjectAllocations(teacherid);
-  const allocationHistory = [];
+  const allocationHistory = await teacherModel.getTeacherSubjectAllocationsHistory(teacherid);
   const availableClasses = [];
   const availableClassSubjects = await subjectModel.getClassSubjects();
   const availableDepartments = await adminModel.getDepartments();
@@ -133,6 +141,15 @@ exports.subjectsTaught = async (req, res) => {
     response,
     user: req.user,
   });
+};
+
+
+exports.removeTeacherSubject = async (req, res) => {
+  const {teacher_subjectid} = req.params
+
+  await teacherModel.removeTeacherSubject(teacher_subjectid)
+
+  res.redirect('/viewTeachers'); 
 };
 
 // ==================== UNALLOCATED SUBJECT ALLOCATION ====================
@@ -226,12 +243,21 @@ exports.registeredPupils = async (req, res) => {
 
 // ==================== DELETE TEACHER ====================
 
-exports.softDeleteTeachers = async (req, res) => {
+exports.deactivateTeacher = async (req, res) => {
   await teacherService.softDeleteTeacher(
     req.query.teacherid
   );
   res.redirect("/viewTeachers");
 };
+
+// ==================== ACTIVATE TEACHER ====================
+exports.reactivateTeacher = async (req, res) => {
+  await teacherService.reactivate_teacher(
+    req.query.teacherid
+  );
+  res.redirect("/viewTeachers");
+};
+
 
 // ==================== UPDATE TEACHER ====================
 

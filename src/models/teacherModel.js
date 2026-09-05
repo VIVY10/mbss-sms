@@ -19,7 +19,7 @@ exports.findById = (teacherid) =>
     SELECT
       *
     FROM teachers
-    WHERE teacherid = ? AND status != "left"
+    WHERE teacherid = ?
     `,
     [teacherid],
   );
@@ -29,7 +29,7 @@ exports.findByIdOnConnection = (teacherid, connection = null) =>
   connectionQuery(
     connection,
     `SELECT * FROM teachers WHERE teacherid = ?`,
-    [teacherid, "left"],
+    [teacherid],
   );
 
 exports.findByEmail = (email) =>
@@ -106,6 +106,17 @@ exports.getAll = () =>
     `,
   );
 
+
+  // ==================== GET ALL ACTIVE TEACHERS ====================
+exports.getAllActiveTeachers = () =>
+  query(
+    `
+    SELECT
+      *
+    FROM teachers
+    WHERE status = ?
+    `, ['active']
+  );
 // ==================== SUBJECTS TAUGHT ====================
 exports.createTeachingAllocations = (
   teacherid,
@@ -145,12 +156,14 @@ exports.getCreateTeacherAllocationsOptions = (
 exports.getTeacherSubjectAllocations = (teacherid) =>
   query(
     `
-        SELECT
+    SELECT
       ta.allocation_id,
       ta.class_subject_id,
       ta.teacherid,
       ta.termid,
+      ta.status,
       ta.allocated_by,
+
       s.subjectcode,
       s.subjectname,
       
@@ -159,12 +172,11 @@ exports.getTeacherSubjectAllocations = (teacherid) =>
       
       c.class,
       c.classid,
-      c.status,
+    
       yl.levelname,
       yl.levelorder,
       t.termid,
       t.termname,      
-      t.status,
       
       sy.schoolyearid,
       sy.yearname
@@ -194,16 +206,79 @@ exports.getTeacherSubjectAllocations = (teacherid) =>
     ON sy.schoolyearid = t.yearid
 
     WHERE ta.teacherid = ?
-    AND t.status = 'open'
+    AND ta.status = 'active'
     `,
     [teacherid],
   );
+
+
+
+  exports.getTeacherSubjectAllocationsHistory = (teacherid) =>
+  query(
+    `
+    SELECT
+      ta.allocation_id,
+      ta.class_subject_id,
+      ta.teacherid,
+      ta.termid,
+      ta.status,
+      ta.allocated_by,
+      ta.start_date,
+      ta.end_date,
+
+      s.subjectcode,
+      s.subjectname,
+      
+      d.departmentid,
+      d.departmentname,
+      
+      c.class,
+      c.classid,
+    
+      yl.levelname,
+      yl.levelorder,
+      t.termid,
+      t.termname,      
+      
+      sy.schoolyearid,
+      sy.yearname
+      
+
+    FROM teaching_allocations ta
+    
+    JOIN class_subjects cs
+    ON cs.class_subject_id = ta.class_subject_id
+    
+    JOIN subjects AS s
+      ON s.subjectcode = cs.subjectcode
+      
+     JOIN department d
+     ON d.departmentid = s.departmentid
+
+    JOIN class AS c
+      ON c.classid = cs.classid
+      
+    JOIN yearlevel yl
+    ON yl.levelorder = c.levelid
+    
+    JOIN terms t
+    ON t.termid = ta.termid
+    
+    JOIN schoolyear sy
+    ON sy.schoolyearid = t.yearid
+
+    WHERE ta.teacherid = ?
+    `,
+    [teacherid],
+  );
+
 
 exports.getTeacherSubjects = (teacherid) =>
   query(
     `
       SELECT
         ts.teacher_subjectid,
+        ts.status,
         s.subjectcode,
         s.subjectname,
         s.subjectname,
@@ -224,6 +299,17 @@ exports.getTeacherSubjects = (teacherid) =>
       `,
     [teacherid],
   );
+
+
+exports.removeTeacherSubject = (teacher_subjectid) =>
+  query(
+    `
+      DELETE FROM teacher_subject      
+      WHERE teacher_subjectid = ?
+    `,
+    [teacher_subjectid]
+  );
+
 
 exports.findTeacherAssignedSubject = (teacherid, subjectcode) =>
   query(
@@ -263,7 +349,6 @@ exports.findTeacherDepartment = (teacherid) =>
   );
 
 // ==================== UNALLOCATED SUBJECTS ====================
-
 exports.getUnallocatedByDepartment = (departmentId) =>
   query(
     `
@@ -497,8 +582,8 @@ exports.endActiveAssignments = async(teacherid, connection = null) => {
   connectionQuery(
     connection,
     `UPDATE class_teacher_assignment 
-             SET status = 'ENDED', ended_at = ? 
-             WHERE teacherid = ? AND status = 'ACTIVE'`,
+             SET status = 'ended', ended_at = ? 
+             WHERE teacherid = ? AND status = 'active'`,
     [now, teacherid],
   );
 
@@ -533,6 +618,18 @@ exports.softDeleteById = (teacherid, connection = null) =>
     [teacherid],
   );
 
+// Soft delete teacher
+exports.activateById = (teacherid, connection = null) => 
+  connectionQuery(
+    connection,
+    `UPDATE teachers 
+             SET status = 'active', 
+                 is_locked = 0,
+                 updated_at = NOW() 
+             WHERE teacherid = ?`,
+    [teacherid],
+  );
+
 // Soft delete class teacher appointments
 exports.softDeleteClassTeacherAppointment = (teacherid, connection = null) => 
   connectionQuery(
@@ -555,6 +652,18 @@ exports.softDeleteHodAppointment = (teacherid, connection = null) =>
     [teacherid],
   );
 
+
+  // activate HOD appointments
+exports.softDeleteHodAppointment = (teacherid, connection = null) => 
+  connectionQuery(
+    connection,
+    `UPDATE hod_appointment 
+             SET status = 'active', 
+                 end_date = NULL 
+             WHERE teacherid = ?`,
+    [teacherid],
+  );
+
 // Soft delete teacher departments
 exports.softDeleteTeacherDepartment = (teacherid, connection = null) => 
   connectionQuery(
@@ -563,6 +672,18 @@ exports.softDeleteTeacherDepartment = (teacherid, connection = null) =>
              SET status = 'ended', 
                  end_date = NOW() 
              WHERE teacherid = ? AND status = 'active'`,
+    [teacherid],
+  );
+
+
+  // Soft delete teacher departments
+exports.activeTeacherDepartment = (teacherid, connection = null) => 
+  connectionQuery(
+    connection,
+    `UPDATE teacher_department 
+             SET status = 'active', 
+                 end_date = NUll 
+             WHERE teacherid = ? AND status != 'active'`,
     [teacherid],
   );
 
@@ -576,6 +697,17 @@ exports.softDeleteTeacherSubject = (teacherid, connection = null) =>
     [teacherid],
   );
 
+
+// Soft delete teacher subjects
+exports.activateTeacherSubject = (teacherid, connection = null) => 
+  connectionQuery(
+    connection,
+    `UPDATE teacher_subject 
+             SET status = 'approved' 
+             WHERE teacherid = ? AND status != 'approved'`,
+    [teacherid],
+  );
+
 // Log teacher deletion
 exports.logTeacherDeletion = (teacherid, data, connection = null) =>
   connectionQuery(
@@ -584,4 +716,18 @@ exports.logTeacherDeletion = (teacherid, data, connection = null) =>
              (teacherid, action, details, performed_by, performed_at) 
              VALUES (?, 'SOFT_DELETE', ?, ?, ?)`,
     [teacherid, JSON.stringify(data), data.deleted_by, data.timestamp],
+  );
+
+
+   exports.reactivateTeacherAccount = (teacherid) => 
+  query(
+    `UPDATE teachers
+         SET is_locked = ?, status = ?
+         WHERE teacherid = ?`,
+    [0, 'active', teacherid]
+  );
+
+    exports.hodCount = () =>
+      query(
+    'SELECT COUNT(*) as count FROM hod_appointment WHERE status = "active"'
   );

@@ -104,7 +104,10 @@ async function registerPupil({
       reported_by,
     );
 
-    const guardian = await pupilModel.findGuardian(connection, data.guardian_nrc_no);
+    const guardian = await pupilModel.findGuardian(
+      connection,
+      data.guardian_nrc_no,
+    );
 
     if (!guardian.length) {
       await pupilModel.createGuardian(connection, data);
@@ -148,7 +151,7 @@ async function registerReturningPupil({ reported_by, reporting_status, data }) {
     if (!existing.length) {
       return {
         message: "Student was not found. Please search for the student first.",
-      }
+      };
     }
 
     const student = existing[0];
@@ -158,11 +161,13 @@ async function registerReturningPupil({ reported_by, reporting_status, data }) {
      */
     if (
       student.status &&
-      ["transferred", "left"].includes(String(student.status).toLowerCase())
+      ["graduated", "transferred", "withdrawn", "left"].includes(
+        String(student.status).toLowerCase(),
+      )
     ) {
-     return {
+      return {
         message: `Student cannot be enrolled because their status is ${student.status}.`,
-     }
+      };
     }
 
     /*
@@ -175,9 +180,8 @@ async function registerReturningPupil({ reported_by, reporting_status, data }) {
       connection,
       data.examno,
       data.schoolyear,
-      data.termid
+      data.termid,
     );
-
 
     if (existingEnrollment.length) {
       return {
@@ -196,7 +200,7 @@ async function registerReturningPupil({ reported_by, reporting_status, data }) {
       data.schoolyear,
       data.enrollment_type,
     );
- 
+
     /*
      * 5. Record reporting
      */
@@ -210,7 +214,6 @@ async function registerReturningPupil({ reported_by, reporting_status, data }) {
     /*
      * 6. Update current student information
      *
-     * Only update fields that are allowed to change.
      */
     // await pupilModel.updateReturningStudent(connection, data.examno, {
     //   studentstatus: data.studentstatus,
@@ -223,9 +226,6 @@ async function registerReturningPupil({ reported_by, reporting_status, data }) {
 
     /*
      * 7. Guardian
-     *
-     * If the guardian exists, reuse it.
-     * Otherwise create it.
      */
     // const guardian = await pupilModel.findGuardian(connection, data.guardian_nrc_no);
 
@@ -246,6 +246,53 @@ async function registerReturningPupil({ reported_by, reporting_status, data }) {
 
     await rollback(connection);
 
+    throw err;
+  } finally {
+    connection.release();
+  }
+}
+
+async function changeStudentClass(
+  examno,
+  termid,
+  yearid,
+  previousStudentClassid,
+  newClassid,
+  enrollment_type,
+  reported_by,
+  reporting_status,
+) {
+  const connection = await getConnection();
+
+  try {
+    await beginTransaction(connection);
+
+    await pupilModel.deactivateStudentClass(connection, previousStudentClassid);
+
+    const studentclassid = await pupilModel.addClass(
+      connection,
+      examno,
+      newClassid,
+      termid,
+      yearid,
+      enrollment_type,
+    );
+
+    await pupilModel.addReporting(
+      connection,
+      studentclassid,
+      reporting_status,
+      reported_by,
+    );
+
+    await commit(connection);
+
+    return {
+      message: "Student class successfully updated",
+    };
+  } catch (err) {
+    console.log(err);
+    await rollback(connection);
     throw err;
   } finally {
     connection.release();
@@ -274,7 +321,6 @@ async function updatePupil(data) {
     connection.release();
   }
 }
-
 
 async function deletePupil(examNumber, profileDirectory, backupDirectory) {
   const pictureRows = await pupilModel.getProfilePicture(examNumber);
@@ -318,6 +364,7 @@ module.exports = {
   getRegistrationData,
   registerPupil,
   registerReturningPupil,
+  changeStudentClass,
   updatePupil,
   deletePupil,
 };

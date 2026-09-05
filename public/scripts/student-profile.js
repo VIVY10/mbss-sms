@@ -1,192 +1,121 @@
 (() => {
+  "use strict";
 
-    'use strict';
+  const tabs = [...document.querySelectorAll(".profile-tab")];
 
+  const contents = [...document.querySelectorAll(".profile-tab-content")];
 
-    const tabs =
-        [
-            ...document.querySelectorAll(
-                '.profile-tab'
-            )
-        ];
+  if (!tabs.length) return;
 
-
-    const contents =
-        [
-            ...document.querySelectorAll(
-                '.profile-tab-content'
-            )
-        ];
-
-
-    if (!tabs.length) return;
-
-
-    function activateTab(name) {
-
-        tabs.forEach(tab => {
-
-            tab.classList.toggle(
-                'active',
-                tab.dataset.tab === name
-            );
-
-        });
-
-
-        contents.forEach(content => {
-
-            content.classList.toggle(
-                'active',
-                content.id === `tab-${name}`
-            );
-
-        });
-
-
-        /*
-         * Store the active tab so that
-         * refreshing the page keeps the
-         * user's current section.
-         */
-
-        try {
-
-            sessionStorage.setItem(
-                'studentProfileTab',
-                name
-            );
-
-        } catch (error) {
-            // Ignore storage errors.
-        }
-
-    }
-
-
-    tabs.forEach(tab => {
-
-        tab.addEventListener(
-            'click',
-            () => {
-
-                activateTab(
-                    tab.dataset.tab
-                );
-
-            }
-        );
-
+  function activateTab(name) {
+    tabs.forEach((tab) => {
+      tab.classList.toggle("active", tab.dataset.tab === name);
     });
 
+    contents.forEach((content) => {
+      content.classList.toggle("active", content.id === `tab-${name}`);
+    });
 
-    document
-        .querySelectorAll('[data-open-tab]')
-        .forEach(link => {
+    /*
+     * Store the active tab so that
+     * refreshing the page keeps the
+     * user's current section.
+     */
 
-            link.addEventListener(
-                'click',
-                event => {
-
-                    event.preventDefault();
-
-                    activateTab(
-                        link.dataset.openTab
-                    );
-
-                }
-            );
-
-        });
-
-
-    const savedTab =
-        (() => {
-
-            try {
-
-                return sessionStorage.getItem(
-                    'studentProfileTab'
-                );
-
-            } catch (error) {
-
-                return null;
-
-            }
-
-        })();
-
-
-    if (
-        savedTab &&
-        document.getElementById(
-            `tab-${savedTab}`
-        )
-    ) {
-
-        activateTab(savedTab);
-
-    } else {
-
-        activateTab('overview');
-
+    try {
+      sessionStorage.setItem("studentProfileTab", name);
+    } catch (error) {
+      // Ignore storage errors.
     }
+  }
 
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      activateTab(tab.dataset.tab);
+    });
+  });
 
-    /*
-     * Mobile sidebar
-     */
+  document.querySelectorAll("[data-open-tab]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
 
-    const menuBtn =
-        document.getElementById('menuBtn');
+      activateTab(link.dataset.openTab);
+    });
+  });
 
-    const sidebar =
-        document.getElementById('sidebar');
+  const savedTab = (() => {
+    try {
+      return sessionStorage.getItem("studentProfileTab");
+    } catch (error) {
+      return null;
+    }
+  })();
 
+  if (savedTab && document.getElementById(`tab-${savedTab}`)) {
+    activateTab(savedTab);
+  } else {
+    activateTab("overview");
+  }
 
-    menuBtn?.addEventListener(
-        'click',
-        () => {
+  /*
+   * Mobile sidebar
+   */
 
-            sidebar?.classList.toggle(
-                'open'
-            );
+  const menuBtn = document.getElementById("menuBtn");
 
-        }
-    );
+  const sidebar = document.getElementById("sidebar");
 
+  menuBtn?.addEventListener("click", () => {
+    sidebar?.classList.toggle("open");
+  });
 
-    /*
-     * Printing
-     */
+  /*
+   * Printing
+   */
 
-    document
-        .getElementById('printProfile')
-        ?.addEventListener(
-            'click',
-            () => {
+  document.getElementById("printProfile")?.addEventListener("click", () => {
+    window.print();
+  });
 
-                window.print();
+  document.getElementById("printHistory")?.addEventListener("click", () => {
+    activateTab("history");
 
-            }
-        );
+    setTimeout(() => window.print(), 100);
+  });
 
+  const assignNewClassForm = document.getElementById("assignNewClass");
+  assignNewClassForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    document
-        .getElementById('printHistory')
-        ?.addEventListener(
-            'click',
-            () => {
+    try {
+      const formData = new FormData(assignNewClassForm);
 
-                activateTab('history');
+      const resp = await fetch("/student/change/class", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(formData),
+      });
 
-                setTimeout(
-                    () => window.print(),
-                    100
-                );
+      const result = await resp.json();
 
-            }
-        );
+      if (!resp.ok || !result.success) {
+        alert(result.message);
+        return;
+      }
 
+      alert(result.message);
+
+      // Redirect after successful allocation
+      setTimeout(() => {
+        window.location.href =
+          window.location.href = `/viewPupils`;
+      }, 1000);
+    } catch (err) {
+      console.log(err);
+      console.error("Allocation error:", err);
+      showError("Something went wrong. Please try again.");
+    }
+  });
 })();

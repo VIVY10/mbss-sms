@@ -70,8 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      console.log(result.redirect);
-
       alert(result.message);
 
       // Redirect after successful allocation
@@ -84,4 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
       showError("Something went wrong. Please try again.");
     }
   });
+
+
 });

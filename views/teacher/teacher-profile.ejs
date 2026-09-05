@@ -618,21 +618,30 @@
                                         </td>
 
                                         <td>
+                                            <% if(subject.status === 'active') { %>
 
                                             <span class="badge-soft status-active">
-                                                Active
+                                                active
                                             </span>
+
+                                            <% } else { %>
+                                                <span class="badge-soft status-inactive">
+                                                    <%= subject.status %>
+                                                </span>
+
+                                            <% } %>
 
                                         </td>
 
                                         <td class="text-end">
 
-                                            <button
+                                            <a
+                                                href="/teacher-subject/<%= subject.teacher_subjectid %>"
                                                 class="btn btn-sm btn-light border"
                                                 title="Remove subject"
                                             >
-                                                <i class="bi bi-three-dots"></i>
-                                            </button>
+                                                <i class="bi bi-trash"></i>
+                                        </a>
 
                                         </td>
 
@@ -738,10 +747,20 @@
                                         </td>
 
                                         <td>
+                                            <% if(item.status === 'active') {%>
 
                                             <span class="badge-soft status-active">
-                                                Active
+                                                active
                                             </span>
+
+                                            <% } else { %>
+
+                                            <span class="status-badge status-inactive">
+                                                <i class="bi bi-dash-circle me-1"></i>
+                                                <%= item.status %>
+                                            </span>
+
+                                        <% } %>
 
                                         </td>
 
@@ -806,7 +825,9 @@
                                 <th>Class</th>
                                 <th>Subject</th>
                                 <th>Department</th>
+                                <th>Status</th>
                                 <th>Allocated On</th>
+                                <th>End Date</th>
                             </tr>
 
                         </thead>
@@ -824,7 +845,7 @@
                                         </td>
 
                                         <td>
-                                            <%= item.class || '-' %>
+                                             <%= item.levelname|| '-' %><%= item.class || '-' %>
                                         </td>
 
                                         <td>
@@ -843,8 +864,18 @@
                                         </td>
 
                                         <td>
-                                            <%= item.allocated_at || '-' %>
+                                            <%= item.status || '-' %>
                                         </td>
+
+                                        <td>
+                                            <%= item.start_date ? new Date(item.start_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-' %>
+
+                                        </td>
+                                        <td>
+                                            <%= item.end_date ? new Date(item.end_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-' %>
+
+                                        </td>
+
 
                                     </tr>
 

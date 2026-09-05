@@ -64,8 +64,6 @@ exports.getTeacherDashboardStats = async (teacherid) => {
   const [
     allocations,
     examtype,
-    // subjects,
-    // classes
   ] = await Promise.all([
     teacherModel.getTeacherSubjectAllocations(teacherid),
     examModel.findAll(),

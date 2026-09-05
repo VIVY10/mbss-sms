@@ -70,7 +70,7 @@ exports.get_Open_Terms = () =>
       ON sy.schoolyearid = tm.yearid
     WHERE tm.status = ?
   `,
-    ["OPEN"],
+    ["open"],
   );
 
 exports.getSchoolYearsBasic = () => query("SELECT * FROM schoolyear");
@@ -165,6 +165,10 @@ exports.deleteClass = (id) =>
   query("DELETE FROM class WHERE classid = ?", [id]);
 
 // ==================== DEPARTMENTS ====================
+    exports.getAllActiveDepartment = () =>
+      query(
+        'SELECT * FROM department WHERE status = "active"'
+      );
 
 exports.getDepartments = () => query("SELECT * FROM department");
 
@@ -233,9 +237,9 @@ exports.getDepartmentHodByDepartment = (departmentid) =>
     `
         SELECT *
         FROM hod_appointment
-        WHERE departmentid = ?
+        WHERE departmentid = ? AND status = ?
         `,
-    [departmentid],
+        [departmentid, 'active']
   );
 
 
@@ -267,10 +271,9 @@ exports.getHodOptions = () =>
     query(
       `SELECT teacherid, fname, lname
        FROM teachers
-       WHERE usertype = ?`,
-      ["teacher"],
+       WHERE usertype = ? AND status = ?`,
+      ["teacher", "active"],
     ),
-
     query("SELECT * FROM department"),
   ]);
 
@@ -291,15 +294,17 @@ exports.getHods = () =>
   query(
     `
     SELECT
-     t.teacherid,
-     t.employee_no,
-     t.fname, 
-     t.middlename,
-     t.lname,
-     t.gender,
-     t.email,
-     d.departmentid,
-     d.departmentname
+      t.teacherid,
+      t.employee_no,
+      t.fname, 
+      t.middlename,
+      t.lname,
+      t.gender,
+      t.email,
+      d.departmentid,
+      d.departmentname,
+      hd.status,
+      hd.hodappointmentid
      FROM hod_appointment hd 
      JOIN teachers t
      ON t.teacherid = hd.teacherid

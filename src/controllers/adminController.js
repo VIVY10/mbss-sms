@@ -105,8 +105,6 @@ exports.openTerm = async (req, res) => {
 
     const currentTerm = term[0];
 
-    console.log(currentTerm.status);
-
     // Already open
     if (currentTerm.status === "open") {
       return response(res, "Term is already open.");
@@ -346,9 +344,6 @@ exports.viewHod = async (req, res) => {
 exports.allocateDepartment = async (req, res) => {
   const { departmentid } = req.body;
   const { teacherid } = req.params;
-
-  console.log(departmentid)
-    console.log(teacherid)
  
   try {
     const result = await service.allocateDepartment(

@@ -313,6 +313,15 @@ exports.addClass = async (
   return result.insertId;
 };
 
+
+exports.deactivateStudentClass = async (connection, previousStudentClassid) => 
+  connectionQuery(
+    connection,
+    `UPDATE studentclass
+    SET status = ? WHERE studentclassid = ?`,
+    ['cancelled', previousStudentClassid]
+  );
+
 // ==================== ADD REPORTING ====================
 exports.addReporting = (
   connection,
@@ -511,8 +520,9 @@ exports.findEnrollmentOnConnection = (connection, examno, schoolyear, termid ) =
         WHERE sc.examno = ?
           AND sc.yearid = ?
           AND sc.termid = ?
+          AND sc.status = ?
         LIMIT 1
-    `, [examno, schoolyear, termid]
+    `, [examno, schoolyear, termid, 'active']
 )
 
 
@@ -537,6 +547,29 @@ exports.findEnrollmentByClassId = (classid) =>
         WHERE sc.classid = ?
         AND t.status = 'open'
     `, [classid]
+)
+
+
+exports.findEnrollmentByStudentClassId = (studentClassid) => 
+  query(
+      `
+        SELECT
+            s.examno,
+            s.fname,
+            s.middlename,
+            s.lname,
+            sc.studentclassid,
+            sc.examno,
+            sc.classid,
+            sc.termid,
+            sc.yearid
+        FROM studentclass sc
+        JOIN students s 
+        ON s.examno = sc.examno
+        JOIN terms t 
+        ON t.termid = sc.termid
+        WHERE sc.studentclassid = ?
+    `, [studentClassid]
 )
 
 exports.findEnrollmentHistory = (examno) =>
@@ -576,11 +609,8 @@ exports.findEnrollmentHistory = (examno) =>
     WHERE sc.examno = ?
 
     ORDER BY
-        sc.yearid DESC,
-        sc.termid DESC;
+        sc.enrollment_date DESC
     `, [examno])
-
-
 
 
 exports.findCurrentEnrollment = (examno) =>

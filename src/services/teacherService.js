@@ -220,6 +220,7 @@ async function assignSubject(teacherid, subjectcode, approved_by) {
 }
 
 
+// ========================= partial deletion of teacher =========================
 async function softDeleteTeacher(teacherid) {
     // Start a database transaction
     const connection = await getConnection();
@@ -298,6 +299,7 @@ async function softDeleteTeacher(teacherid) {
 }
 
 
+// ====================PERMANENTLY DELETE TEACHER NOT FULLY IMPLEMENTED===============================
 async function deleteTeacher(username, profileDirectory, backupDirectory) {
   const teacher = await teacherModel.findByUsername(username);
   const profilePicture = teacher[0]?.profilePicture;
@@ -346,6 +348,64 @@ async function deleteTeacher(username, profileDirectory, backupDirectory) {
   }
 }
 
+
+// ====================reactivate teacher account ===========================
+async function reactivate_teacher(teacherid) {
+    // Start a database transaction
+    const connection = await getConnection();
+    
+    try {
+        await beginTransaction(connection);
+        
+        // 1. Find teacher
+        const teacher = await teacherModel.findByIdOnConnection(teacherid, connection);
+        
+        if (!teacher || teacher.length === 0) {
+            throw new Error("Teacher not found.");
+        }
+        
+        const teacherData = teacher[0];
+
+        // console.log(teacherData.usertype)
+        
+        // 4. Perform soft deletes in the correct order
+        await teacherModel.activateById(teacherid, connection);
+
+        await teacherModel.activeTeacherDepartment(teacherid, connection);
+        await teacherModel.activateTeacherSubject(teacherid, connection);
+        
+        // 5. Log the action
+        // await teacherModel.logTeacherDeletion(teacherid, {
+        //     deleted_by: getCurrentUserId(),
+        //     reason: 'Manual soft delete',
+        //     timestamp: new Date()
+        // }, connection);
+        
+        // Commit transaction
+         await commit(connection);
+        
+        return {
+            success: true,
+            message: `Teacher ${teacherData.fname} ${teacherData.lname} has been deactivated successfully.`,
+            teacherId: teacherid
+        };
+        
+    } catch (error) {
+        // Rollback on error
+        if (connection) {
+            await rollback(connection);
+        }
+        throw error;
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+}
+
+
+
+
 async function lockAccount(req, res, username) {
   const users = await teacherModel.findByUsername(username);
 
@@ -375,6 +435,8 @@ async function lockAccount(req, res, username) {
   return await authModel.disableLogin(account.teacherid);
 }
 
+
+
 async function unlockAccount(username) {
   const teacher = await teacherModel.findByUsername(username);
 
@@ -391,6 +453,7 @@ module.exports = {
   create_teaching_allocations,
   assignSubject,
   softDeleteTeacher,
+  reactivate_teacher,
   deleteTeacher,
   lockAccount,
   unlockAccount,
