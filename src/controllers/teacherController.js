@@ -83,14 +83,14 @@ exports.findTeacher = async (req, res) => {
   });
 };
 
-exports.viewTeachers2 = async (req, res) => {
-  const results = await teacherModel.getAll();
+// exports.viewTeachers2 = async (req, res) => {
+//   const results = await teacherModel.getAll();
 
-  res.render("./teacher/viewRegTeachers", {
-    results,
-    user: req.user,
-  });
-};
+//   res.render("./teacher/viewRegTeachers", {
+//     results,
+//     user: req.user,
+//   });
+// };
 
 // ==================== SUBJECTS TAUGHT ====================
 exports.createTeachingAllocation = async (req, res) => {
@@ -150,6 +150,15 @@ exports.removeTeacherSubject = async (req, res) => {
   await teacherModel.removeTeacherSubject(teacher_subjectid)
 
   res.redirect('/viewTeachers'); 
+};
+
+
+exports.removeTeacherDepartment = async (req, res) => {
+  const {teacher_departmentid, teacherid} = req.query;
+
+  await teacherModel.removeTeacherInDepartment(teacher_departmentid)
+
+  res.redirect(`/teachers/${teacherid}`); 
 };
 
 // ==================== UNALLOCATED SUBJECT ALLOCATION ====================

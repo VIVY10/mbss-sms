@@ -1,7 +1,8 @@
 const { matchedData, body } = require("express-validator");
 
 const resultService = require("../services/resultService");
-
+const resultModel = require('../models/resultModel.js')
+const adminModel = require('../models/adminModel.js')
 
 const subjectModel = require('../models/subjectModel.js');
 const pupilModel = require('../models/pupilModel.js');
@@ -33,17 +34,16 @@ exports.page = async (req, res) => {
 
 exports.search = async (req, res) => {
   // const { year, term, exam } = matchedData(req);
-  const { termid, classid, subjectcode } = req.query;
+  const { termid, classid, subjectcode, examid } = req.query;
 
   // console.log(req.query)
 
   const results = await resultService.getStudentResults(
     termid,
     classid,
-    subjectcode
+    subjectcode,
+    examid
   );
-
-  console.log(results)
 
   if (!results && results.length === 0) {
     return res.json({message: 'no results found'})
@@ -299,17 +299,21 @@ exports.getResults = async (req, res) => {
 
 
 exports.getStudents = async(req, res) => {
-  const {class_subject_id, examid} = req.query
+  const {class_subject_id, examid, classId} = req.query
 
+  const term = await adminModel.get_Open_Terms();
+  const schoolyear = await adminModel.get_Open_schoolYear();
 
-  const findClassId = await subjectModel.findClassIdInClassSubject(class_subject_id)
+  const termid = term[0].termid;
+  const yearid = schoolyear[0].schoolyearid;
 
-  if(findClassId && findClassId.length > 0){
-    const results = await pupilModel.findEnrollmentByClassId(findClassId[0].classid)
+  // const findClassId = await subjectModel.findClassIdInClassSubject(class_subject_id)
+
+    const results = await resultModel.getMissingMarks(examid, termid, yearid, class_subject_id)
 
     return res.status(201).json(results)
-  }
 }
+
 
 exports.saveMarks = async(req, res) =>{
   console.log(req.body)
@@ -317,45 +321,127 @@ exports.saveMarks = async(req, res) =>{
 }
  
 
-exports.submitMarks = async(req, res) => {
-  try {
-    const { class_subject_id, examid, subjectCode, marks } = req.body;
+// exports.submitMarks = async(req, res) => {
+//   try {
+//     const { class_subject_id, examid, subjectCode, marks } = req.body;
     
-    // Validate input
-    if (!examid || !subjectCode || !marks || !Array.isArray(marks)) {
+//     // Validate input
+//     if (!examid || !subjectCode || !marks || !Array.isArray(marks)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Missing or invalid required fields: examid, subjectCode, marks array"
+//       });
+//     }
+    
+//     if (!req.user || !req.user.teacherid) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Unauthorized - Teacher ID not found"
+//       });
+//     }
+    
+//     const entered_by = req.user.teacherid;
+    
+//     const result = await resultService.processStudentMarks(
+//       examid, 
+//       subjectCode, 
+//       marks, 
+//       entered_by
+//     );
+    
+//     res.status(200).json({
+//       success: true,
+//       message: "Marks entered successfully",
+//       data: result
+//     });
+    
+//   } catch (error) {
+//     console.error("Error submitting marks:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Failed to submit marks",
+//       error: error.message
+//     });
+//   }
+// };
+
+
+exports.submitMarks = async (req, res) => {
+  try {
+    const {
+      class_subject_id,
+      examid,
+      subjectCode,
+      marks
+    } = req.body;
+
+    // ---------------------------------------------------------
+    // 1. Validate request input
+    // ---------------------------------------------------------
+    if (
+      !examid ||
+      !subjectCode ||
+      !marks ||
+      !Array.isArray(marks)
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Missing or invalid required fields: examid, subjectCode, marks array"
+        code: "INVALID_INPUT",
+        message:
+          "Missing or invalid required fields: examid, subjectCode, marks array."
       });
     }
-    
+
+    // ---------------------------------------------------------
+    // 2. Validate authenticated teacher
+    // ---------------------------------------------------------
     if (!req.user || !req.user.teacherid) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized - Teacher ID not found"
+        code: "UNAUTHORIZED",
+        message: "Unauthorized - Teacher ID not found."
       });
     }
-    
+
     const entered_by = req.user.teacherid;
-    
+
+    // ---------------------------------------------------------
+    // 3. Process marks through service
+    // ---------------------------------------------------------
     const result = await resultService.processStudentMarks(
-      examid, 
-      subjectCode, 
-      marks, 
+      examid,
+      subjectCode,
+      marks,
       entered_by
     );
-    
-    res.status(200).json({
+
+    // ---------------------------------------------------------
+    // 4. Handle business-rule validation failure
+    // ---------------------------------------------------------
+    if (result?.success === false) {
+      return res.status(422).json(result);
+    }
+
+    // ---------------------------------------------------------
+    // 5. Successful submission
+    // ---------------------------------------------------------
+    return res.status(200).json({
       success: true,
-      message: "Marks entered successfully",
-      data: result
+      code: "MARKS_PROCESSED",
+      message: "Marks entered successfully.",
+      data: result?.data || result
     });
-    
+
   } catch (error) {
     console.error("Error submitting marks:", error);
-    res.status(500).json({
+
+    // ---------------------------------------------------------
+    // 6. Unexpected server/database error
+    // ---------------------------------------------------------
+    return res.status(500).json({
       success: false,
-      message: "Failed to submit marks",
+      code: "SERVER_ERROR",
+      message: "Failed to submit marks.",
       error: error.message
     });
   }

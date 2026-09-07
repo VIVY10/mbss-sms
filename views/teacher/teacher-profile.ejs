@@ -416,7 +416,7 @@
                             </span>
 
                             <span class="info-value">
-                                <%= teacher.employment_date || '-' %>
+                                <%= teacher.employment_date? teacher.employment_date.toLocaleDateString('en-GB').replace(/\//g, '-') : '-' %>
                             </span>
 
                         </div>
@@ -444,7 +444,8 @@
                             </span>
 
                             <span class="info-value">
-                                <%= teacher.last_login || '-' %>
+                               <%= teacher.last_login ? new Date(teacher.last_login).toLocaleDateString('en-GB').replace(/\//g, '-') + ' ' 
+                               + new Date(teacher.last_login).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '-' %>
                             </span>
 
                         </div>
@@ -524,6 +525,22 @@
                                     <span class="badge-soft">
                                         Teacher
                                     </span>
+
+                                <% } %>
+
+                                <% if(user.usertype === 'admin') { %>
+
+                                <span class="text-end ms-5">
+
+                                    <a
+                                        href="/teacher/department/remove?teacher_departmentid=<%= encodeURIComponent(department.teacher_departmentid) %>&teacherid=<%= encodeURIComponent(teacher.teacherid) %>"
+                                        class="btn btn-sm btn-light border"
+                                        title="Remove Teacher"
+                                        >
+                                        <i class="bi bi-trash"></i>
+                                </a>
+
+                                </span>
 
                                 <% } %>
 
@@ -634,14 +651,15 @@
                                         </td>
 
                                         <td class="text-end">
-
-                                            <a
-                                                href="/teacher-subject/<%= subject.teacher_subjectid %>"
-                                                class="btn btn-sm btn-light border"
-                                                title="Remove subject"
-                                            >
+                                            <% if(user.usertype === 'admin') { %>
+                                                <a
+                                                    href="/teacher-subject/<%= subject.teacher_subjectid %>"
+                                                    class="btn btn-sm btn-light border"
+                                                    title="Remove subject"
+                                                >
                                                 <i class="bi bi-trash"></i>
-                                        </a>
+                                            </a>
+                                        <% } %>
 
                                         </td>
 

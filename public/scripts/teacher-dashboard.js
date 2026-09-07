@@ -1056,11 +1056,14 @@
                 class_subject_id:
                     classSubjectId,
 
+                classId: 
+                    selectedClass.dataset.classid,
+
                 examid:
                     examId
             });
 
-
+ 
             const response = await fetch(
                 `/teacher/marks/students?${params.toString()}`,
                 {
@@ -1683,7 +1686,6 @@
             const result =
                 await response.json();
 
-
             if (!response.ok) {
 
                 throw new Error(
@@ -1945,10 +1947,9 @@
 
 
         setTimeout(() => {
-
             alert.remove();
             window.location.reload(); // UI not very good
-        }, 5000);
+        }, 2000);
 
     }
 
@@ -2020,6 +2021,7 @@ const resultClearBtn = document.getElementById('resultClearBtn');
 const resultClassFilter = document.getElementById('resultClassFilter');
 const resultSubjectFilter = document.getElementById('resultSubjectFilter');
 const resultTermFilter = document.getElementById('resultTermFilter');
+const resultExamFilter = document.getElementById('resultExamFilter');
 const resultsContainer = document.getElementById('resultsContainer');
 const resultsLoading = document.getElementById('resultsLoading');
 const resultCount = document.getElementById('resultCount');
@@ -2036,6 +2038,8 @@ async function searchResults() {
     const classId = resultClassFilter?.value || '';
     const subjectCode = resultSubjectFilter?.value || '';
     const termId = resultTermFilter?.value || '';
+    const examId = resultExamFilter?.value || '';
+
 
     // Check if we have at least one search criteria
     if (!query && !classId && !subjectCode && !termId) {
@@ -2057,6 +2061,7 @@ async function searchResults() {
         if (classId) params.append('classid', classId);
         if (subjectCode) params.append('subjectcode', subjectCode);
         if (termId) params.append('termid', termId);
+        if (examId) params.append('examid', examId);
 
         const response = await fetch(
             `/teacher/results/search?${params.toString()}`,
@@ -2069,8 +2074,6 @@ async function searchResults() {
         );
 
         const result = await response.json();
-
-        console.log(result)
 
         if (!response.ok) {
             throw new Error(result.message || 'Unable to search results.');
@@ -2174,9 +2177,8 @@ function renderResults(results) {
 
 function showResultsEmpty(title, message) {
     if (!resultsContainer) return;
-
     resultsContainer.innerHTML = `
-        <div class="no-results">
+        <div class="empty-large">
             <i class="bi bi-search"></i>
             <h4>${escapeHtml(title)}</h4>
             <p>${escapeHtml(message)}</p>
@@ -2221,6 +2223,7 @@ function clearSearch() {
     if (resultClassFilter) resultClassFilter.value = '';
     if (resultSubjectFilter) resultSubjectFilter.value = '';
     if (resultTermFilter) resultTermFilter.value = '';
+    if (resultExamFilter) resultExamFilter.value = '';
 
     showResultsEmpty(
         'Search for a pupil',

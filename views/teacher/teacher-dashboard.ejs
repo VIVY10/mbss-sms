@@ -119,7 +119,7 @@
                 MAIN
             </div>
 
-            <a href="#dashboard"
+            <a href="/dashboard"
                class="sidebar-link active"
                data-section="dashboard">
 
@@ -1330,6 +1330,9 @@
                     <% } %>
 
                 </select>
+                <small class="text-muted">
+                    Select assessment type
+                </small>
 
             </div>
 
@@ -1691,6 +1694,28 @@
                     %>
 
                 <% } %>
+
+            </select>
+            <select
+                id="resultExamFilter"
+                class="form-select filter-control">
+
+                <option value="">
+                    Select Exam
+                </option>
+
+                <% if (typeof stats.examtype !== 'undefined') { %>
+
+                        <% stats.examtype.forEach(item => { %>
+
+                            <option
+                                value="<%= item.examid %>">
+                                <%= item.exam_title %>
+                            </option>
+
+                        <% }) %>
+
+                    <% } %>
 
             </select>
 

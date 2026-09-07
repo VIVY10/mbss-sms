@@ -163,6 +163,7 @@ exports.getTeacherSubjectAllocations = (teacherid) =>
       ta.termid,
       ta.status,
       ta.allocated_by,
+      ta.start_date,
 
       s.subjectcode,
       s.subjectname,
@@ -310,6 +311,12 @@ exports.removeTeacherSubject = (teacher_subjectid) =>
     [teacher_subjectid]
   );
 
+  exports.removeTeacherInDepartment = (teacher_departmentid) =>
+    query(`
+      DELETE FROM teacher_department
+      WHERE teacher_departmentid = ?
+      `, [teacher_departmentid]
+    )
 
 exports.findTeacherAssignedSubject = (teacherid, subjectcode) =>
   query(

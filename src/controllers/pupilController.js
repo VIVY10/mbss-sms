@@ -81,10 +81,7 @@ exports.register = async (req, res) => {
 
 //============ returning pupils enrollment ========================
 exports.registerReturningPupil = async (req, res) => {
-  console.log("returning pupil");
   const data = matchedData(req);
-  console.log(data);
-  // const data = req.body;
   try {
     const reported_by = req.user.teacherid;
     const reporting_status = "reported";
@@ -108,7 +105,6 @@ exports.registerReturningPupil = async (req, res) => {
 };
 
 exports.changeClass = async (req, res) => {
-  console.log(req.body);
   try {
     const { previousStudentClassid, newClassid } = req.body;
     const currentEnrollment = await pupilModel.findEnrollmentByStudentClassId(
@@ -159,9 +155,6 @@ exports.searchReturningStudent = async (req, res) => {
     // const connection = await getConnection();
 
     const student = await pupilModel.findReturningStudent(examno);
-
-    //  console.log(student)
-
     if (!student.length) {
       return res.status(404).json({
         message: "No student was found with that examination number.",

@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Redirect after successful allocation
       setTimeout(() => {
         window.location.href =
-          window.location.href = `/dashboard`;
+          window.location.href = `/teachers/${result.teacherid}`;
       }, 1000);
     } catch (error) {
       console.error("Allocation error:", error);

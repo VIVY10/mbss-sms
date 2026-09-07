@@ -36,6 +36,24 @@ exports.showDashboard = async (req, res) => {
   });
 };
 
+exports.showHodClasses = async (req, res) => {
+  const user = req.user;
+
+  const dashboard = dashboardViews["teacher"];
+
+  if (!dashboard) {
+    return res.redirect("/");
+  }
+
+  const stats = dashboard.getStats ? await dashboard.getStats(user) : {};
+
+  return res.render(dashboard.view, {
+    [dashboard.dataKey]: user,
+
+    stats,
+  });
+};
+
 exports.getHodDashboardStats = async (teacherid) => {
   try {
     const foundDepartment =

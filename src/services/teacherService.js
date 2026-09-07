@@ -104,6 +104,7 @@ async function create_teaching_allocations(
 
         if (results && results.length > 0) {
             return {
+                teacherid: teacherid,
                 success: false,
                 status: 409,
                 message: "Teacher is already allocated to this class subject."
@@ -121,6 +122,7 @@ async function create_teaching_allocations(
 
         if (!allocation) {
             return {
+                teacherid: teacherid,
                 success: false,
                 status: 500,
                 message: "Teacher class allocation failed."
@@ -128,6 +130,7 @@ async function create_teaching_allocations(
         }
 
         return {
+            teacherid: teacherid,
             success: true,
             status: 201,
             message: "Teacher class allocation was successful.",
@@ -138,6 +141,7 @@ async function create_teaching_allocations(
         console.error("Teaching allocation error:", err);
 
         return {
+            teacherid: teacherid,
             success: false,
             status: 500,
             message: "An error occurred while creating the teaching allocation."

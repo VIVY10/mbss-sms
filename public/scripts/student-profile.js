@@ -109,8 +109,7 @@
 
       // Redirect after successful allocation
       setTimeout(() => {
-        window.location.href =
-          window.location.href = `/viewPupils`;
+        window.location.href = `/viewPupils`;
       }, 1000);
     } catch (err) {
       console.log(err);
