@@ -1,30 +1,33 @@
-<%- include("../partials/header.ejs") %>
-    <div class="row my-5 ">
-        <div class="col-md-4"></div>
-        <div class="col-md-3 shadow bg-white text-secondary rounded">
-                       
-            <form action="/login" method="POST">
-                <center><img  class="row my-3"   src="/images/logo.png" alt="" width="72" height="57"></center>
-                <center><h1 class="h3 mb-3 fw-normal"> sign in</h1></center>
-                <% if(messages) { %>
-                    <div style="color: red; margin-bottom: 10px;"><%= messages.error %></div>
-                 <%}%>
-                <div class="form-floating">
-                  <input type="username" name="username" class="form-control"  placeholder="Username" required>
-                  <label for="username">Username</label>
-                </div>
-                <div class="form-floating">
-                  <input type="password" name="password" class="form-control"  placeholder="Password" required>
-                  <label for="password">Password</label>
-                </div>
-                <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
-                <div class="text-start my-3" style="text-decoration: none;">
-                  <a href="/forgotPassword">forgot Password</a>
-                 </div>
-                <p class="mt-5 mb-3 text-body-secondary">© <% const year = new Date().getFullYear() %> <%= year %> </p>
-              </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="/styles/login.css">
+  <link rel="icon" href="/images/logo.png" type="image/x-icon">
+</head>
+<body>
+  <div class="main">
+    <div class="login">
+      <form action="/login" method="POST">
+        <label for="chk" aria-hidden="true">
+          Login
+        </label>
+        <% if(messages) { %>
+          <div id="errorMsg"><%= messages.error %></div>
+        <%}%>
+        <div class="error-message" id="loginError"></div>
+        <input type="text" name="username" autocomplete="current-username" placeholder="username" required>
+        <input type="password" name="password" autocomplete="current-password" placeholder="Password" required>
 
+        <button type="submit">
+          Login
+        </button>
+        <div id="forgotPassword">
+          <a href="/forgotPassword">forgot password</a>
         </div>
-        <div class="col-md-4"></div>
+      </form>
     </div>
-    <%- include("../partials/footer.ejs") %>
+  </div>
+</body>
+</html>

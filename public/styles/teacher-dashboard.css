@@ -2146,6 +2146,19 @@ body {
     color: #6c757d;
 }
 
+
+.marks-table th:nth-child(1) {
+    width: 60px;
+}
+
+.marks-table th:nth-child(4) {
+    width: 150px;
+}
+
+.marks-table th:nth-child(5) {
+    width: 100px;
+}
+
 .empty-icon {
     width: 64px;
     height: 64px;

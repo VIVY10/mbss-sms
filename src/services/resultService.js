@@ -206,8 +206,6 @@ async function getClassResults({
 
   const teacherClasses = await resultModel.getTeacherClasses(teacherid);
 
-  // console.log(teacherClasses)
-
   const allocationExists = teacherClasses.some(
     (item) =>
       String(item.classid) === String(classid) &&

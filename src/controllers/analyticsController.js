@@ -48,7 +48,7 @@ exports.getUserActivity = async (user, type, start, end) => {
     );
     return results;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw error;
   }
 };
@@ -59,7 +59,7 @@ exports.getHeatmap = async (limit = 20) => {
     const results = await analyticsModel.heatmap(safeLimit);
     return results;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw error;
   }
 };

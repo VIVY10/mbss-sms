@@ -6,7 +6,7 @@
       <div class="card-body">
         <h4>Registered Exams</h4>
         <table class="table table-bordered table-hover" id="table">
-            <div style="float: right;">
+            <div>
                 <a href="/addGuardianType">
                     <button type="submit" class="btn btn-success">add GuardianType</button>
                 </a>
@@ -25,7 +25,7 @@
                   <td><%= element.guardiantypeid %></td>
                   <td><%= element.guardiantypename %></td>
                   <td>
-                    <form action="/deleteGuardianType" method="POST" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                    <form action="/deleteGuardianType" method="POST">
                       <input type="hidden" name="guardiantypeid" value="<%= element.guardiantypeid %>">
                       <button type="submit" class="btn btn-danger">Delete</button>
                     </form>

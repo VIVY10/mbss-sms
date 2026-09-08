@@ -6,11 +6,9 @@
       <div class="card-body">
         <h4>Registered Departments</h4>
         <table class="table table-bordered table-hover" id="table">
-            <div style="float: right;">
                 <a href="/createDepartment">
                     <button type="submit" class="btn btn-success">create Department</button>
                 </a>
-            </div>
           <thead class="thead-light">
               <tr>
                 <th>Department_ID</th>
@@ -25,7 +23,7 @@
                   <td><%= element.departmentid %></th>
                     <td><%= element.departmentname %></td>
                   <td>
-                    <form action="/deleteDepartment" method="POST" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                    <form action="/deleteDepartment" method="POST">
                       <input type="hidden" name="departmentid" value="<%= element.departmentid %>">
                       <button type="submit" class="btn btn-danger">Delete</button>
                     </form>

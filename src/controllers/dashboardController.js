@@ -89,7 +89,7 @@ exports.getHodDashboardStats = async (teacherid) => {
  
     return stats;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     throw err;
   }
 };
@@ -103,7 +103,7 @@ exports.getTeacherDashboardStats = async (teacherid) => {
     return stats;
 
   } catch(err){
-    console.log(err)
+    // console.log(err)
     throw err;
   }
 

@@ -121,7 +121,7 @@ async function registerPupil({
       message: "Student successfully registered",
     };
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     await rollback(connection);
 
     if (imagePath) {
@@ -242,7 +242,7 @@ async function registerReturningPupil({ reported_by, reporting_status, data }) {
       studentclassid,
     };
   } catch (err) {
-    console.log(err);
+    // console.log(err);
 
     await rollback(connection);
 
@@ -291,7 +291,7 @@ async function changeStudentClass(
       message: "Student class successfully updated",
     };
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     await rollback(connection);
     throw err;
   } finally {

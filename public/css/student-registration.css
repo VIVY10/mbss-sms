@@ -442,3 +442,69 @@
       .stepper { border-radius: 20px; }
       .step strong { display: none; }
     }
+
+    .registration-title {
+    font-size: 22px;
+    margin: 0;
+}
+
+.registration-subtitle {
+    margin-top: 2px;
+}
+
+.returning-details {
+    margin-top: 14px;
+}
+
+.readonly-title {
+    margin: 0;
+}
+
+.credentials-section {
+    margin-top: 20px;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+}
+
+.summary-header {
+    margin-bottom: 10px;
+}
+
+.summary-icon {
+    font-size: 18px;
+}
+
+.checklist-title {
+    margin: 0 0 8px;
+}
+
+.help-card {
+    background: var(--blue-light);
+    border-color: #cddcff;
+}
+
+.help-icon {
+    font-size: 20px;
+}
+
+
+.summary-header {
+    margin-bottom: 10px;
+}
+
+.summary-icon {
+    font-size: 18px;
+}
+
+.summary-title {
+    margin: 0;
+}
+
+.help-card {
+    background: var(--blue-light);
+    border-color: #cddcff;
+}
+
+.help-icon {
+    font-size: 20px;
+}

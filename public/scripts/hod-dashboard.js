@@ -874,4 +874,21 @@
 
     });
 
+    document.querySelectorAll('.performance-fill').forEach(bar => {
+    const percentage = Number(bar.dataset.percentage) || 0;
+
+    bar.style.width = `${Math.min(Math.max(percentage, 0), 100)}%`;
+});
+
+
+
+document.querySelectorAll('.donut-chart').forEach(chart => {
+    const percentage = Number(chart.dataset.percentage) || 0;
+
+    chart.style.setProperty(
+        '--percentage',
+        `${Math.min(Math.max(percentage, 0), 100)}%`
+    );
+});
+
 })();

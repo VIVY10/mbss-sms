@@ -6,7 +6,7 @@
       <div class="card-body table-responsive">
         <h4>Registered subjects</h4>
         <table class="table table-bordered table-hover" id="table">
-            <div style="float: right;">
+            <div>
                 <a href="/createSubject">
                     <button type="submit" class="btn btn-success">create Subject</button>
                 </a>
@@ -18,7 +18,7 @@
                 <th>Department</th>
                 <th>Subject Status</th>
                 <th>Department Status</th>
-                <th colspan="2" style="text-align: center;">Action</th>
+                <th colspan="2">Action</th>
               </tr>
           </thead>
           <tbody>
@@ -31,7 +31,7 @@
                     <td><%= element.subject_status %></td>
                     <td><%= element.department_status %></th>
                   <td>
-                    <form action="/deleteSubject" method="POST" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                    <form action="/deleteSubject" method="POST">
                       <input type="hidden" name="subjectcode" value="<%= element.subjectcode %>">
                       <button type="submit" class="btn btn-danger">Delete</button>
                     </form>

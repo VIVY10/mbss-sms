@@ -16,8 +16,13 @@
   <!-- HEADER -->
   <div class="flex-between mb-2">
     <div>
-      <h1 style="font-size: 22px; margin:0;">Student Registration</h1>
-      <p class="text-muted" style="margin-top:2px;">New student · Returning student search</p>
+    <h1 class="registration-title">
+          Student Registration
+      </h1>
+
+      <p class="text-muted registration-subtitle">
+          New student · Returning student search
+      </p>
     </div>
     <div class="flex-row">
       <span class="badge badge-green">Academic Year 2026</span>
@@ -70,9 +75,10 @@
         <div class="student-found-icon">✓</div>
       </div>
       <!-- prefill details (readonly) -->
-      <div style="margin-top: 14px;">
+      <!-- <div style="margin-top: 14px;"> -->
+        <div class="returning-details">
         <div class="readonly-header">
-          <div><span class="eyebrow">EXISTING RECORD</span><h3 style="margin:0;">Student Information</h3></div>
+          <div><span class="eyebrow">EXISTING RECORD</span><h3 class="readonly-title">Student Information</h3></div>
           <span class="record-badge">RETURNING</span>
         </div>
         <div class="readonly-grid" id="returningDetailsGrid">
@@ -210,7 +216,7 @@
                     <option value="<%= item.guardiantypeid ?? item.id %>" <%= typeof data !== 'undefined' && data.guardiantypeid == (item.guardiantypeid ?? item.id) ? 'selected' : '' %>>
                       <%= item.relationship %>
                     </option>
-                  <% }); } %>
+                  <% })} %>
                 </select> 
               </div>
               <div class="field">
@@ -329,7 +335,8 @@
               </div> 
             </div>
             <div class="notice"><span>ⓘ</span><div><strong>Auto‑reporting</strong><p>New students are marked as <strong>REPORTED</strong> with current timestamp.</p></div></div>
-            <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:18px;">
+            <!-- <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:18px;"> -->
+              <div class="credentials-section">
               <div class="card-title compact"><div class="title-icon">🔐</div><div><h2>Account Credentials</h2><p>Student login</p></div></div>
               <div class="form-grid">
                 <div class="field">
@@ -376,7 +383,10 @@
       <!-- RIGHT SUMMARY -->
       <div class="right-summary">
         <div class="card">
-          <div class="flex-row" style="margin-bottom:10px;"><span style="font-size:18px;">📋</span><h3 style="margin:0;">Registration Summary</h3></div>
+          <div class="flex-row summary-header">
+            <span class="summary-icon">📋</span>
+            <h3 class="summary-title">Registration Summary</h3>
+          </div>
           <div class="summary-row"><span>Type</span><strong id="summaryType" class="badge badge-green">NEW</strong></div>
           <div class="summary-row">
             <span>Year</span>
@@ -391,7 +401,7 @@
           <div class="summary-row"><span>Reporting</span><strong class="badge badge-green">REPORTED</strong></div>
         </div>
         <div class="card">
-          <h3 style="margin:0 0 8px;">Checklist</h3>
+          <h3 class="checklist-title">Checklist</h3>
           <div class="checklist-card">
             <label><span class="check" data-check="student">✓</span> Student info</label>
             <label><span class="check" data-check="guardian">✓</span> Guardian info</label>
@@ -399,8 +409,8 @@
             <label><span class="check" data-check="review">✓</span> Confirmation</label>
           </div>
         </div>
-        <div class="card" style="background:var(--blue-light); border-color:#cddcff;">
-          <div class="flex-row"><span style="font-size:20px;">💡</span><div><strong>Need help?</strong><p class="text-small text-muted">Fields with <b>*</b> are required. For returning students, search first to avoid duplicates.</p></div></div>
+        <div class="card help-card">
+          <div class="flex-row"><span class="help-icon">💡</span><div><strong>Need help?</strong><p class="text-small text-muted">Fields with <b>*</b> are required. For returning students, search first to avoid duplicates.</p></div></div>
         </div>
       </div>
     </div>

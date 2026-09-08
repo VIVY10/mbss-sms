@@ -322,7 +322,7 @@ exports.createHod = async (req, res) => {
     await service.createHod(teacherid, departmentid, YearOfAppointment, appointed_by);
     res.redirect("/viewHod"); 
   } catch(err) {
-    console.log(err)
+    // console.log(err)
     return response(res, "Error Occured")
   }
 };
@@ -533,7 +533,6 @@ exports.deleteClassSubject = async (req, res) => {
 
     res.redirect("/viewClassSubjects");
   } catch (err) {
-    console.log(err);
     response(res, "Database error.");
   }
 };

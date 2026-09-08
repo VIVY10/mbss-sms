@@ -2252,9 +2252,8 @@
                                         </div>
 
                                         <div class="performance-track">
-
-                                            <span style="width:<%= item.average || 0 %>%"></span>
-
+                                            <span class="performance-fill"
+                                            data-percentage="<%= item.average || 0 %>"></span>
                                         </div>
 
                                     </div>
@@ -2301,7 +2300,8 @@
                         <div class="completion-chart">
 
                             <div class="donut-chart"
-                                 style="--percentage:<%= stats?.marksCompletion || 0 %>%">
+                                 data-percentage="<%= stats?.marksCompletion || 0 %>">
+                            </div>
 
                                 <div>
                                     <strong>

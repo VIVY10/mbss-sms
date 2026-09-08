@@ -36,8 +36,6 @@ exports.viewTeachers = async (req, res) => {
   const hodCount = await teacherModel.hodCount()
   const departments = await adminModel.getAllActiveDepartment()
 
-  console.log(departments)
-
   res.render("./teacher/index", {
     teachers,
     activeTeachers,
@@ -301,7 +299,7 @@ exports.unlockTeacherAccount = async (req, res, next) => {
 
     return res.redirect("/viewTeachers");
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     return res.redirect("/viewTeachers");
   }

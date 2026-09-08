@@ -240,14 +240,10 @@ async function softDeleteTeacher(teacherid) {
         }
         
         const teacherData = teacher[0];
-
-        // console.log(teacherData.usertype)
         
         // 2. Prevent deletion of the last admin
         if (teacherData.usertype === "admin") {
             const [adminCount] = await teacherModel.countAdminsOnConnection(connection);
-
-            // console.log(adminCount.count <= 1)
             
             if (adminCount.count <= 1) {
                 throw new Error("Cannot delete the last admin user. At least one admin must remain.");

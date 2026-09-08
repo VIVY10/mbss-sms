@@ -26,13 +26,13 @@ const cspConfig = {
 
     styleSrc: [
       "'self'",
-      "'unsafe-inline'",
-    //   (req, res) => `'nonce-${res.locals.nonce}'`,
+      (req, res) => `'nonce-${res.locals.nonce}'`,
       "https://fonts.googleapis.com",
       "https://cdn.jsdelivr.net",
       "https://cdnjs.cloudflare.com",
       "https://unpkg.com",
-      "https://cdn.datatables.net"
+      "https://cdn.datatables.net",
+      "https://fonts.googleapis.com "
     ],
 
     fontSrc: [
@@ -46,15 +46,14 @@ const cspConfig = {
 
     scriptSrc: [
       "'self'",
-      "'unsafe-inline'",
-    //   (req, res) => `'nonce-${res.locals.nonce}'`,
+      (req, res) => `'nonce-${res.locals.nonce}'`,
       "https://cdn.jsdelivr.net",
       "https://cdnjs.cloudflare.com",
       "https://ajax.googleapis.com",
       "https://unpkg.com",
       "https://www.google.com",
       "https://www.gstatic.com",
-      "https://code.jquery.com"
+      "https://code.jquery.com",
     ],
 
     imgSrc: [
@@ -123,7 +122,7 @@ const cspConfig = {
   app.use(
     cors({
       origin: isProd
-        ? "https://www.milengeseboardingsecondary.com"
+        ? "https://www.milengesecondary.com"
         : "https://localhost:3000",
       methods: ["GET", "POST", "DELETE", "PUT"],
       allowedHeaders: ["Content-Type"],

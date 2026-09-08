@@ -2,7 +2,7 @@
 
       <!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->
 
-      <div class="card mb-3" style="max-width: 900px;">
+      <div class="card mb-3">
         <div class="row g-0 ">
           <div class="col-md-6">
             <img src="/images/logo.png" class="img-fluid rounded-start" alt="form logo">
@@ -12,13 +12,12 @@
               <form class="row g-0" action="addClassSubjects" method="post" id="form1">
                 <h3>Subject Allocation</h3>
               <% if(locals.foundClass && locals.foundSubject){ %>
-                                <select class="select" name="subjectcode" required>
-                                  <option selected disabled value="">Subject...</option>
-                                  <% foundSubject.forEach(element => { %>
-                                    <option value=<%= element.subjectcode %>><%= element.subjectcode %> <%= element.subjectname %></option>                              
-                                  <% }); %>
-                                </select>
-
+                    <select class="select" name="subjectcode" required>
+                      <option selected disabled value="">Subject...</option>
+                        <% foundSubject.forEach(element => { %>
+                          <option value=<%= element.subjectcode %>><%= element.subjectcode %> <%= element.subjectname %></option>                              
+                            <% }); %>
+                              </select>
                                 <select class="select" name="classid" required>
                                   <option selected disabled value="">Class...</option>
                                   <% foundClass.forEach(element => { %>

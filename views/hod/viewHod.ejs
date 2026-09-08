@@ -12,7 +12,7 @@
             <th>Lname</th>
             <th>DepartmentName</th>
             <th>DepartmentName</th>
-            <th colspan="2" style="text-align: center;">Action</th>
+            <th colspan="2">Action</th>
           </tr>
         </thead>
       <% if(locals.results){ %>
@@ -24,10 +24,10 @@
                 <td><%= element.departmentname %></th>
                 <td><%= element.status %></th>
                 <% if(user.usertype==="admin"){ %>
-                  <td  style="text-align: center;" ><a href="/updateHod/<%= element.hodappointmentid %>"><i class="material-icons">edit</i></a>
+                  <td><a href="/updateHod/<%= element.hodappointmentid %>"><i class="material-icons">edit</i></a>
                   <a href="/deleteHod/<%= element.hodappointmentid %>"><i class="material-icons">delete</i></a>
                   <% }else { %>
-                    <td  style="text-align: center;" ><a href="#"><i class="material-icons">edit</i></a>
+                    <td><a href="#"><i class="material-icons">edit</i></a>
                     <a href="#"><i class="material-icons">delete</i></a>
                     <% } %>                  
                 </th>                  

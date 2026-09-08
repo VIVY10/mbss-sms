@@ -36,8 +36,6 @@ exports.search = async (req, res) => {
   // const { year, term, exam } = matchedData(req);
   const { termid, classid, subjectcode, examid } = req.query;
 
-  // console.log(req.query)
-
   const results = await resultService.getStudentResults(
     termid,
     classid,
@@ -265,8 +263,6 @@ exports.getResults = async (req, res) => {
 
     const data = req.body;
 
-    // console.log(data)
-
     const results = await resultService.getClassResults({
       teacherid: req.user.id,
 
@@ -316,7 +312,6 @@ exports.getStudents = async(req, res) => {
 
 
 exports.saveMarks = async(req, res) =>{
-  console.log(req.body)
   res.status(200).json({message: 'marks saved successfully'})
 }
  

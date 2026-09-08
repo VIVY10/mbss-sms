@@ -6,11 +6,9 @@
       <div class="card-body">
         <h4>Registered Classes</h4>
         <table class="table table-bordered table-hover" id="table">
-            <div style="float: right;">
                 <a href="/addClass">
                     <button type="submit" class="btn btn-success">create Class</button>
                 </a>
-            </div>
           <thead class="thead-light">
             <tr>
                   <td>classid</td>                  
@@ -29,7 +27,7 @@
                   <td><%= element.class %></td>
                   <td><%= element.status %></td>
                   <td>
-                    <form action="/deleteClass" method="POST" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                    <form action="/deleteClass" method="POST">
                       <input type="hidden" name="classid" value="<%= element.classid %>">
                       <button type="submit" class="btn btn-danger">Delete</button>
                     </form>

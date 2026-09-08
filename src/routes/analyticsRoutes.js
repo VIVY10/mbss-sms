@@ -1,13 +1,5 @@
 const express = require('express');
 const router = express.Router();
-// const assignmentController = require('../controllers/assignmentController');
-// const attendanceController = require('../controllers/attendanceController');
-// const districtController = require('../controllers/districtController');
-// const performanceController = require('../controllers/performanceController');
-// const provinceController = require('../controllers/provinceController');
-// const reportController = require('../controllers/reportController');
-// const schoolController = require('../controllers/schoolController');
-// const userController = require('../controllers/userController');
 const analyticsController = require('../controllers/analyticsController');
 const analyticsModel = require('../models/analyticsModel');
 const { authChecker, ensureRole } = require('../middleware/authChecker'); 

@@ -1,9 +1,6 @@
 const logger = require('../config/loggerConfig.js');
 
 function errorHandler(err, req, res, next) {
-    console.log("Error Handler Invoked"); // Debugging message
-    console.log("Error Object:", err);
-    console.log("Response Object:", res);
 
     // Existing logic
     logger.error(err.stack);

@@ -1,59 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" 
-    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <title>SChool Term Registration</title>
-</head>
-<body>
-  <%- include("../partials/sidebar") %>
-  <div class="form-container">
-    <form action="/addTerm" method="post" id="form1">
-        <h3>CREATE SCHOOL TERM</h3>
-        
-        <% if(locals.results){ %>
-                <select class="select" name="yearid">
-                  <option selected disabled value="">Year...</option>
-                  <% results.forEach(element => { %>
-                    <option value="<%= element.schoolyearid %>"> <%= element.yearname %> </option>                              
-                  <% }); %>
-                </select>
-            <% } else{%>
-                    <select class="select">
-                      <option selected disabled value="">Choose...</option>                                    
-                        <option disabled>No Year Created</option>                              
-                    </select>
-              <% } %>
-      
-          <select class="select" name="termnumber" id="termnumber" required>
-            <option selected disabled value="">Term...</option>
-            <option value="1" data-termname="Term 1">1</option>
-            <option value="2" data-termname="Term 2">2</option>
-            <option value="3" data-termname="Term 3">3</option> 
-          </select>  
-          <span>
-            <input type="text" name="termname" id="termname" value="" hidden readonly>
-          </span>
-          <label class="form-label" for="startdate">Start Date</label>
-          <input type="date" name="startdate" placeholder="Start Date" required/>
-          <label class="form-label" for="enddate">End Date</label>
-          <input type="date" name="enddate" placeholder="End Date" required/>
 
-        <div class="btn-box">
-            <button type="submit" id="submit">Submit</button>
-        </div>
-    </form>
-  </div>
-      <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
+        crossorigin="anonymous"
+    >
+
+    <title>School Term Registration</title>
+
+</head>
+
+<body>
+
+    <%- include("../partials/sidebar") %>
+
+    <div class="form-container">
+
+        <form action="/addTerm" method="POST" id="form1">
+
+            <h3>CREATE SCHOOL TERM</h3>
+
+            <% if (locals.results && results.length > 0) { %>
+
+                <select
+                    class="select"
+                    name="yearid"
+                    id="yearid"
+                    required
+                >
+                    <option selected disabled value="">
+                        Select Year...
+                    </option>
+
+                    <% results.forEach(element => { %>
+
+                        <option value="<%= element.schoolyearid %>">
+                            <%= element.yearname %>
+                        </option>
+
+                    <% }); %>
+
+                </select>
+
+            <% } else { %>
+
+                <select
+                    class="select"
+                    name="yearid"
+                    id="yearid"
+                    disabled
+                >
+                    <option selected disabled value="">
+                        No Year Created
+                    </option>
+                </select>
+
+            <% } %>
+
+
+            <select
+                class="select"
+                name="termnumber"
+                id="termnumber"
+                required
+            >
+                <option selected disabled value="">
+                    Select Term...
+                </option>
+
+                <option value="1" data-termname="Term 1">
+                    Term 1
+                </option>
+
+                <option value="2" data-termname="Term 2">
+                    Term 2
+                </option>
+
+                <option value="3" data-termname="Term 3">
+                    Term 3
+                </option>
+
+            </select>
+
+
+            <input
+                type="hidden"
+                name="termname"
+                id="termname"
+            >
+
+
+            <label
+                class="form-label"
+                for="startdate"
+            >
+                Start Date
+            </label>
+
+            <input
+                type="date"
+                name="startdate"
+                id="startdate"
+                required
+            >
+
+
+            <label
+                class="form-label"
+                for="enddate"
+            >
+                End Date
+            </label>
+
+            <input
+                type="date"
+                name="enddate"
+                id="enddate"
+                required
+            >
+
+
+            <div class="btn-box">
+
+                <button
+                    type="submit"
+                    id="submit"
+                >
+                    Submit
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     <script src="/scripts/adminScripts.js"></script>
-      <script>
-        document.getElementById('termnumber').addEventListener('change', function(){
-          const selectedOptions = this.options[this.selectedIndex];
-          const termname = selectedOptions.getAttribute('data-termname');
-          document.getElementById('termname').value = termname;
-        })    
-  </script>
-  </body>
-  </html>
+    <script src="/scripts/addTermScripts.js"></script>
+
+</body>
+
+</html>

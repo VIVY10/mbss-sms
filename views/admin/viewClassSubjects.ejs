@@ -1,12 +1,12 @@
 <%- include("../partials/sidebar.ejs") %>
 <div class="table-responsive">
-  <div style="float: left; margin: 10px;">
+  <div>
         <button type="submit" class="btn btn-success" id="unallocatedSubjects">Unallocated Subjects</button>
     </div>
-    <div style="float: left; margin: 10px;">
+    <div>
         <button type="submit" class="btn btn-success" id="classAllocation">Class Allocation</button>
     </div>
-      <div style="float: left; margin: 10px;">
+      <div>
         <a href="/AddClassSubjects">
             <button type="submit" class="btn btn-success">Add Class Subject</button>
         </a>
@@ -28,7 +28,7 @@
               <td><%= element.subjectname %></td>
                 <td><%= element.levelname%><%= element.class%></th>
               <td>
-                <form action="/deleteClassSubject" method="POST" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                <form action="/deleteClassSubject" method="POST">
                   <input type="hidden" name="class_subject_id" value="<%= element.class_subject_id %>">
                   <button type="submit" class="btn btn-danger">Delete</button>
                 </form>  
