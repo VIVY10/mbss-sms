@@ -28,7 +28,7 @@ const path = require('path');
 // =======================
 // 3️⃣ Custom Config Imports
 // =======================
-const { configureSecurity, createHttpsServer } = require('./src/security/security');
+const { configureSecurity, createServer } = require('./src/security/security');
 const { startWebSocketServer } = require('./src/ws/websocket');
 
 
@@ -127,7 +127,7 @@ app.use('/', routes);
 // =======================
 // 1️⃣2️⃣ Create HTTPS Server
 // =======================
-const server = createHttpsServer(app);
+const server = createServer(app);
 
 // =======================
 // 1️⃣3️⃣ Start WebSocket Server
