@@ -5,14 +5,28 @@ require('dotenv').config();
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 
-// MySQL session store options
-const options = {
+const isProd = process.env.NODE_ENV === 'production';
+
+// 1. Connection options 
+const connectionOptions = {
   host: process.env.DB_HOST,
-  port: process.env.DB_PORT || 3306, // Default MySQL port
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  clearExpired: true, 
+  ...(isProd
+    ? {
+        socketPath: '/var/lib/mysql/mysql.sock'
+      }
+    : {
+        host: process.env.DB_HOST || '127.0.0.1',
+        port: Number(process.env.DB_PORT) || 3306
+      })
+};
+
+// 2. Store options (session store behavior)
+const storeOptions = {
+  ...connectionOptions, // merge connection options in
+  clearExpired: true,
   checkExpirationInterval: 900000, // 15 minutes
   expiration: 86400000, // 1 day
   createDatabaseTable: true,
@@ -26,23 +40,22 @@ const options = {
   }
 };
 
-// Create session store
-const sessionStore = new MySQLStore(options);
+// 3. Create session store
+const sessionStore = new MySQLStore(storeOptions);
 
 // Session configuration
 const sessionConfig = {
-  name: 'sessionId', // Custom session cookie name
+  name: 'sessionId',
   secret: process.env.SESSION_SECRET || 'your_secret_key_here',
   store: sessionStore,
   resave: false,
   saveUninitialized: false,
-  rolling: true, // Reset cookie expiration on every response
+  rolling: true,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
-    sameSite: 'strict', // Protect against CSRF
-    maxAge: 20 * 60 * 1000, // 20 minutes
-   //domain: 'https://localhost:3000'
+    secure: isProd,
+    sameSite: 'strict',
+    maxAge: 20 * 60 * 1000,
   }
 };
 

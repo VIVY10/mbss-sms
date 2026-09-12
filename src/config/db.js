@@ -8,6 +8,7 @@ const MAX_RETRIES = 5;
 const RETRY_DELAY_MS = 3000;
 
 const poolConfig = {
+  host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
@@ -18,7 +19,9 @@ const poolConfig = {
   // cPanel / socket vs TCP
   ...(isProd
     ? { socketPath: '/var/lib/mysql/mysql.sock' }
-    : { host: process.env.DB_HOST || '127.0.0.1', port: Number(process.env.DB_PORT) || 3306 })
+    : { host: process.env.DB_HOST || '127.0.0.1', 
+        port: Number(process.env.DB_PORT) || 3306 
+    })
 };
 
 // Create promise-based pool
