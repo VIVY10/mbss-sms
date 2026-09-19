@@ -174,29 +174,88 @@ exports.searchReturningStudent = async (req, res) => {
 };
 
 // ==================== VIEW PUPILS ====================
-
 exports.viewPupils = async (req, res) => {
-  // get current date
-  const currentDate = new Date();
-  // extract current year
-  const currentYear = currentDate.getFullYear();
+  try {
+    const currentYear = new Date().getFullYear();
 
-  const students = await pupilModel.getAll2();
-  const schoolyear = await adminModel.getSchoolYears();
-  const foundTerm = await adminModel.getTerms();
-  const [openTerm] = await adminModel.get_Open_Terms();
-  const foundClass = await adminModel.getClasses();
-  const [stats] = await pupilModel.statistics(currentYear, openTerm.termid);
+    const students = await pupilModel.getAll2();
+    const schoolyear = await adminModel.getSchoolYears();
+    const foundTerm = await adminModel.getTerms();
+    const openTerms = await adminModel.get_Open_Terms();
+    const foundClass = await adminModel.getClasses();
 
-  return res.render("./pupil/index", {
-    students,
-    schoolyear,
-    foundTerm,
-    foundClass,
-    stats,
-    user: req.user,
-  });
+    // Get currently open term
+    const openTerm = Array.isArray(openTerms)
+      ? openTerms[0] || null
+      : null;
+
+    // Default statistics
+    let stats = {
+      totalStudents: 0,
+      activeStudents: 0,
+      newStudents: 0,
+      newThisTerm: 0,
+      returningStudents: 0
+    };
+
+    let message = null;
+
+    // Only get term-based statistics when an open term exists
+    if (openTerm?.termid) {
+      const statistics = await pupilModel.statistics(
+        currentYear,
+        openTerm.termid
+      );
+
+      // query() returns an array of rows
+      if (Array.isArray(statistics) && statistics.length > 0) {
+        stats = {
+          ...stats,
+          ...statistics[0]
+        };
+      }
+    } else {
+      message = "There is currently no open term.";
+    }
+
+    return res.render("./pupil/index", {
+      students: Array.isArray(students) ? students : [],
+      schoolyear: Array.isArray(schoolyear) ? schoolyear : [],
+      foundTerm: Array.isArray(foundTerm) ? foundTerm : [],
+      foundClass: Array.isArray(foundClass) ? foundClass : [],
+      openTerm,
+      stats,
+      user: req.user || null,
+      message,
+      error: null
+    });
+
+  } catch (error) {
+    console.error("Error loading pupils page:", error);
+
+    return res.status(500).render("./pupil/index", {
+      students: [],
+      schoolyear: [],
+      foundTerm: [],
+      foundClass: [],
+      openTerm: null,
+
+      stats: {
+        totalStudents: 0,
+        activeStudents: 0,
+        newStudents: 0,
+        newThisTerm: 0,
+        returningStudents: 0
+      },
+
+      user: req.user || null,
+      message: null,
+      error: "Unable to load pupil information. Please try again."
+    });
+  }
 };
+
+
 
 exports.searchPage = (req, res) => {
   return res.render("./pupil/searchPupil", {

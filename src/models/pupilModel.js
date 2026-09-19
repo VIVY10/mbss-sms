@@ -66,45 +66,48 @@ exports.findByExamNo = (examno) =>
 
 
 // ==================== FIND PUPIL ====================
-
 exports.statistics = (year, openTerm) =>
   query(
     `
       SELECT
-      COUNT(*) AS totalStudents,
+        COUNT(*) AS totalStudents,
 
-      SUM(
-          CASE
-              WHEN s.status = 'active'
-              THEN 1
+        COALESCE(
+          SUM(
+            CASE
+              WHEN s.status = 'active' THEN 1
               ELSE 0
-          END
-      ) AS activeStudents,
+            END
+          ), 0
+        ) AS activeStudents,
 
-      SUM(
-          CASE
-              WHEN YEAR(s.enrollmentdate) = ?
-              THEN 1
+        COALESCE(
+          SUM(
+            CASE
+              WHEN YEAR(s.enrollmentdate) = ? THEN 1
               ELSE 0
-          END
-      ) AS newStudents,
+            END
+          ), 0
+        ) AS newStudents,
 
-      (    SELECT COUNT(DISTINCT sc.examno)
+        (
+          SELECT COUNT(DISTINCT sc.examno)
           FROM studentclass sc
           WHERE sc.termid = ?
             AND sc.enrollment_type = 'new'
-      ) AS newThisTerm,
+        ) AS newThisTerm,
 
-      (
+        (
           SELECT COUNT(DISTINCT sc.examno)
           FROM studentclass sc
           WHERE sc.termid = ?
             AND sc.enrollment_type = 'returning'
-      ) AS returningStudents
+        ) AS returningStudents
 
       FROM students s;
-    `, [year, openTerm, openTerm]);
-
+    `,
+    [year, openTerm, openTerm]
+  );
 // ==================== REGISTRATION OPTIONS ====================
 
 exports.getRegistrationOptions = async () => {
