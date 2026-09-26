@@ -23,7 +23,7 @@
     "ejs": "^3.1.10",
     "express": "^4.22.2",
     "express-flash": "^0.0.2",
-    "express-mysql-session": "^3.0.3",
+    "express-mysql-session": "^2.1.8",
     "express-rate-limit": "^8.6.2",
     "express-session": "^1.19.0",
     "express-validator": "^7.3.2",
@@ -35,7 +35,7 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pushbullet": "^3.0.0",
-    "uuid": "^9.0.1",
+    "uuid": "^14.0.2",
     "winston": "^3.19.0"
   }
 }

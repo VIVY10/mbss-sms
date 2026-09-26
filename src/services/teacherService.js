@@ -142,12 +142,32 @@ async function create_teaching_allocations(
   allocated_by,
 ) {
   try {
+
+    // Check whether the subject is already allocated to teacher
+    const result = await teacherModel.getExistingTeacherAllocation(
+      class_subject_id,
+      termid,
+    );
+
+    console.log(result) 
+
+    if (result && result.length > 0) {
+      return {
+        teacherid: teacherid,
+        success: false,
+        status: 409,
+        message: `this subject is already allocated to teacher with ID: ${result[0].teacherid}`,
+      };
+    }
+
     // Check whether the teacher is already allocated
     const results = await teacherModel.getCreateTeacherAllocationsOptions(
       teacherid,
       class_subject_id,
       termid,
     );
+
+    console.log(results) 
 
     if (results && results.length > 0) {
       return {

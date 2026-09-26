@@ -220,10 +220,10 @@ exports.getDepartmentHod = (teacherid, departmentid) =>
 
         WHERE dh.teacherid = ?
           AND dh.status = 'active'
-          AND dh.start_date <= CURDATE()
-          AND (
+          AND dh.start_date <= NOW()
+          AND ( 
                 dh.end_date IS NULL
-                OR dh.end_date >= CURDATE()
+                OR dh.end_date >= NOW()
               )
 
         LIMIT 1;

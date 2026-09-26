@@ -149,10 +149,32 @@ exports.getCreateTeacherAllocationsOptions = (
     WHERE ta.teacherid = ?
     AND ta.class_subject_id = ?
     AND ta.termid = ?
+    AND ta.status = ?
     `,
-    [teacherid, class_subject_id, termid],
+    [teacherid, class_subject_id, termid, "active"],
   );
 
+  exports.getExistingTeacherAllocation = (
+  class_subject_id,
+  termid,
+) =>
+  query(
+    `
+    SELECT
+      ta.allocation_id,
+      ta.class_subject_id,
+      ta.teacherid,
+      ta.termid,
+      ta.allocated_by
+    FROM teaching_allocations ta
+    WHERE ta.class_subject_id = ?
+    AND ta.termid = ?
+    AND ta.status = ?
+    `,
+    [class_subject_id, termid, "active"],
+  );
+
+  
 exports.getTeacherSubjectAllocations = (teacherid) =>
   query(
     `
