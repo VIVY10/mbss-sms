@@ -3,6 +3,7 @@ const { matchedData, body } = require("express-validator");
 const resultService = require("../services/resultService");
 const resultModel = require('../models/resultModel.js')
 const adminModel = require('../models/adminModel.js')
+const examModel = require('../models/examModel.js')
 
 const subjectModel = require('../models/subjectModel.js');
 const pupilModel = require('../models/pupilModel.js');
@@ -438,6 +439,119 @@ exports.submitMarks = async (req, res) => {
       code: "SERVER_ERROR",
       message: "Failed to submit marks.",
       error: error.message
+    });
+  }
+};
+
+
+
+/**
+ * Render Admin Results page
+ */
+exports.showAdminResults = async (req, res) => {
+  try {
+
+    const [
+      foundClass,
+      examType,
+      term
+    ] = await Promise.all([
+      resultModel.getResultClasses(),
+      examModel.findAll(),
+      adminModel.getTerms() 
+    ]);
+
+
+    if (foundClass.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No classes or subjects found."
+      });
+    }
+
+
+    if (examType.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No exams found."
+      });
+    }
+
+
+    if (term.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No terms found."
+      });
+    }
+
+    return res.render("./exam/adminResults", {
+      foundClass,
+      examType,
+      term,
+      user: req.user
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Error loading admin results page:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to load admin results."
+    });
+  }
+};
+
+
+/**
+ * Get student results
+ */
+exports.checkAdminResults = async (req, res) => {
+  try {
+
+    const {
+      subjectcode,
+      examtype,
+      selectClassid,
+      year,
+      term
+    } = req.body;
+
+
+    const results =
+      await resultModel.getStudentResults(
+        term,
+        selectClassid,
+        subjectcode,
+        examtype
+      );
+
+    if (results.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No student results found."
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: results
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Error checking admin results:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to retrieve student results."
     });
   }
 };

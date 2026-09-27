@@ -41,6 +41,11 @@ contentSecurityPolicy: {
       "https://www.google.com",
       "https://www.gstatic.com",
       "https://code.jquery.com",
+
+              
+      "https://cdn.jsdelivr.net",
+      "https://cdnjs.cloudflare.com",
+      "https://cdn.datatables.net"
     ],
 
     styleSrc: [
@@ -73,7 +78,9 @@ contentSecurityPolicy: {
       'wss:',
       'https://www.google.com',
       'https://www.gstatic.com',
-      'https://cdn.jsdelivr.net'
+      'https://cdn.jsdelivr.net',
+
+      "https://cdnjs.cloudflare.com"
     ],
 
     frameSrc: [

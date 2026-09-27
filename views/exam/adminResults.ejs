@@ -1,243 +1,219 @@
-<%- include("../partials/sidebar.ejs") %>
-<% if(locals.foundClass && locals.examType){ %>   
-  <style>
-    #selectedClassDisplay{
-    margin-top: 10px; 
-    margin-bottom: 30px;
-    font-weight: bold;
-    color: green;
-    text-transform: uppercase;
-  }
-  </style>
- <div class="container" style="margin-bottom: 50px;">
-  <form class="h-100 bg-white" id="adminResultsForm">  
-    <div class="row">
-      <div class="col-md"> 
-        <div class="form-floating">
-           <select class="form-select" name="subjectcode" id="selectSubjectcode" aria-label="Floating label select example" required>
-            <option selected disabled value=""></option>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Results Management · Scholarly</title>
+  <!-- Bootstrap 5 + Icons + DataTables + Buttons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css">
+  <link rel="stylesheet" href="/styles/adminResults.css">
+</head>
+<body> 
+
+<div class="admin-results-page">
+
+  <!-- Page Header -->
+  <div class="results-page-header">
+    <div>
+      <div class="page-eyebrow">
+        <i class="bi bi-bar-chart-line"></i>
+        Academic Management
+      </div>
+      <h1 class="page-title">Results Management</h1>
+      <p class="page-description">
+        Search, review and export pupil academic results by class, subject,
+        examination and academic term.
+      </p>
+    </div>
+    <div class="results-header-icon" aria-hidden="true">
+      <i class="bi bi-file-earmark-bar-graph"></i>
+    </div>
+  </div>
+
+  <!-- Search Panel -->
+  <section class="results-search-card">
+    <div class="section-heading">
+      <div class="section-heading-icon">
+        <i class="bi bi-funnel"></i>
+      </div>
+      <div>
+        <h2>Result Search</h2>
+        <p>Select the academic context you want to review.</p>
+      </div>
+    </div>
+
+    <form id="adminResultsForm" novalidate>
+      <div class="row g-4">
+        <!-- Class & Subject -->
+        <div class="col-lg-5">
+          <div class="form-floating">
+            <select class="form-select" name="subjectcode" id="selectSubjectcode" required>
+              <option value="" selected disabled>Select class and subject</option>
               <% foundClass.forEach(element => { %>
               <option value="<%= element.subjectcode %>" 
                       data-classid="<%= element.classid %>" 
-                      data-grade="<%= element.grade %>" 
+                      data-grade="<%= element.levelname %>" 
                       data-fname="<%= element.fname %>"
                       data-lname="<%= element.lname %>"
                       data-subjectname="<%= element.subjectname %>"
                       data-class="<%= element.class %>">
-                  <%= element.grade %><%= element.class %> --- <%= element.subjectname %>
+                  <%= element.levelname %><%= element.class %> --- <%= element.subjectname %>
               </option>  
               <% }); %>
-          </select> 
-          <label for="selectSubjectcode">class</label>
+            </select>
+            <label for="selectSubjectcode">Class &amp; Subject</label>
+          </div>
         </div>
-        </div>
-        <div class="col-md">
+
+        <!-- Examination -->
+        <div class="col-lg-3">
           <div class="form-floating">
-            <select class="form-select"  name="examtype" id="examtype" aria-label="Floating label select example" required>
-              <option selected disabled value="" ></option>
+            <select class="form-select" name="examtype" id="examtype" required>
+              <option value="" selected disabled>Select examination</option>
               <% examType.forEach(element => { %>
                 <option value=<%= element.examid %>><%= element.exam_title %></option>                              
               <% }); %>
             </select>
-            <label for="examtype">exam</label>
+            <label for="examtype">Examination</label>
           </div>
         </div>
 
-      <div class="col-md">
-        <div class="form-floating">      
-        <select class="form-select" name="term" id="term" aria-label="Floating label select example" required>
-          <option selected disabled value="" ></option>
-          <% term.forEach(element => { %>
-            <option value="<%= element.termid %>" 
-              data-year="<%= element.schoolyearid %>">
-              <%= element.termnumber%> --- <%= element.yearname%>
-            </option>                              
-          <% }); %>
-        </select>
-        <label for="term">term</label>
+        <!-- Term -->
+        <div class="col-lg-3">
+          <div class="form-floating">
+            <select class="form-select" name="term" id="term" required>
+              <option value="" selected disabled>Select term</option>
+                <% term.forEach(element => { %>
+                <option value="<%= element.termid %>" 
+                  data-year="<%= element.schoolyearid %>"
+                  data-yearname="<%= element.yearname %>"
+                  data-termnumber="<%= element.termnumber %>"
+                  >
+                  <%= element.termname%> --- <%= element.yearname%>
+                </option>                              
+              <% }); %>
+            </select>
+            <label for="term">Academic Term</label>
+          </div>
+        </div>
+
+        <!-- Search Button -->
+        <div class="col-lg-1 d-flex align-items-stretch">
+          <button type="submit" id="adminResults" class="btn btn-primary results-search-btn w-100">
+            <span class="button-content">
+              <i class="bi bi-search"></i>
+              <span class="d-none d-lg-inline">Search</span>
+            </span>
+            <span class="button-loading d-none" aria-hidden="true">
+              <span class="spinner-border spinner-border-sm" role="status"></span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Hidden request values -->
+      <input type="hidden" name="selectClassid" id="classid">
+      <input type="hidden" name="year" id="selectYear">
+
+      <!-- Selected Context -->
+      <div id="selectedResultContext" class="selected-result-context d-none" aria-live="polite">
+        <div class="context-icon">
+          <i class="bi bi-mortarboard-fill"></i>
+        </div>
+        <div class="context-main">
+          <span class="context-label">Selected Result Context</span>
+          <strong id="selectedClassDisplay">—</strong>
+          <span id="selectedTeacherDisplay">—</span>
+        </div>
+        <div class="context-meta">
+          <div>
+            <span>Subject</span>
+            <strong id="selectedSubjectDisplay">—</strong>
+          </div>
+          <div>
+            <span>Term</span>
+            <strong id="selectedTermDisplay">—</strong>
+          </div>
+          <div>
+            <span>School Year</span>
+            <strong id="selectedYearDisplay">—</strong>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!-- Status Alert -->
+  <div id="resultsStatus" class="results-status d-none" role="alert" aria-live="polite"></div>
+
+  <!-- Results Card -->
+  <section class="results-table-card">
+    <div class="results-table-header">
+      <div>
+        <div class="section-heading compact">
+          <div class="section-heading-icon">
+            <i class="bi bi-table"></i>
+          </div>
+          <div>
+            <h2>Student Results</h2>
+            <p id="resultsTableSubtitle">
+              Search for a class, subject and examination to display results.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="results-count-badge">
+        <span id="resultsCount">0</span>
+        <span>Students</span>
       </div>
     </div>
-  <div class="col-auto">
-    <button type="button" id="adminResults" class="btn-primary">Get Results</button>
+
+    <div class="table-responsive results-table-wrapper">
+      <table id="resultsTable" class="table table-hover align-middle w-100">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Exam No.</th>
+            <th scope="col">Pupil</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Class</th>
+            <th scope="col">Term</th>
+            <th scope="col">Score</th>
+            <th scope="col">Grade</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div id="resultsEmptyState" class="results-empty-state">
+        <div class="empty-state-icon">
+          <i class="bi bi-clipboard-data"></i>
+        </div>
+        <h3>No results loaded</h3>
+        <p>
+          Select a class, examination and academic term above,
+          then click <strong>Search</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
 </div>
-<div class="col-md">
-  <div class="form-floating">
-    <!-- Div to display the selected class -->    
-    <div class="col-auto" id="selectedClassDisplay"></div>
-    <input type="number" name="selectClassid" value="" id="classid" hidden readonly/>  
-    <input type="number" name="year" value="" id="selectYear" hidden readonly/>   
-  </div>
-</div>
-</div>
-</form>
-</div>
-<% } %>
-<!--///////////////////////////////// content Placed here ///////////////////////////////////////////-->     
-<div class="table-responsive">
-  <table id="resultsTable" class="display table-responsive" style="width:100%">
-    <thead>
-        <tr>
-            <th>lname</th>
-            <th>fname</th>              
-            <th>gender</th>
-            <th>examno</th>
-            <th>grade</th>
-            <th>class</th>
-            <th>Term</th>
-            <th>score</th>
-        </tr>
-    </thead>
-    <tfoot>
-      <tr>
-        <th>lname</th>
-        <th>fname</th>              
-        <th>gender</th>
-        <th>examno</th>
-        <th>grade</th>
-        <th>class</th>
-        <th>Term</th>
-        <th>score</th>
-    </tr>
-    </tfoot>
-</table>
-</div>
-<script src="/scripts/adminScripts.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-<script src="/scripts/scripts.js"></script>
-<script>
-  document.getElementById('selectSubjectcode').addEventListener('change', function() {
-      // Get the selected option
-      var selectedOption = this.options[this.selectedIndex];
-      // Get the classid, grade, and section from the data attributes
-      var classid = selectedOption.getAttribute('data-classid');
-      var grade = selectedOption.getAttribute('data-grade');
-      var section = selectedOption.getAttribute('data-class');
-      var fname = selectedOption.getAttribute('data-fname')
-      var lname = selectedOption.getAttribute('data-lname')
-      var subjectname = selectedOption.getAttribute('data-subjectname')
-      var teacherid = selectedOption.getAttribute('data-teacherid')
 
-      // Set the value of the hidden classid input field
-      document.getElementById('classid').value = classid;
-
-      // Display the selected class in the div
-      document.getElementById('selectedClassDisplay').textContent = `TR: ${lname} ${fname} - ${grade}${section}`;
-  });
-
-  document.getElementById('term').addEventListener('change', function() {
-        // Get the selected option
-        var selectedOption = this.options[this.selectedIndex];
-        // Get the classid, grade, and section from the data attributes
-        var year = selectedOption.getAttribute('data-year');
-        // Set the value of the hidden classid input field
-        document.getElementById('selectYear').value = year;
-    });
-</script>
-<script>
-  // let formData = {}; // Global variable for form data
-  var data = []; // Global variable for form data
-  $(document).ready(function() {
-  // Initial DataTable setup if needed
-  var table = $('#resultsTable').DataTable({
-              dom: 'Bfrtip',
-              buttons: [
-                  {
-                      extend: 'copy',
-                      title: function() {
-                          return `Grade ${data[0].grade}${data[0].class}_${data[0].subjectname || 'Subject'}_${data[0].exam_title || 'Exam'}_Results`;
-                      },
-                      filename: function() {
-                          return `Grade ${data[0].grade} ${data[0].class}_${data[0].subjectname || 'Subject'}_${data[0].exam_title || 'Exam'}_Results`;
-                      },
-                      exportOptions: {
-                          columns: ':not(:nth-last-child(-n+2))' // Exclude the last two columns (Edit and Delete buttons)
-                      }
-                  },
-                  {
-                      extend: 'excel',
-                      title: function() {
-                          return `Grade ${data[0].grade} ${data[0].class} ${data[0].subjectname || 'Subject'}`;
-                      },
-                      filename: function() {
-                          return `Grade ${data[0].grade} ${data[0].class}_${data[0].subjectname || 'Subject'}_${data[0].exam_title || 'Exam'}_Results`;
-                      },
-                      exportOptions: {
-                          columns: ':not(:nth-last-child(-n+2))'
-                      }
-                  },
-                  {
-                      extend: 'pdf',
-                      title: function() {
-                          return `Grade ${data[0].grade} ${data[0].class} ${data[0].subjectname || 'Subject'}`;
-                      },
-                      filename: function() {
-                          return `Grade ${data[0].grade} ${data[0].class}_${data[0].subjectname || 'Subject'}_${data[0].exam_title || 'Exam'}_Results`;
-                      },                      
-                      exportOptions: {
-                          columns: ':not(:nth-last-child(-n+2))'
-                      }
-                  },
-                  {
-                      extend: 'print',
-                      title: function() {
-                          return `Grade ${data[0].grade} ${data[0].class} ${data[0].subjectname || 'Subject'}`;
-                      },
-                      exportOptions: {
-                          columns: ':not(:nth-last-child(-n+2))'
-                      }
-                  }
-              ],
-              // data: [], // Initialize with empty data
-              columns: [
-                  { data: 'fname' },
-                  { data: 'lname' },
-                  { data: 'gender' },
-                  { data: 'id' },
-                  { data: 'grade' },
-                  { data: 'class' },
-                  { data: 'term' },
-                  { data: 'score' }
-              ]
-          });
-
-
-  // Handle form submission
-  $("#adminResults").click(function(e) {
-      e.preventDefault();
-      
-      const classData = $("#adminResultsForm")[0];
-      console.log(classData)
-      const formData = Object.fromEntries(new FormData(classData).entries());
-
-      console.log(formData)
-
-      var xmlhttp = new XMLHttpRequest();
-      var url = "/adminCheckResults";
-      xmlhttp.open("post", url, true);
-      xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-      xmlhttp.send(JSON.stringify(formData));
-      
-      xmlhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) {
-              data = JSON.parse(this.responseText);
-              // Clear the existing data and add new data
-              table.clear().rows.add(data).draw();
-          }
-      }
-  });
-
- 
-
-});
-
-</script>
+<!-- JavaScript dependencies -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+<script src="/scripts/adminResults.js"></script>
 </body>
-
 </html>

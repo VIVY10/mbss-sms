@@ -29,7 +29,6 @@ exports.getResultFilters = () =>
   ]);
 
 // ==================== GET STUDENT RESULTS ====================
-
 exports.getStudentResults = (termid, classid, subjectcode, examid) =>
   query(
     `
@@ -41,12 +40,12 @@ exports.getStudentResults = (termid, classid, subjectcode, examid) =>
       s.fname,
       s.middlename,
       s.lname,
+      s.gender,
       yl.levelname,
       c.class,
       ex.exam_title,
       ex.examid,
       tm.termname
-
     FROM student_results sr
     JOIN studentclass sc
       ON sc.studentclassid = sr.studentclassid
@@ -71,6 +70,92 @@ exports.getStudentResults = (termid, classid, subjectcode, examid) =>
     ORDER BY su.subjectcode
     `,
     [subjectcode, examid, termid, classid, examid]
+  );
+
+// ==================== GET STUDENT RESULTS ====================
+exports.getStudentResultsByLevel = (schoolyear, term, yearlevel, examid) =>
+  query(
+    `
+    SELECT
+        cs.subjectcode,
+        su.subjectname,
+
+        s.examno,
+        s.fname,
+        s.middlename,
+        s.lname,
+        s.gender,
+
+        g.phonenumber,
+        g.guardian_alt_phone,
+
+        yl.levelname,
+        c.class,
+
+        ex.examid,
+        ex.exam_title,
+
+        tm.termid,
+        tm.termname,
+
+        sy.schoolyearid,
+        sy.yearname,
+
+        CASE
+            WHEN sr.studentclassid IS NULL THEN 'X'
+            ELSE sr.score
+        END AS score
+
+    FROM studentclass sc
+
+    JOIN students s
+        ON s.examno = sc.examno
+
+    JOIN class c
+        ON c.classid = sc.classid
+
+    JOIN yearlevel yl
+        ON yl.levelorder = c.levelid
+
+    JOIN terms tm
+        ON tm.termid = sc.termid
+
+    JOIN schoolyear sy
+        ON sy.schoolyearid = tm.yearid
+
+    /* Every subject belonging to this class */
+    JOIN class_subjects cs
+        ON cs.classid = sc.classid
+
+    JOIN subjects su
+        ON su.subjectcode = cs.subjectcode
+
+    /* Result is optional */
+    LEFT JOIN student_results sr
+        ON sr.studentclassid = sc.studentclassid
+        AND sr.subjectcode = cs.subjectcode
+        AND sr.examid = ?
+
+    /* The selected exam */
+    JOIN exams ex
+        ON ex.examid = ?
+
+    LEFT JOIN studentguardian stg
+        ON stg.examno = s.examno
+
+    LEFT JOIN guardian g
+        ON g.guardian_nrc_no = stg.guardianid
+
+    WHERE sc.termid = ?
+      AND sc.yearid = ?
+       AND yl.levelorder = ?
+
+    ORDER BY
+        cs.subjectcode,
+        s.fname,
+        s.lname;
+    `,
+    [examid, examid, term, schoolyear, yearlevel]
   );
 
 // ==================== GET STUDENT PROFILE ====================
@@ -169,203 +254,6 @@ ORDER BY
 
 
 // Helper function to validate sequential exam entry
-// exports.validateAllStudentsCanEnterMarks = async (
-//   examid,
-//   subjectCode,
-//   studentIds,
-//   connection
-// ) => {
-
-//   if (!examid || !subjectCode || !Array.isArray(studentIds) || studentIds.length === 0) {
-//     throw new Error("Invalid exam, subject, or student data.");
-//   }
-
-//   // ---------------------------------------------------------
-//   // 1. Get the current exam and its sequence number
-//   // ---------------------------------------------------------
-//   const examResult = await connectionQuery(
-//     connection,
-//     `
-//       SELECT 
-//         examid,
-//         exam_title,
-//         sequence_no,
-//         status
-//       FROM exams
-//       WHERE examid = ?
-//         AND status = 'active'
-//       LIMIT 1
-//     `,
-//     [examid]
-//   );
-
-//   const exam = Array.isArray(examResult) && Array.isArray(examResult[0])
-//     ? examResult[0][0]
-//     : examResult[0];
-
-//   if (!exam) {
-//     throw new Error(`Exam with ID ${examid} not found or inactive.`);
-//   }
-
-//   const examOrder = Number(exam.sequence_no);
-
-//   if (!Number.isInteger(examOrder) || examOrder < 1) {
-//     throw new Error(
-//       `Invalid sequence number configured for exam "${exam.exam_title}".`
-//     );
-//   }
-
-//   // ---------------------------------------------------------
-//   // 2. First exam does not require previous marks
-//   // ---------------------------------------------------------
-//   if (examOrder === 1) {
-//     return {
-//       valid: true,
-//       examid,
-//       exam_title: exam.exam_title,
-//       sequence_no: examOrder
-//     };
-//   }
-
-//   // ---------------------------------------------------------
-//   // 3. Find all previous active exams
-//   // ---------------------------------------------------------
-//   const previousExamsResult = await connectionQuery(
-//     connection,
-//     `
-//       SELECT
-//         examid,
-//         exam_title,
-//         sequence_no
-//       FROM exams
-//       WHERE status = 'active'
-//         AND sequence_no < ?
-//       ORDER BY sequence_no ASC
-//     `,
-//     [examOrder]
-//   );
-
-//   const previousExams = Array.isArray(previousExamsResult)
-//     ? (Array.isArray(previousExamsResult[0])
-//         ? previousExamsResult[0]
-//         : previousExamsResult)
-//     : [];
-
-//   if (previousExams.length === 0) {
-//     return {
-//       valid: true,
-//       examid,
-//       exam_title: exam.exam_title,
-//       sequence_no: examOrder
-//     };
-//   }
-
-//   // ---------------------------------------------------------
-//   // 4. Convert student IDs into placeholders
-//   // ---------------------------------------------------------
-//   const placeholders = studentIds.map(() => "?").join(",");
-
-//   // ---------------------------------------------------------
-//   // 5. Find students missing ANY previous exam mark
-//   // ---------------------------------------------------------
-//   const missingMarksResult = await connectionQuery(
-//     connection,
-//     `
-//       SELECT
-//         sc.studentclassid,
-//         e.examid,
-//         e.exam_title,
-//         e.sequence_no
-//       FROM studentclass sc
-
-//       CROSS JOIN exams e
-
-//       LEFT JOIN student_results sr
-//         ON sr.studentclassid = sc.studentclassid
-//         AND sr.subjectcode = ?
-//         AND sr.examid = e.examid
-//         AND sr.score IS NOT NULL
-
-//       WHERE sc.studentclassid IN (${placeholders})
-//         AND sc.status = 'active'
-
-//         AND e.status = 'active'
-//         AND e.sequence_no < ?
-
-//         AND sr.studentclassid IS NULL
-
-//       ORDER BY
-//         sc.studentclassid,
-//         e.sequence_no
-//     `,
-//     [
-//       subjectCode,
-//       ...studentIds,
-//       examOrder
-//     ]
-//   );
-
-//   const missingMarks = Array.isArray(missingMarksResult)
-//     ? (Array.isArray(missingMarksResult[0])
-//         ? missingMarksResult[0]
-//         : missingMarksResult)
-//     : [];
-
-//   // ---------------------------------------------------------
-//   // 6. If nobody is missing previous marks, validation passes
-//   // ---------------------------------------------------------
-//   if (missingMarks.length === 0) {
-//     return {
-//       valid: true,
-//       examid,
-//       exam_title: exam.exam_title,
-//       sequence_no: examOrder
-//     };
-//   }
-
-//   // ---------------------------------------------------------
-//   // 7. Group missing exams by student
-//   // ---------------------------------------------------------
-//   const studentMissingMap = new Map();
-
-//   for (const row of missingMarks) {
-
-//     if (!studentMissingMap.has(row.studentclassid)) {
-//       studentMissingMap.set(row.studentclassid, []);
-//     }
-
-//     studentMissingMap.get(row.studentclassid).push({
-//       examid: row.examid,
-//       exam_title: row.exam_title,
-//       sequence_no: row.sequence_no
-//     });
-//   }
-
-//   // ---------------------------------------------------------
-//   // 8. Build readable validation error
-//   // ---------------------------------------------------------
-//   const errorList = [];
-
-//   for (const [studentclassid, exams] of studentMissingMap.entries()) {
-
-//     const examNames = exams
-//       .sort((a, b) => a.sequence_no - b.sequence_no)
-//       .map(e => `${e.exam_title} (Exam ${e.sequence_no})`)
-//       .join(", ");
-
-//     errorList.push(
-//       `Student ${studentclassid} is missing: ${examNames}`
-//     );
-//   }
-
-//   throw new Error(
-//     `Sequential exam validation failed. ` +
-//     `Students cannot enter "${exam.exam_title}" until all previous exams have marks. ` +
-//     errorList.join("; ")
-//   );
-// };
-
-
 exports.validateAllStudentsCanEnterMarks = async (
   examid,
   subjectCode,
@@ -754,3 +642,32 @@ exports.getClassResults = ({
     `,
     [examid, classid, subjectcode, teacherid, termid, schoolyearid],
   );
+
+
+exports.getResultClasses = () => 
+  query(`
+    SELECT
+      s.subjectname,
+      cs.subjectcode,
+      cs.classid,
+      c.class,
+      yl.levelname,
+      t.teacherid,
+      t.fname,
+      t.middlename,
+      t.lname
+    FROM class_subjects AS cs
+    JOIN class AS c
+      ON cs.classid = c.classid
+    JOIN yearlevel yl 
+      ON yl.levelorder = c.levelid
+    JOIN subjects AS s
+      ON s.subjectcode = cs.subjectcode
+    JOIN teaching_allocations ta 
+      ON ta.class_subject_id = cs.class_subject_id
+    JOIN teachers t 
+      ON t.teacherid = ta.teacherid
+    ORDER BY
+      c.class,
+      s.subjectname
+    `)

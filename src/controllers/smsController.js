@@ -1,5 +1,5 @@
 const service = require('../services/smsService.js');
-
+const resultsModel = require('../models/resultModel.js')
 
 // ==================== SEND RESULTS FORM ====================
 
@@ -7,7 +7,7 @@ exports.showResultsForm = async (req, res) => {
   try {
     const data = await service.getResultFormData();
 
-    res.render('./sendSMS/sendResults', {
+    res.render('./sendSMS/sendResults', { 
       ...data,
       user: req.user
     });
@@ -40,12 +40,12 @@ exports.sendResults = async (req, res) => {
       );
     }
 
-    const results = await service.getResults({
+    const results = await resultsModel.getStudentResultsByLevel(
       schoolyear,
       term,
       yearlevel,
       examid
-    });
+    );
 
     if (!results.length) {
       return res.render('./response/response', {
@@ -72,7 +72,7 @@ exports.sendResults = async (req, res) => {
     );
 
     res.status(500).send(
-      'Error sending SMS.'
+      error.message
     );
   }
 };

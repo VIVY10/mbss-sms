@@ -589,9 +589,9 @@
 
                                     <tbody>
 
-                                    <% if (typeof allocations !== 'undefined' && allocations.length) { %>
+                                    <% if (typeof stats.allocations !== 'undefined' && stats.allocations.length) { %>
 
-                                        <% allocations.slice(0,5).forEach(item => { %>
+                                        <% stats.allocations.forEach(item => { %>
 
                                             <tr>
 
@@ -996,6 +996,7 @@
                                         </div>
 
                                         <div class="class-card-actions">
+                                        <a href="/viewClassPupils">
 
                                             <button
                                                 class="btn btn-primary btn-sm">
@@ -1003,13 +1004,13 @@
                                                 View Pupils
 
                                             </button>
+                                        </a>
+                                        <button
+                                            class="btn btn-outline-secondary btn-sm">
 
-                                            <button
-                                                class="btn btn-outline-secondary btn-sm">
+                                            Results
 
-                                                Results
-
-                                            </button>
+                                        </button>                                           
 
                                         </div>
 

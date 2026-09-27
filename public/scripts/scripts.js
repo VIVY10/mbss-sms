@@ -397,8 +397,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
 					termid: termid,
 					examData: examData // Contains the array of objects with examno and score, excluding empty scores
 				};
-
-			console.log(formData)
 		  
 		// Make AJAX request
 		fetch('/enterMarks',{

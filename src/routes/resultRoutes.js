@@ -22,11 +22,14 @@ router.post('/teacher/marks/submit', authChecker,  controller.submitMarks)
 
 router.post('/getDetails', authChecker, resultController.getDetails);
 router.get('/resultsEntry', authChecker, resultController.resultsEntry)
-router.get('/studentResults', authChecker, controller.page);
+router.get('/studentResults', authChecker, controller.page); 
 router.get('/teacher/results/search', authChecker, controller.search);
+
+router.get("/adminCheckResults", authChecker, resultController.showAdminResults);
+router.post("/adminCheckResults", authChecker, resultController.checkAdminResults);
 
 router.get('/getID', authChecker, controller.profile);
 router.post('/deleteResult', authChecker, controller.deleteResult);
-router.post('/updateResult', authChecker, controller.updateResult);
+router.post('/updateResult', authChecker, controller.updateResult); 
 
 module.exports = router;

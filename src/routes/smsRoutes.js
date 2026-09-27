@@ -9,7 +9,7 @@ router.get(
   '/sendResults',
   authChecker,
   controller.showResultsForm
-);
+); 
 
 router.post(
   '/getResults',

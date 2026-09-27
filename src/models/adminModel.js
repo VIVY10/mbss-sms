@@ -28,7 +28,10 @@ exports.getTerms = () =>
     SELECT
       tm.termid,
       sy.yearname,
+      tm.termnumber,
       tm.termname,
+      tm.termnumber,
+      sy.schoolyearid,
       tm.status,
       tm.startdate,
       tm.enddate
