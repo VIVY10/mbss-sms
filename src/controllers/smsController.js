@@ -10,7 +10,7 @@ exports.showResultsForm = async (req, res) => {
     res.render('./sendSMS/sendResults', { 
       ...data,
       user: req.user
-    });
+    }); 
   } catch (error) {
     console.error(error);
 

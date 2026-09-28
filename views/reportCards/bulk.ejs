@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Report Cards</title>
+  <link rel="stylesheet" href="/styles/reportCardFinal.css">
+</head>
+<body class="rc-doc rc-doc--bulk">
+  <% cards.forEach((card, i) => { %>
+    <section class="rc-page">
+      <%- include('../partials/card', { card, schoolName, ministry, logoPath, ministryLogoPath }) %>
+    </section>
+    <% if (i < cards.length - 1) { %><div class="rc-pagebreak"></div><% } %>
+  <% }) %>
+</body>
+</html>

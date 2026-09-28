@@ -182,7 +182,7 @@ async function processStudentMarks(examid, subjectCode, marks, entered_by) {
 }
 
 async function getClassInfoPage(teacherid) {
-  const foundClass = await resultModel.getTeacherClass(teacherid);
+  const foundClass = await resultModel.getTeacherClasses(teacherid);
   const examType = await resultModel.getExams();
   const term = await resultModel.getTerms();
 

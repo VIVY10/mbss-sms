@@ -1,0 +1,171 @@
+/* =========================================================
+   REPORT CARD — print & screen
+   ========================================================= */
+:root {
+  --rc-ink: #0f172a;
+  --rc-muted: #64748b;
+  --rc-line: #cbd5e1;
+  --rc-accent: #1e3a8a;
+  --rc-soft: #f8fafc;
+}
+
+* { box-sizing: border-box; }
+
+body.rc-doc {
+  margin: 0;
+  background: #e2e8f0;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: var(--rc-ink);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.rc-doc--bulk .rc-page {
+  page-break-after: always;
+  break-after: page;
+}
+.rc-doc--bulk .rc-page:last-child { page-break-after: auto; break-after: auto; }
+
+/* Screen-only spacing */
+@media screen {
+  .rc-doc { padding: 24px; }
+  .rc-page, .rc-card { margin: 0 auto 24px; max-width: 210mm; }
+}
+
+/* ---------- Card ---------- */
+.rc-card {
+  background: #fff;
+  border: 2px solid var(--rc-ink);
+  border-radius: 4px;
+  padding: 18mm 14mm;
+  font-size: 11pt;
+  line-height: 1.35;
+}
+
+.rc-card-header {
+  display: grid;
+  grid-template-columns: 70px 1fr 70px;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--rc-ink);
+}
+
+.rc-logo { width: 64px; height: 64px; object-fit: contain; }
+.rc-logo--left  { justify-self: start; }
+.rc-logo--right { justify-self: end; }
+
+.rc-card-titles { text-align: center; }
+.rc-card-titles h1 { margin: 0; font-size: 15pt; letter-spacing: 0.3px; }
+.rc-card-titles h2 { margin: 2px 0; font-size: 10pt; font-weight: 500; color: var(--rc-muted); }
+.rc-card-titles h3 { margin: 6px 0 0; font-size: 12pt; text-decoration: underline; }
+
+.rc-exam-line {
+  text-align: center;
+  margin: 12px 0 16px;
+  font-size: 10.5pt;
+}
+
+/* ---------- Student block ---------- */
+.rc-student {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px 24px;
+  margin-bottom: 14px;
+}
+.rc-student div { display: flex; gap: 8px; border-bottom: 1px dotted var(--rc-line); padding: 4px 0; }
+.rc-student span { color: var(--rc-muted); min-width: 70px; }
+.rc-student strong { font-weight: 600; }
+
+/* ---------- Table ---------- */
+.rc-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+}
+.rc-table th,
+.rc-table td {
+  border: 1px solid var(--rc-line);
+  padding: 6px 8px;
+  text-align: left;
+}
+.rc-table thead th {
+  background: var(--rc-soft);
+  font-size: 9.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--rc-muted);
+}
+.rc-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.rc-table .rc-total td { background: var(--rc-soft); }
+
+/* ---------- Summary ---------- */
+.rc-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 12px 0 14px;
+}
+.rc-summary div {
+  border: 1px solid var(--rc-line);
+  border-radius: 4px;
+  padding: 8px;
+  text-align: center;
+}
+.rc-summary span {
+  display: block;
+  font-size: 8.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--rc-muted);
+  margin-bottom: 3px;
+}
+.rc-summary strong { font-size: 12pt; color: var(--rc-accent); }
+
+/* ---------- Comments ---------- */
+.rc-comments {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.rc-comments > div {
+  border: 1px solid var(--rc-line);
+  border-radius: 4px;
+  padding: 8px 10px;
+}
+.rc-comments span {
+  display: block;
+  font-size: 8.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--rc-muted);
+  margin-bottom: 4px;
+}
+.rc-comments p { margin: 0; font-size: 10.5pt; }
+
+/* ---------- Signatures ---------- */
+.rc-signatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 26px;
+  font-size: 9.5pt;
+  color: var(--rc-muted);
+}
+.rc-signatures .rc-line {
+  border-bottom: 1px solid var(--rc-ink);
+  height: 26px;
+  margin-bottom: 4px;
+}
+.rc-signatures span { display: block; }
+
+/* ---------- Print ---------- */
+@page { size: A4; margin: 10mm; }
+
+@media print {
+  body.rc-doc { background: #fff; padding: 0; }
+  .rc-page, .rc-card { margin: 0; max-width: none; }
+  .rc-card { border: 2px solid #000; padding: 12mm 10mm; }
+  .rc-pagebreak { display: none; }
+}

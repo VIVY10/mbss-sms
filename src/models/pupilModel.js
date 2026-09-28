@@ -553,6 +553,33 @@ exports.findEnrollmentByClassId = (classid) =>
 )
 
 
+exports.findEnrollmentByLevel = (levelorder) => 
+  query(
+      `
+       SELECT
+            s.examno,
+            s.fname,
+            s.middlename,
+            s.lname,
+            sc.studentclassid,
+            sc.examno,
+            sc.classid,
+            sc.termid,
+            sc.yearid
+        FROM studentclass sc
+        JOIN class c 
+        ON c.classid = sc.classid
+        JOIN yearlevel yl 
+        ON yl.levelorder = c.levelid
+        JOIN students s 
+        ON s.examno = sc.examno
+        JOIN terms t 
+        ON t.termid = sc.termid
+        WHERE yl.levelorder = ?
+        AND s.status = ?
+    `, [levelorder, 'active']
+)
+
 exports.findEnrollmentByStudentClassId = (studentClassid) => 
   query(
       `

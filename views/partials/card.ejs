@@ -1,0 +1,82 @@
+<article class="rc-card">
+  <header class="rc-card-header">
+    <img src="<%= logoPath %>" alt="" class="rc-logo rc-logo--left">
+    <div class="rc-card-titles">
+      <h1><%= schoolName %></h1>
+      <h2><%= ministry %></h2>
+      <h3>School Report Card</h3>
+    </div>
+    <img src="<%= ministryLogoPath %>" alt="" class="rc-logo rc-logo--right">
+  </header>
+
+  <p class="rc-exam-line">
+    Results of <strong><%= card.student.exam_title %></strong>
+    · Term <strong><%= card.student.termnumber %></strong>
+    · <strong><%= card.student.yearname %></strong>
+  </p>
+
+  <section class="rc-student">
+    <div><span>Exam No.</span><strong><%= card.student.examno %></strong></div>
+    <div><span>Name</span><strong><%= card.student.lname %> <%= card.student.fname %></strong></div>
+    <div><span>Class</span><strong><%= card.student.grade %><%= card.student.section %></strong></div>
+    <div><span>Gender</span><strong><%= card.student.gender %></strong></div>
+  </section>
+
+  <table class="rc-table">
+    <thead>
+      <tr>
+        <th>Subjects</th>
+        <th class="num">Marks</th>
+        <th class="num">Total</th>
+        <th>Grade</th>
+        <th>Remarks</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% card.subjects.forEach(s => { %>
+        <tr>
+          <td><%= s.subjectname %></td>
+          <td class="num"><%= s.scoreDisplay %></td>
+          <td class="num">100</td>
+          <td><%= s.grade %></td>
+          <td><%= s.remark %></td>
+        </tr>
+      <% }) %>
+      <tr class="rc-total">
+        <td><strong>Total</strong></td>
+        <td class="num"><strong><%= card.summary.totalScore %></strong></td>
+        <td class="num"><strong><%= card.summary.maxScore %></strong></td>
+        <td colspan="2"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section class="rc-summary">
+    <div><span>Average</span><strong><%= card.summary.average %>%</strong></div>
+    <div><span>Overall Grade</span><strong><%= card.summary.overallGrade %></strong></div>
+    <div><span>Subjects Passed</span><strong><%= card.summary.subjectsPassed %>/<%= card.summary.totalSubjects %></strong></div>
+    <div><span>Position</span><strong><%= card.summary.position ?? "—" %></strong></div>
+  </section>
+
+  <section class="rc-comments">
+    <div>
+      <span>Class Teacher's Comment</span>
+      <p><%= card.summary.teacherComment %></p>
+    </div>
+    <div>
+      <span>Status</span>
+      <p><strong><%= card.summary.status %></strong></p>
+    </div>
+  </section>
+
+  <footer class="rc-signatures">
+    <div>
+      <div class="rc-line"></div>
+      <span>Class Teacher's Signature</span>
+    </div>
+    <div>
+      <div class="rc-line"></div>
+      <span>Head Teacher's Signature</span>
+    </div>
+  </footer>
+</article>

@@ -21,7 +21,5 @@ router.post('/createExam', adminOnly, createExamValidationRules(), validate, con
 router.get('/exams', adminOnly, controller.listExams);
 router.post('/deleteExam', adminOnly, controller.deleteExam);
 
-// Marks Entry
-
 
 module.exports = router;
