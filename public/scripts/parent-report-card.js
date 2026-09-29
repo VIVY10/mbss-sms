@@ -22,15 +22,14 @@
     return {
       schoolyearid: fd.get("schoolyearid"),
       termid:       fd.get("termid"),
-      levelorder:   fd.get("levelorder"),
       examid:       fd.get("examid"),
       examno:       (fd.get("examno") || "").trim() || undefined,
     };
   }
 
   function validate(payload) {
-    if (!payload.schoolyearid || !payload.termid || !payload.levelorder || !payload.examid) {
-      showStatus("Please select school year, term, level and exam.", "error");
+    if (!payload.schoolyearid || !payload.termid || !payload.examno || !payload.examid) {
+      showStatus("Please select school year, term, exam number and type of exam.", "error");
       return false;
     }
     return true;
@@ -48,7 +47,7 @@
     previewBtn.classList.add("is-loading");
 
     try {
-      const res = await fetch("/admin/report-cards/preview", {
+      const res = await fetch("/parent/report-card/preview", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(payload),
@@ -80,7 +79,7 @@
     downloadBtn.classList.add("is-loading");
 
     try {
-      const res = await fetch("/admin/report-cards/pdf", {
+      const res = await fetch("/parent/report-card/pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -97,7 +96,7 @@
       a.href = url;
       a.download = payload.examno
         ? `report-card-${payload.examno}.pdf`
-        : `report-cards-class-${payload.levelorder}.pdf`;
+        : `report-card.pdf`;
       document.body.appendChild(a);
       a.click();
       a.remove();

@@ -10,15 +10,15 @@
   </header>
 
   <p class="rc-exam-line">
-    Results of <strong><%= card.student.exam_title %></strong>
-    · Term <strong><%= card.student.termnumber %></strong>
+    Results of <strong><%= card.student.exam_title %> Test</strong>
+    · <strong><%= card.student.termnumber %></strong>
     · <strong><%= card.student.yearname %></strong>
   </p>
 
   <section class="rc-student">
     <div><span>Exam No.</span><strong><%= card.student.examno %></strong></div>
     <div><span>Name</span><strong><%= card.student.lname %> <%= card.student.fname %></strong></div>
-    <div><span>Class</span><strong><%= card.student.grade %><%= card.student.section %></strong></div>
+    <div><span>Class</span><strong><%= card.student.level %><%= card.student.className %></strong></div>
     <div><span>Gender</span><strong><%= card.student.gender %></strong></div>
   </section>
 
@@ -64,7 +64,7 @@
       <p><%= card.summary.teacherComment %></p>
     </div>
     <div>
-      <span>Status</span>
+      <span>Status</span> 
       <p><strong><%= card.summary.status %></strong></p>
     </div>
   </section>

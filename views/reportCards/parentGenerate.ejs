@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Report Cards · Admin</title>
+  <link rel="stylesheet" href="/styles/reportCardFinal.css">
+  <link rel="stylesheet" href="/styles/admin.css">
+</head>
+<body class="rc-admin">
+
+  <header class="rc-header">
+    <div>
+      <p class="rc-eyebrow">Academic Management</p>
+      <h1>Report Cards</h1>
+      <p class="rc-sub">Generate a your child's report card for a term and exam.</p>
+    </div>
+  </header>
+
+  <main class="rc-panel">
+    <form id="rcForm" class="rc-form" novalidate>
+      <div class="rc-grid">
+        <label class="rc-field">
+          <span>School Year</span>
+          <select name="schoolyearid" id="schoolyearid" required>
+            <option value="" disabled selected>Select year</option>
+            <% schoolyears.forEach(y => { %>
+              <option value="<%= y.schoolyearid %>"><%= y.yearname %></option>
+            <% }) %>
+          </select>
+        </label>
+
+        <label class="rc-field">
+          <span>Term</span>
+          <select name="termid" id="termid" required>
+            <option value="" disabled selected>Select term</option>
+            <% terms.forEach(t => { %>
+              <option value="<%= t.termid %>">Term <%= t.termnumber %></option>
+            <% }) %>
+          </select>
+        </label>
+        <label class="rc-field">
+          <span>Examination</span>
+          <select name="examid" id="examid" required>
+            <option value="" disabled selected>Select exam</option>
+            <% exams.forEach(e => { %>
+              <option value="<%= e.examid %>"><%= e.exam_title %></option>
+            <% }) %>
+          </select>
+        </label>
+
+        <label class="rc-field rc-field">
+          <span>Exam Number</em></span>
+          <input type="text" name="examno" id="examno" placeholder="e.g. 2024001" required>
+        </label>
+      </div>
+ 
+      <div class="rc-actions">
+        <button type="button" id="rcPreview" class="rc-btn rc-btn--ghost">
+          <i class="i-search"></i> Preview
+        </button>
+        <button type="submit" id="rcDownload" class="rc-btn rc-btn--primary">
+          <i class="i-download"></i> Download PDF
+        </button>
+      </div>
+    </form>
+
+    <section id="rcPreviewArea" class="rc-preview" hidden>
+      <h2 class="rc-preview-title">Preview</h2>
+      <div id="rcPreviewContent" class="rc-preview-content"></div>
+    </section>
+
+    <div id="rcStatus" class="rc-status" role="status" aria-live="polite" hidden></div>
+  </main>
+
+  <script src="/scripts/parent-report-card.js" defer></script>
+</body>
+</html>

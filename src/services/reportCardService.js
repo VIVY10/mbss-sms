@@ -21,7 +21,7 @@ const GRADE_TABLE = [
 function gradeFor(score) {
   const num = Number(score);
   if (!Number.isFinite(num)) {
-    return { grade: "—", remark: "Absent", passed: false };
+    return { grade: "-", remark: "Absent", passed: false };
   }
   const row = GRADE_TABLE.find((g) => num >= g.min);
   return { ...row, passed: num >= 40 };
@@ -30,13 +30,19 @@ function gradeFor(score) {
 /* ---------------------------------------------------------
      Fetch a single student's full report card
      --------------------------------------------------------- */
-async function getReportCard({ examno = null, examid, termid, schoolyearid, levelorder }) {
+async function getReportCard({
+  examno = null,
+  examid,
+  termid,
+  schoolyearid,
+  levelorder = null,
+}) {
   const rows = await resultsModel.getStudentResultsByLevel(
     schoolyearid,
     termid,
     levelorder,
     examid,
-    examno
+    examno,
   );
 
   if (!rows.length) return null;
@@ -55,7 +61,7 @@ async function getReportCard({ examno = null, examid, termid, schoolyearid, leve
 
   const subjects = rows.map((r) => {
     const scoreNum =
-      r.score === null || r.score === undefined ? null : Number(r.score);
+      r.score === null || r.score === undefined ? "-" : Number(r.score);
     const { grade, remark, passed } = gradeFor(scoreNum);
     return {
       subjectcode: r.subjectcode,
@@ -68,11 +74,22 @@ async function getReportCard({ examno = null, examid, termid, schoolyearid, leve
     };
   });
 
-  const totalScore = subjects.reduce((sum, s) => sum + (s.score ?? 0), 0);
+  const scoredSubjects = subjects.filter(
+    (s) => s.score !== '-' && s.score !== undefined,
+  );
+
+  const totalScore = scoredSubjects.reduce(
+      (sum, s) => sum + Number(s.score),
+      0,
+    );
+
+  const average = scoredSubjects.length
+    ? totalScore / scoredSubjects.length
+    : 0;
   const maxScore = subjects.length * 100;
-  const average = subjects.length
-    ? (totalScore / subjects.length).toFixed(1)
-    : "0.0";
+  // const average = subjects.length
+  //   ? (totalScore / subjects.length).toFixed(1)
+  //   : "0.0";
   const subjectsPassed = subjects.filter((s) => s.passed).length;
   const overallGrade = gradeFor(Number(average));
 
@@ -80,9 +97,9 @@ async function getReportCard({ examno = null, examid, termid, schoolyearid, leve
   const status =
     subjectsPassed >= Math.ceil(subjects.length / 2) ? "Promoted" : "Repeat";
 
-  // TODO: position in class — replace with a real query if you have one
+  // position in class to be replaced
   const position = null;
-
+  
   return {
     student,
     subjects,
@@ -120,7 +137,13 @@ async function getBulkReportCards({
   const list = await pupilModel.findEnrollmentByLevel(levelorder);
   const cards = [];
   for (const { examno } of list) {
-    const card = await getReportCard({ examno, examid, termid, schoolyearid, levelorder });
+    const card = await getReportCard({
+      examno,
+      examid,
+      termid,
+      schoolyearid,
+      levelorder,
+    });
     if (card) cards.push(card);
   }
   return cards;

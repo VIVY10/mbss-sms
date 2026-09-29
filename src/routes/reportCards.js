@@ -105,7 +105,7 @@ const service = require("../services/reportCardService.js");
         cards,
         schoolName: "Milenge Boarding Secondary School",
         ministry: "Ministry of Education",
-        logoPath: "/images/logo.png",
+        logoPath: "./../images/logo.png",
         ministryLogoPath: "/images/ministryLogo.png",
       });
 
@@ -131,58 +131,68 @@ const service = require("../services/reportCardService.js");
      Parents authenticate (authChecker) and supply their child's
      examno + the term they want to view.
      --------------------------------------------------------- */
-  router.get("/parent/report-card", authChecker, async (req, res) => {
-    if (req.user.usertype !== "Parent") {
-      return res.status(403).render("./response/response", { message: "Access denied." });
-    }
-    const { examno, examid, termid, schoolyearid } = req.query;
-    if (!examno || !examid || !termid || !schoolyearid) {
-      return res.status(400).render("./response/response", { message: "Missing query parameters." });
-    }
-    // TODO: verify examno belongs to this parent
+  router.get("/parent/report-card", ...adminOnly, async (req, res) => {
     try {
-      const card = await service.getReportCard({ examno, examid, termid, schoolyearid });
-      if (!card) return res.status(404).render("./response/response", { message: "No report card found." });
-      res.render("./reportCards/single", {
-        card,
-        schoolName: "Milenge Boarding Secondary School",
-        ministry: "Ministry of Education",
-        logoPath: "/images/logo.png",
-        ministryLogoPath: "/images/ministryLogo.png",
-        mode: "view",
-      });
+      const lookups = await service.getLookups();
+      res.render("./reportCards/parentGenerate", { ...lookups, user: req.user });
     } catch (err) {
-      console.error("parent view failed:", err);
-      res.status(500).render("./response/response", { message: "Server error." });
+      console.error("report-cards lookup failed:", err);
+      res.status(500).render("./response/response", { message: "Database error." });
     }
   });
 
+
   /* ---------------------------------------------------------
-     GET /parent/report-card/pdf  → parent PDF download
+     POST /parent/report-card/preview  → JSON for UI preview
      --------------------------------------------------------- */
-  router.get("/parent/report-card/pdf", authChecker, async (req, res) => {
-    if (req.user.usertype !== "Parent") {
-      return res.status(403).render("./response/response", { message: "Access denied." });
+  router.post("/parent/report-card/preview", async (req, res) => {
+    
+    const { examid, termid, schoolyearid, examno } = req.body;
+    if (!examno || !examid || !termid || !schoolyearid) {
+      return res.status(400).json({ success: false, message: "Missing fields." });
     }
-    const { examno, examid, termid, schoolyearid } = req.query;
     try {
+        const card = await service.getReportCard({ examno, examid, termid, schoolyearid });
+        if (!card) return res.status(404).json({ success: false, message: "No report card found." });
+        return res.json({ success: true, count: 1, cards: [card] });
+    } catch (err) {
+      console.error("preview failed:", err);
+      return res.status(500).json({ success: false, message: "Server error." });
+    }
+  });
+
+
+
+  router.post("/parent/report-card/pdf", async (req, res) => {
+    const { examno, examid, termid, schoolyearid } = req.body;
+    if (!examno || !examid || !termid || !schoolyearid) {
+      return res.status(400).render("./response/response", { message: "Missing query parameters." });
+    }
+    try {
+      let cards;
       const card = await service.getReportCard({ examno, examid, termid, schoolyearid });
       if (!card) return res.status(404).render("./response/response", { message: "No report card found." });
-
+      cards = [card]
       const html = await renderView(res, "./reportCards/bulk", {
-        cards: [card],
+        cards,
         schoolName: "Milenge Boarding Secondary School",
-        ministry: "Ministry of General Education",
+        ministry: "Ministry of Education",
         logoPath: "/images/logo.png",
         ministryLogoPath: "/images/ministryLogo.png",
       });
 
       const pdf = await htmlToPdf(html);
+
+      const filename = cards.length === 1
+        ? `report-card-${cards[0].student.examno}.pdf`
+        : `report-cards-class-${levelorder}-term-${termid}.pdf`;
+
       res.setHeader("Content-Type", "application/pdf");
-      res.setHeader("Content-Disposition", `attachment; filename="report-card-${examno}.pdf"`);
+      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+      res.setHeader("Content-Length", pdf.length);
       return res.end(pdf);
     } catch (err) {
-      console.error("parent pdf failed:", err);
+      console.error("parent view failed:", err);
       res.status(500).render("./response/response", { message: "Server error." });
     }
   });

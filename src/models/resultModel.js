@@ -106,10 +106,7 @@ exports.getStudentResultsByLevel = (
         sy.schoolyearid,
         sy.yearname,
 
-        CASE
-            WHEN sr.studentclassid IS NULL THEN 'X'
-            ELSE sr.score
-        END AS score
+        sr.score
 
     FROM studentclass sc
 
@@ -153,10 +150,15 @@ exports.getStudentResultsByLevel = (
 
     WHERE sc.termid = ?
       AND sc.yearid = ?
-      AND yl.levelorder = ?
   `;
 
-  const params = [examid, examid, term, schoolyear, yearlevel];
+  const params = [examid, examid, term, schoolyear];
+
+  // If a specific level is requested
+  if (yearlevel != null) {
+    sql += `  AND yl.levelorder = ?`;
+    params.push(yearlevel);
+  }
 
   // If a specific pupil is requested
   if (examno != null) {
