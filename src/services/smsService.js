@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { v4: uuidv4 } = require("uuid");
+const { randomUUID } = require("crypto");
 
 const model = require("../models/smsModel.js");
 
@@ -109,7 +109,7 @@ async function sendStudentResults(rows, { targetDeviceIden, accessToken }) {
       addresses: [phone],
       message,
       target_device_iden: targetDeviceIden,
-      guid: uuidv4(),
+      guid: randomUUID(),
     },
     accessToken
 );

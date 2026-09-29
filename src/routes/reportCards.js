@@ -1,8 +1,5 @@
 // routes/reportCards.js
 const express = require("express");
-const puppeteer = require("puppeteer");
-// const path = require("path")
-// const fileURLToPath = require("url");
 const { ensureRole } = require('../middleware/authChecker.js');
 const { authChecker } = require('../middleware/authChecker.js');
 
@@ -27,6 +24,7 @@ const service = require("../services/reportCardService.js");
      Reusable: convert HTML → PDF buffer
      --------------------------------------------------------- */
   async function htmlToPdf(html) {
+    const { default: puppeteer } = await import("puppeteer");
     const browser = await puppeteer.launch({
       headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
