@@ -30,12 +30,13 @@ function gradeFor(score) {
 /* ---------------------------------------------------------
      Fetch a single student's full report card
      --------------------------------------------------------- */
-async function getReportCard({ examno, examid, termid, schoolyearid, levelorder }) {
+async function getReportCard({ examno = null, examid, termid, schoolyearid, levelorder }) {
   const rows = await resultsModel.getStudentResultsByLevel(
     schoolyearid,
     termid,
     levelorder,
     examid,
+    examno
   );
 
   if (!rows.length) return null;

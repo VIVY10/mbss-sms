@@ -69,13 +69,18 @@ exports.getStudentResults = (termid, classid, subjectcode, examid) =>
       AND sc.classid = ?
     ORDER BY su.subjectcode
     `,
-    [subjectcode, examid, termid, classid, examid]
+    [subjectcode, examid, termid, classid, examid],
   );
 
 // ==================== GET STUDENT RESULTS ====================
-exports.getStudentResultsByLevel = (schoolyear, term, yearlevel, examid) =>
-  query(
-    `
+exports.getStudentResultsByLevel = (
+  schoolyear,
+  term,
+  yearlevel,
+  examid,
+  examno,
+) => {
+  let sql = `
     SELECT
         cs.subjectcode,
         su.subjectname,
@@ -136,7 +141,7 @@ exports.getStudentResultsByLevel = (schoolyear, term, yearlevel, examid) =>
         AND sr.subjectcode = cs.subjectcode
         AND sr.examid = ?
 
-    /* The selected exam */
+    /* Selected examination */
     JOIN exams ex
         ON ex.examid = ?
 
@@ -148,15 +153,26 @@ exports.getStudentResultsByLevel = (schoolyear, term, yearlevel, examid) =>
 
     WHERE sc.termid = ?
       AND sc.yearid = ?
-       AND yl.levelorder = ?
+      AND yl.levelorder = ?
+  `;
 
+  const params = [examid, examid, term, schoolyear, yearlevel];
+
+  // If a specific pupil is requested
+  if (examno != null) {
+    sql += ` AND s.examno = ?`;
+    params.push(examno);
+  }
+
+  sql += `
     ORDER BY
         cs.subjectcode,
         s.fname,
         s.lname;
-    `,
-    [examid, examid, term, schoolyear, yearlevel]
-  );
+  `;
+
+  return query(sql, params);
+};
 
 // ==================== GET STUDENT PROFILE ====================
 
@@ -212,8 +228,6 @@ exports.updateResult = (data) =>
     [data.score, data.id, data.examid, data.subjectcode],
   );
 
-
-
 exports.getExams = () =>
   query(
     `SELECT examid, exam_title
@@ -221,7 +235,8 @@ exports.getExams = () =>
   );
 
 exports.getMissingMarks = (examid, termid, yearid, class_subject_id) =>
-  query(`
+  query(
+    `
     SELECT 
     s.examno,
     s.fname,
@@ -249,18 +264,17 @@ WHERE
     AND sr.student_resultsid IS NULL
 ORDER BY 
     sc.classid, s.lname, s.fname;
-    `,[examid, termid, yearid, class_subject_id]
+    `,
+    [examid, termid, yearid, class_subject_id],
   );
-
 
 // Helper function to validate sequential exam entry
 exports.validateAllStudentsCanEnterMarks = async (
   examid,
   subjectCode,
   studentIds,
-  connection
+  connection,
 ) => {
-
   // ---------------------------------------------------------
   // 1. Validate input
   // ---------------------------------------------------------
@@ -273,7 +287,7 @@ exports.validateAllStudentsCanEnterMarks = async (
     return {
       valid: false,
       code: "INVALID_INPUT",
-      message: "Exam, subject, and student information are required."
+      message: "Exam, subject, and student information are required.",
     };
   }
 
@@ -296,12 +310,10 @@ exports.validateAllStudentsCanEnterMarks = async (
         AND status = 'active'
       LIMIT 1
     `,
-    [examid]
+    [examid],
   );
 
-  const examRows = Array.isArray(examResult?.[0])
-    ? examResult[0]
-    : examResult;
+  const examRows = Array.isArray(examResult?.[0]) ? examResult[0] : examResult;
 
   const exam = examRows?.[0];
 
@@ -309,7 +321,7 @@ exports.validateAllStudentsCanEnterMarks = async (
     return {
       valid: false,
       code: "EXAM_NOT_FOUND",
-      message: "The selected exam was not found or is inactive."
+      message: "The selected exam was not found or is inactive.",
     };
   }
 
@@ -326,8 +338,8 @@ exports.validateAllStudentsCanEnterMarks = async (
       data: {
         examid: exam.examid,
         exam_title: exam.exam_title,
-        sequence_no: exam.sequence_no
-      }
+        sequence_no: exam.sequence_no,
+      },
     };
   }
 
@@ -342,8 +354,8 @@ exports.validateAllStudentsCanEnterMarks = async (
       data: {
         examid: exam.examid,
         exam_title: exam.exam_title,
-        sequence_no: examOrder
-      }
+        sequence_no: examOrder,
+      },
     };
   }
 
@@ -362,7 +374,7 @@ exports.validateAllStudentsCanEnterMarks = async (
         AND sequence_no < ?
       ORDER BY sequence_no ASC
     `,
-    [examOrder]
+    [examOrder],
   );
 
   const previousExams = Array.isArray(previousExamsResult?.[0])
@@ -381,8 +393,8 @@ exports.validateAllStudentsCanEnterMarks = async (
         examid: exam.examid,
         exam_title: exam.exam_title,
         sequence_no: examOrder,
-        required_previous_sequence: examOrder - 1
-      }
+        required_previous_sequence: examOrder - 1,
+      },
     };
   }
 
@@ -425,11 +437,7 @@ exports.validateAllStudentsCanEnterMarks = async (
         sc.studentclassid,
         e.sequence_no ASC
     `,
-    [
-      subjectCode,
-      ...studentIds,
-      examOrder
-    ]
+    [subjectCode, ...studentIds, examOrder],
   );
 
   const missingMarks = Array.isArray(missingMarksResult?.[0])
@@ -447,8 +455,8 @@ exports.validateAllStudentsCanEnterMarks = async (
       data: {
         examid: exam.examid,
         exam_title: exam.exam_title,
-        sequence_no: examOrder
-      }
+        sequence_no: examOrder,
+      },
     };
   }
 
@@ -458,7 +466,6 @@ exports.validateAllStudentsCanEnterMarks = async (
   const studentMissingMap = new Map();
 
   for (const row of missingMarks) {
-
     if (!studentMissingMap.has(row.studentclassid)) {
       studentMissingMap.set(row.studentclassid, []);
     }
@@ -466,7 +473,7 @@ exports.validateAllStudentsCanEnterMarks = async (
     studentMissingMap.get(row.studentclassid).push({
       examid: row.examid,
       exam_title: row.exam_title,
-      sequence_no: Number(row.sequence_no)
+      sequence_no: Number(row.sequence_no),
     });
   }
 
@@ -476,14 +483,11 @@ exports.validateAllStudentsCanEnterMarks = async (
   const students = [];
 
   for (const [studentclassid, exams] of studentMissingMap.entries()) {
-
-    exams.sort(
-      (a, b) => a.sequence_no - b.sequence_no
-    );
+    exams.sort((a, b) => a.sequence_no - b.sequence_no);
 
     students.push({
       studentclassid,
-      missing_exams: exams
+      missing_exams: exams,
     });
   }
 
@@ -502,40 +506,45 @@ exports.validateAllStudentsCanEnterMarks = async (
       examid: exam.examid,
       exam_title: exam.exam_title,
       sequence_no: examOrder,
-      students
-    }
+      students,
+    },
   };
 };
-
-
 
 exports.getExistingMarks = (connection, examid, subjectCode, studentIds) => {
   connectionQuery(
     connection,
     `SELECT studentclassid FROM student_results 
      WHERE examid = ? AND subjectcode = ? AND studentclassid IN (?) AND score IS NOT NULL`,
-    [examid, subjectCode, studentIds]
+    [examid, subjectCode, studentIds],
   );
 };
 
 exports.insertMarks = (connection, count, values) => {
-  const placeholders = Array(count).fill('(?, ?, ?, ?, ?)').join(', ');
-  
+  const placeholders = Array(count).fill("(?, ?, ?, ?, ?)").join(", ");
+
   connectionQuery(
     connection,
     `INSERT INTO student_results (studentclassid, subjectcode, examid, score, entered_by) 
      VALUES ${placeholders}`,
-    values
+    values,
   );
 };
 
-exports.updateExistingMarks = (connection, mark, entered_by, examid, subjectCode, studentclassid) => {
+exports.updateExistingMarks = (
+  connection,
+  mark,
+  entered_by,
+  examid,
+  subjectCode,
+  studentclassid,
+) => {
   connectionQuery(
     connection,
     `UPDATE student_results 
      SET score = ?, entered_by = ?, updated_at = CURRENT_TIMESTAMP()
      WHERE examid = ? AND subjectcode = ? AND studentclassid = ?`,
-    [mark, entered_by, examid, subjectCode, studentclassid]
+    [mark, entered_by, examid, subjectCode, studentclassid],
   );
 };
 
@@ -555,14 +564,13 @@ exports.getTeacherClasses = (teacherid) =>
         WHERE cs.teacherid = ?
         ORDER BY c.grade, c.class, s.subjectname
     `,
-    [teacherid]
+    [teacherid],
   );
-
 
 /**
  * Get school terms and their school years.
  */
-exports.getTerms = () => 
+exports.getTerms = () =>
   query(`
         SELECT
             t.termid,
@@ -643,8 +651,7 @@ exports.getClassResults = ({
     [examid, classid, subjectcode, teacherid, termid, schoolyearid],
   );
 
-
-exports.getResultClasses = () => 
+exports.getResultClasses = () =>
   query(`
     SELECT
       s.subjectname,
@@ -670,4 +677,4 @@ exports.getResultClasses = () =>
     ORDER BY
       c.class,
       s.subjectname
-    `)
+    `);

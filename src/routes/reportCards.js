@@ -64,6 +64,7 @@ const service = require("../services/reportCardService.js");
      POST /admin/report-cards/preview  → JSON for UI preview
      --------------------------------------------------------- */
   router.post("/admin/report-cards/preview", ...adminOnly, async (req, res) => {
+    
     const { levelorder, examid, termid, schoolyearid, examno } = req.body;
     if (!levelorder || !examid || !termid || !schoolyearid) {
       return res.status(400).json({ success: false, message: "Missing fields." });
@@ -71,7 +72,7 @@ const service = require("../services/reportCardService.js");
 
     try {
       if (examno) {
-        const card = await service.getReportCard({ examno, examid, termid, schoolyearid });
+        const card = await service.getReportCard({ examno, examid, termid, schoolyearid, levelorder });
         if (!card) return res.status(404).json({ success: false, message: "No report card found." });
         return res.json({ success: true, count: 1, cards: [card] });
       }
@@ -89,11 +90,10 @@ const service = require("../services/reportCardService.js");
      --------------------------------------------------------- */
   router.post("/admin/report-cards/pdf", ...adminOnly, async (req, res) => {
     const { levelorder, examid, termid, schoolyearid, examno } = req.body;
-
     try {
       let cards;
       if (examno) {
-        const single = await service.getReportCard({ examno, examid, termid, schoolyearid });
+        const single = await service.getReportCard({ examno, examid, termid, schoolyearid, levelorder });
         if (!single) return res.status(404).render("./response/response", { message: "No report card found." });
         cards = [single];
       } else {
