@@ -105,7 +105,7 @@ const service = require("../services/reportCardService.js");
         cards,
         schoolName: "Milenge Boarding Secondary School",
         ministry: "Ministry of Education",
-        logoPath: "./../images/logo.png",
+        logoPath: "/images/logo.png",
         ministryLogoPath: "/images/ministryLogo.png",
       });
 
