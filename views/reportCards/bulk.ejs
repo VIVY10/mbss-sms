@@ -45,23 +45,54 @@ body.rc-doc {
   line-height: 1.35;
 }
 
+
 .rc-card-header {
   display: grid;
-  grid-template-columns: 70px 1fr 70px;
+  grid-template-columns: 80px minmax(0, 1fr) 80px;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   padding-bottom: 10px;
   border-bottom: 2px solid var(--rc-ink);
 }
 
-.rc-logo { width: 64px; height: 64px; object-fit: contain; }
-.rc-logo--left  { justify-self: start; }
-.rc-logo--right { justify-self: end; }
+.rc-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  display: block;
+}
 
-.rc-card-titles { text-align: center; }
-.rc-card-titles h1 { margin: 0; font-size: 15pt; letter-spacing: 0.3px; }
-.rc-card-titles h2 { margin: 2px 0; font-size: 10pt; font-weight: 500; color: var(--rc-muted); }
-.rc-card-titles h3 { margin: 6px 0 0; font-size: 12pt; text-decoration: underline; }
+.rc-logo--left {
+  justify-self: start;
+}
+
+.rc-logo--right {
+  justify-self: end;
+}
+
+.rc-card-titles {
+  text-align: center;
+  min-width: 0;
+}
+
+.rc-card-titles h1 {
+  margin: 0;
+  font-size: 15pt;
+  letter-spacing: 0.3px;
+}
+
+.rc-card-titles h2 {
+  margin: 2px 0;
+  font-size: 10pt;
+  font-weight: 500;
+  color: var(--rc-muted);
+}
+
+.rc-card-titles h3 {
+  margin: 6px 0 0;
+  font-size: 12pt;
+  text-decoration: underline;
+}
 
 .rc-exam-line {
   text-align: center;
