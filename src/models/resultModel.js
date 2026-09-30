@@ -176,6 +176,72 @@ exports.getStudentResultsByLevel = (
   return query(sql, params);
 };
 
+
+
+//=====================GET MISSING MARKS TO BE DELETED========================
+exports.getSubjectsMissingMarks = () =>
+  query(`
+        SELECT
+        cs.class_subject_id,
+        c.classid,
+        yl.levelname,
+        c.class,
+
+        cs.subjectcode,
+        su.subjectname,
+
+        ta.teacherid,
+        CONCAT(t.fname, ' ', t.lname) AS teacher_name,
+
+        COUNT(DISTINCT sc.studentclassid) AS expected_marks,
+
+        COUNT(DISTINCT sr.studentclassid) AS entered_marks,
+
+        COUNT(DISTINCT sc.studentclassid)
+          - COUNT(DISTINCT sr.studentclassid) AS missing_marks
+
+    FROM class_subjects cs
+
+    JOIN class c
+        ON c.classid = cs.classid
+        
+    JOIN yearlevel yl
+      ON yl.levelorder = c.levelid
+
+    JOIN subjects su
+        ON su.subjectcode = cs.subjectcode
+
+    JOIN studentclass sc
+        ON sc.classid = c.classid
+        AND sc.termid = ?
+        AND sc.yearid = ?
+
+    LEFT JOIN teaching_allocations ta
+        ON ta.class_subject_id = cs.class_subject_id
+        -- add term/year conditions here if those columns exist
+
+    LEFT JOIN teachers t
+        ON t.teacherid = ta.teacherid
+
+    LEFT JOIN student_results sr
+        ON sr.studentclassid = sc.studentclassid
+        AND sr.subjectcode = cs.subjectcode
+        AND sr.examid = ?
+
+    WHERE c.classid = ?
+
+    GROUP BY
+        cs.class_subject_id,
+        c.classid,
+        yl.levelname,
+        c.class,
+        cs.subjectcode,
+        su.subjectname,
+        ta.teacherid,
+        t.fname,
+        t.lname;
+    `)
+
 // ==================== GET STUDENT PROFILE ====================
 
 exports.getProfile = (examno) =>

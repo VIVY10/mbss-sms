@@ -102,6 +102,7 @@ const forgotPasswordRoutes = require('./src/routes/forgotPasswordRoutes.js');
 const statisticsRoutes = require('./src/routes/statisticsRoutes.js');
 const smsRoutes = require('./src/routes/smsRoutes.js');
 const reportCardRoutes = require('./src/routes/reportCards.js');
+const marksMonitoringRoutes = require("./src/routes/marksMonitoringRoutes");
 
 
 // =======================
@@ -115,6 +116,7 @@ app.use(activityMonitor);
 // =======================
 app.use('/', homeRoutes)
 app.use('/', reportCardRoutes)
+app.use('/', marksMonitoringRoutes);
 app.use('/', analyticsRoutes);
 app.use('/', authRoutes);
 app.use('/', dashboardRoutes);

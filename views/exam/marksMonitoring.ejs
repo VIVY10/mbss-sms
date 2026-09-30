@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Marks Completion Monitoring</title>
+
+  <link
+    rel="stylesheet"
+    href="/styles/marksMonitoring.css"
+  >
+</head>
+
+<body>
+
+<div class="mm-page">
+
+  <!-- =========================================================
+       PAGE HEADER
+  ========================================================== -->
+  <header class="mm-page-header">
+
+    <div class="mm-header-content">
+
+      <div class="mm-header-icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div>
+        <div class="mm-eyebrow">
+          ACADEMIC MANAGEMENT
+        </div>
+
+        <h1 class="mm-title">
+          Marks Completion Monitoring
+        </h1>
+
+        <p class="mm-subtitle">
+          Monitor examination mark entry, identify incomplete subjects,
+          and intervene before reporting deadlines.
+        </p>
+      </div>
+
+    </div>
+
+
+    <div class="mm-header-actions">
+
+      <span class="mm-view-badge">
+        <span class="mm-view-dot"></span>
+        <%= isAdmin ? "ADMIN VIEW" : "HOD VIEW" %>
+      </span>
+
+      <button
+        type="button"
+        id="mmRefresh"
+        class="mm-refresh-btn">
+
+        <span
+          id="mmRefreshSpinner"
+          class="spinner-border spinner-border-sm d-none"
+          aria-hidden="true">
+        </span>
+
+        <span>Refresh Data</span>
+
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================================================
+       ALERT
+  ========================================================== -->
+  <div
+    id="mmAlert"
+    class="alert mm-alert d-none"
+    role="alert">
+  </div>
+
+
+  <!-- =========================================================
+       FILTER WORKSPACE
+  ========================================================== -->
+  <section class="mm-filter-card">
+
+    <div class="mm-section-heading">
+
+      <div>
+        <span class="mm-section-kicker">
+          MONITORING SCOPE
+        </span>
+
+        <h2>
+          Select Academic Period
+        </h2>
+
+        <p>
+          Choose the examination period and monitoring scope.
+        </p>
+      </div>
+
+      <div class="mm-filter-status">
+        <span class="mm-status-dot"></span>
+        Live Monitoring
+      </div>
+
+    </div>
+
+
+    <div class="mm-filter-grid">
+
+      <!-- Academic Year -->
+      <div class="mm-field">
+
+        <label for="mmYear">
+          Academic Year
+        </label>
+
+        <div class="mm-input-wrap">
+          <select
+            id="mmYear"
+            class="form-select">
+
+            <option value="">
+              Select academic year
+            </option>
+
+            <% years.forEach(x => { %>
+
+              <option value="<%= x.schoolyearid %>">
+                <%= x.yearname %>
+              </option>
+
+            <% }) %>
+
+          </select>
+        </div>
+
+      </div>
+
+
+      <!-- Term -->
+      <div class="mm-field">
+
+        <label for="mmTerm">
+          Academic Term
+        </label>
+
+        <div class="mm-input-wrap">
+          <select
+            id="mmTerm"
+            class="form-select">
+
+            <option value="">
+              Select term
+            </option>
+
+            <% terms.forEach(x => { %>
+
+              <option
+                value="<%= x.termid %>"
+                data-year="<%= x.schoolyearid %>">
+
+                <%= x.termname || `Term ${x.termnumber}` %>
+                — <%= x.yearname %>
+
+              </option>
+
+            <% }) %>
+
+          </select>
+        </div>
+
+      </div>
+
+
+      <!-- Examination -->
+      <div class="mm-field">
+
+        <label for="mmExam">
+          Examination
+        </label>
+
+        <div class="mm-input-wrap">
+          <select
+            id="mmExam"
+            class="form-select">
+
+            <option value="">
+              Select examination
+            </option>
+
+            <% exams.forEach(x => { %>
+
+              <option value="<%= x.examid %>">
+                <%= x.exam_title %>
+              </option>
+
+            <% }) %>
+
+          </select>
+        </div>
+
+      </div>
+
+
+      <!-- Department -->
+      <div class="mm-field">
+
+        <label for="mmDepartment">
+          Department
+        </label>
+
+        <div class="mm-input-wrap">
+          <select
+            id="mmDepartment"
+            class="form-select">
+
+            <option value="">
+              All departments
+            </option>
+
+            <% departments.forEach(x => { %>
+
+              <option value="<%= x.departmentid %>">
+                <%= x.departmentname %>
+              </option>
+
+            <% }) %>
+
+          </select>
+        </div>
+
+      </div>
+
+
+      <!-- Class -->
+      <div class="mm-field">
+
+        <label for="mmClass">
+          Class
+        </label>
+
+        <div class="mm-input-wrap">
+          <select
+            id="mmClass"
+            class="form-select">
+
+            <option value="">
+              All classes
+            </option>
+
+          </select>
+        </div>
+
+      </div>
+
+
+      <!-- Status -->
+      <div class="mm-field">
+
+        <label for="mmStatus">
+          Completion Status
+        </label>
+
+        <div class="mm-input-wrap">
+          <select
+            id="mmStatus"
+            class="form-select">
+
+            <option value="">
+              All statuses
+            </option>
+
+            <option value="COMPLETE">
+              Complete
+            </option>
+
+            <option value="IN_PROGRESS">
+              In Progress
+            </option>
+
+            <option value="NOT_STARTED">
+              Not Started
+            </option>
+
+            <option value="OVERDUE">
+              Overdue
+            </option>
+
+          </select>
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       CURRENT CONTEXT
+  ========================================================== -->
+  <section class="mm-monitoring-context">
+
+    <div>
+
+      <span class="mm-context-label">
+        CURRENT MONITORING PERIOD
+      </span>
+
+      <h2>
+        Monitoring Overview
+      </h2>
+
+      <p id="mmContext">
+        Select an academic period and examination.
+      </p>
+
+    </div>
+
+    <div class="mm-context-indicator">
+
+      <span class="mm-live-pulse"></span>
+
+      <div>
+        <strong>Monitoring Active</strong>
+        <small>
+          Completion data is calculated from learner records.
+        </small>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       KPI DASHBOARD
+  ========================================================== -->
+  <section class="mm-kpi-grid">
+
+
+    <!-- Total Subjects -->
+    <article class="mm-kpi-card">
+
+      <div class="mm-kpi-top">
+
+        <span class="mm-kpi-label">
+          SUBJECTS
+        </span>
+
+        <span class="mm-kpi-icon mm-icon-neutral">
+          #
+        </span>
+
+      </div>
+
+      <div
+        id="mmTotalSubjects"
+        class="mm-kpi-value">
+        0
+      </div>
+
+      <div class="mm-kpi-description">
+        Subjects currently being monitored
+      </div>
+
+    </article>
+
+
+    <!-- Complete -->
+    <article class="mm-kpi-card mm-kpi-success">
+
+      <div class="mm-kpi-top">
+
+        <span class="mm-kpi-label">
+          COMPLETE
+        </span>
+
+        <span class="mm-kpi-icon mm-icon-success">
+          ✓
+        </span>
+
+      </div>
+
+      <div
+        id="mmComplete"
+        class="mm-kpi-value">
+        0
+      </div>
+
+      <div class="mm-kpi-description">
+        All learner marks entered
+      </div>
+
+    </article>
+
+
+    <!-- In Progress -->
+    <article class="mm-kpi-card mm-kpi-warning">
+
+      <div class="mm-kpi-top">
+
+        <span class="mm-kpi-label">
+          IN PROGRESS
+        </span>
+
+        <span class="mm-kpi-icon mm-icon-warning">
+          ↗
+        </span>
+
+      </div>
+
+      <div
+        id="mmProgress"
+        class="mm-kpi-value">
+        0
+      </div>
+
+      <div class="mm-kpi-description">
+        Partially completed subjects
+      </div>
+
+    </article>
+
+
+    <!-- Not Started -->
+    <article class="mm-kpi-card">
+
+      <div class="mm-kpi-top">
+
+        <span class="mm-kpi-label">
+          NOT STARTED
+        </span>
+
+        <span class="mm-kpi-icon mm-icon-neutral">
+          —
+        </span>
+
+      </div>
+
+      <div
+        id="mmNotStarted"
+        class="mm-kpi-value">
+        0
+      </div>
+
+      <div class="mm-kpi-description">
+        No learner marks entered
+      </div>
+
+    </article>
+
+
+    <!-- Missing -->
+    <article class="mm-kpi-card mm-kpi-danger">
+
+      <div class="mm-kpi-top">
+
+        <span class="mm-kpi-label">
+          MISSING MARKS
+        </span>
+
+        <span class="mm-kpi-icon mm-icon-danger">
+          !
+        </span>
+
+      </div>
+
+      <div
+        id="mmMissing"
+        class="mm-kpi-value">
+        0
+      </div>
+
+      <div class="mm-kpi-description">
+        Learner mark records outstanding
+      </div>
+
+    </article>
+
+
+    <!-- Overall -->
+    <article class="mm-kpi-card mm-kpi-primary">
+
+      <div class="mm-kpi-top">
+
+        <span class="mm-kpi-label">
+          COMPLETION
+        </span>
+
+        <span class="mm-kpi-icon mm-icon-primary">
+          %
+        </span>
+
+      </div>
+
+      <div
+        id="mmCompletion"
+        class="mm-kpi-value">
+        0%
+      </div>
+
+      <div class="mm-kpi-description">
+        Overall marks completion
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- =========================================================
+       SUBJECT COMPLETION TABLE
+  ========================================================== -->
+  <section class="mm-table-card">
+
+    <div class="mm-table-header">
+
+      <div>
+
+        <span class="mm-section-kicker">
+          DETAILED MONITORING
+        </span>
+
+        <h2 class="mm-table-title">
+          Subject Completion
+        </h2>
+
+        <p class="mm-table-description">
+          Review every class subject and identify where intervention
+          is required.
+        </p>
+
+      </div>
+
+      <div class="mm-table-summary">
+
+        <span class="mm-table-summary-dot"></span>
+
+        <span>
+          Click <strong>View</strong> to inspect missing learners
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="mm-table-container">
+
+      <table class="table mm-table">
+
+        <thead>
+
+          <tr>
+            <th>Subject</th>
+            <th>Class</th>
+            <th>Teacher</th>
+            <th>Completion</th>
+            <th>Status</th>
+            <th>Missing</th>
+            <th class="mm-action-column">
+              Action
+            </th>
+          </tr>
+
+        </thead>
+
+        <tbody id="mmRows"></tbody>
+
+      </table>
+
+    </div>
+
+
+    <div
+      id="mmEmpty"
+      class="mm-empty d-none">
+
+      <div class="mm-empty-icon">
+        —
+      </div>
+
+      <h3>
+        No monitoring records
+      </h3>
+
+      <p>
+        No subject records match the selected monitoring filters.
+      </p>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<!-- =========================================================
+     DETAILS MODAL
+========================================================== -->
+<div
+  class="modal fade mm-modal"
+  id="mmDetailsModal"
+  tabindex="-1"
+  aria-labelledby="mmDetailTitle"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="mm-modal-header">
+
+        <div class="mm-modal-heading">
+
+          <span class="mm-modal-kicker">
+            SUBJECT MONITORING
+          </span>
+
+          <h2
+            id="mmDetailTitle"
+            class="mm-modal-title">
+            Subject Details
+          </h2>
+
+          <p
+            id="mmDetailMeta"
+            class="mm-modal-meta">
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close">
+        </button>
+
+      </div>
+
+
+      <div class="modal-body mm-modal-body">
+
+
+        <!-- Detail KPIs -->
+        <div class="mm-detail-kpis">
+
+          <div class="mm-detail-stat">
+
+            <span>
+              COMPLETION
+            </span>
+
+            <strong id="mmDetailCompletion">
+              0%
+            </strong>
+
+          </div>
+
+
+          <div class="mm-detail-stat mm-detail-danger">
+
+            <span>
+              MISSING MARKS
+            </span>
+
+            <strong id="mmDetailMissing">
+              0
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- Missing Learners -->
+        <section class="mm-modal-section">
+
+          <div class="mm-modal-section-heading">
+
+            <div>
+              <span class="mm-section-kicker">
+                LEARNER LEVEL
+              </span>
+
+              <h3>
+                Learners with Missing Marks
+              </h3>
+            </div>
+
+            <span class="mm-review-note">
+              Requires attention
+            </span>
+
+          </div>
+
+
+          <div class="mm-modal-table-wrap">
+
+            <table class="table mm-detail-table">
+
+              <thead>
+
+                <tr>
+                  <th>#</th>
+                  <th>Exam No.</th>
+                  <th>Learner</th>
+                  <th>Gender</th>
+                </tr>
+
+              </thead>
+
+              <tbody id="mmMissingLearnersBody"></tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+
+        <!-- Intervention -->
+        <section class="mm-intervention">
+
+          <div class="mm-modal-section-heading">
+
+            <div>
+              <span class="mm-section-kicker">
+                EARLY INTERVENTION
+              </span>
+
+              <h3>
+                Record Intervention
+              </h3>
+            </div>
+
+          </div>
+
+
+          <div
+            id="mmInterventionFeedback"
+            class="alert d-none">
+          </div>
+
+
+          <form id="mmInterventionForm">
+
+            <div class="mm-intervention-grid">
+
+              <div class="mm-field">
+
+                <label
+                  for="mmInterventionType">
+                  Intervention Type
+                </label>
+
+                <select
+                  id="mmInterventionType"
+                  name="intervention_type"
+                  class="form-select"
+                  required>
+
+                  <option value="reminder">
+                    Teacher Reminder
+                  </option>
+
+                  <option value="hod_followup">
+                    HOD Follow-up
+                  </option>
+
+                  <option value="admin_escalation">
+                    Admin Escalation
+                  </option>
+
+                  <option value="deadline_extension">
+                    Deadline Extension
+                  </option>
+
+                  <option value="other">
+                    Other
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              <div class="mm-field">
+
+                <label for="mmDueAt">
+                  Follow-up Date
+                </label>
+
+                <input
+                  id="mmDueAt"
+                  type="datetime-local"
+                  name="due_at"
+                  class="form-control">
+
+              </div>
+
+            </div>
+
+
+            <div class="mm-field mm-message-field">
+
+              <label for="mmInterventionMessage">
+                Intervention Note
+              </label>
+
+              <textarea
+                id="mmInterventionMessage"
+                name="message"
+                class="form-control"
+                rows="4"
+                required
+                placeholder="Record the action taken, required follow-up, or reason for escalation..."></textarea>
+
+            </div>
+
+
+            <div class="mm-form-footer">
+
+              <small>
+                This action will be recorded in the marks
+                monitoring intervention history.
+              </small>
+
+              <button
+                type="submit"
+                class="mm-submit-btn">
+
+                Record Intervention
+
+              </button>
+
+            </div>
+
+          </form>
+
+        </section>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script
+  src="/scripts/marksMonitoring.js"
+  defer>
+</script>
+
+</body>
+</html>
