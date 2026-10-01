@@ -395,3 +395,12 @@ exports.deleteGuardianType = (id) =>
      WHERE guardiantypeid = ?`,
     [id],
   );
+
+exports.deleteOrphanedRecords = () =>
+  query(`
+      DELETE g.guardian_nrc_no
+        FROM guardian g
+        LEFT JOIN studentguardian stg
+        ON g.guardian_nrc_no = stg.guardianid
+        WHERE stg.guardianid IS NULL
+    `)

@@ -1,17 +1,11 @@
 const pool = require('../config/db.js');
 const { sendCleanupNotification } = require('../config/mailer.js');
-
+const adminModel = require("../models/adminModel.js");
 
 async function deleteOrphanedParents() {
     try {
-        const [result] = await pool.query(`
-            DELETE g
-            FROM guardian AS g
-            LEFT JOIN studentguardian AS stg
-                ON g.nrc_no = stg.guardianid
-            WHERE stg.guardianid IS NULL
-        `);
-
+        const result = await adminModel.deleteOrphanedRecords()
+        
         const message =
             `${result.affectedRows} orphaned parent records deleted from the system.`;
 
