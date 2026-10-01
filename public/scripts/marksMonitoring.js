@@ -362,7 +362,6 @@
       if (empty) {
         empty.classList.remove("d-none");
       }
-
       return;
     }
 
@@ -405,8 +404,8 @@
 
         <td>
           <div>
-            ${esc(row.grade)}
-            ${esc(row.section)}
+            ${esc(row.levelname)}
+            ${esc(row.class)}
           </div>
 
           <div class="mm-teacher">
@@ -567,7 +566,7 @@
           item.classid;
 
         option.textContent =
-          `${item.grade || ""} ${item.section || ""}`.trim();
+          `${item.levelname || ""} ${item.class || ""}`.trim();
 
         select.appendChild(option);
       });
@@ -767,6 +766,8 @@
       return;
     }
 
+    
+
     learners.forEach((learner, index) => {
       const tr =
         document.createElement("tr");
@@ -804,85 +805,6 @@
   /* ============================================================
      DETAILS MODAL
      ============================================================ */
-
-  // async function openDetails(row) {
-  //   state.selected = row;
-
-  //   const title =
-  //     element("mmDetailTitle");
-
-  //   const meta =
-  //     element("mmDetailMeta");
-
-  //   const completion =
-  //     element("mmDetailCompletion");
-
-  //   const missing =
-  //     element("mmDetailMissing");
-
-  //   if (title) {
-  //     title.textContent =
-  //       `${row.subjectname || "Subject"} — ` +
-  //       `${row.grade || ""} ${row.section || ""}`.trim();
-  //   }
-
-  //   if (meta) {
-  //     meta.textContent =
-  //       `${row.teacher_name || "Teacher not allocated"} • ` +
-  //       `${selectedText("mmExam")}`;
-  //   }
-
-  //   if (completion) {
-  //     completion.textContent =
-  //       `${Number(row.entered_marks) || 0}/` +
-  //       `${Number(row.expected_marks) || 0} ` +
-  //       `(${Number(row.completion_percentage) || 0}%)`;
-  //   }
-
-  //   if (missing) {
-  //     missing.textContent =
-  //       Number(row.missing_marks) || 0;
-  //   }
-
-  //   const modalElement =
-  //     element("mmDetailsModal");
-
-  //   if (modalElement &&
-  //       typeof bootstrap !== "undefined") {
-  //     const modal =
-  //       bootstrap.Modal.getOrCreateInstance(
-  //         modalElement
-  //       );
-
-  //     modal.show();
-  //   }
-
-  //   try {
-  //     await loadMissingLearners(row);
-
-  //   } catch (error) {
-  //     const body =
-  //       element("mmMissingLearnersBody");
-
-  //     if (body) {
-  //       body.innerHTML = `
-  //         <tr>
-  //           <td
-  //             colspan="4"
-  //             class="text-center text-danger py-4">
-  //             ${esc(error.message)}
-  //           </td>
-  //         </tr>
-  //       `;
-  //     }
-  //   }
-  // }
-
-
-/* ============================================================
-   DETAILS MODAL
-   ============================================================ */
-
 async function openDetails(row) {
   state.selected = row;
 
@@ -894,7 +816,7 @@ async function openDetails(row) {
   if (title) {
     title.textContent =
       `${row.subjectname || "Subject"} — ` +
-      `${row.grade || ""} ${row.section || ""}`.trim();
+      `${row.levelname || ""} ${row.class || ""}`.trim();
   }
 
   if (meta) {

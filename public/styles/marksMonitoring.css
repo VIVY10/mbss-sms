@@ -717,6 +717,16 @@ textarea {
   font-size: 11px;
 }
 
+
+#mmEmpty.d-none {
+  display: none !important;
+}
+
+
+#mmEmpty:not(.d-none) {
+  display: block;
+}
+
 /* ============================================================
    MODAL — BACKDROP & SHELL
    ============================================================ */

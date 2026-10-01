@@ -4,41 +4,56 @@ const applyScope = (scope, teacherid, params) => {
   if (scope !== "hod") return "";
   params.push(teacherid);
   return ` 
-    AND EXISTS (
-      SELECT 1
-      FROM department hd
-      WHERE hd.departmentid = su.departmentid
-        AND hd.hod_id = ?
-    )
+      AND EXISTS (
+        SELECT 1 FROM subjects hsu
+        JOIN department hd ON hd.departmentid = hsu.departmentid
+    	  JOIN hod_appointment ha ON ha.departmentid = hd.departmentid
+        WHERE hsu.subjectcode = cs.subjectcode AND ha.teacherid = ?
+      )
   `;
 };
 
 exports.getFilters = async () => {
   const [years, terms, exams, departments] = await Promise.all([
-    query(`SELECT schoolyearid, yearname FROM schoolyear ORDER BY schoolyearid DESC`),
+    query(
+      `SELECT schoolyearid, yearname FROM schoolyear ORDER BY schoolyearid ASC`,
+    ),
     query(`
       SELECT t.termid, t.termnumber, t.termname,
              t.yearid AS schoolyearid, sy.yearname
       FROM terms t
       JOIN schoolyear sy ON sy.schoolyearid = t.yearid
-      ORDER BY sy.schoolyearid DESC, t.termnumber ASC
+      ORDER BY sy.schoolyearid ASC, t.termnumber ASC
     `),
     query(`
       SELECT examid, exam_title, status, marks_open_at, marks_deadline
-      FROM exams ORDER BY examid DESC
+      FROM exams ORDER BY examid ASC
     `),
-    query(`SELECT departmentid, departmentname FROM department ORDER BY departmentname`)
+    query(
+      `SELECT departmentid, departmentname FROM department ORDER BY departmentname ASC`,
+    ),
   ]);
   return { years, terms, exams, departments };
 };
 
-exports.getSummary = async ({ yearid, termid, examid, scope, teacherid, departmentid }) => {
+exports.getSummary = async ({
+  yearid,
+  termid,
+  examid,
+  scope,
+  teacherid,
+  departmentid,
+}) => {
   const params = [termid, yearid, examid];
   let filters = "";
-  if (departmentid) { filters += " AND su.departmentid = ?"; params.push(departmentid); }
+  if (departmentid) {
+    filters += " AND su.departmentid = ?";
+    params.push(departmentid);
+  }
   filters += applyScope(scope, teacherid, params);
 
-  const rows = await query(`
+  const rows = await query(
+    `
     SELECT
       COUNT(*) AS total_subjects,
       SUM(x.entered_count = x.expected_count AND x.expected_count > 0) AS complete_subjects,
@@ -66,7 +81,9 @@ exports.getSummary = async ({ yearid, termid, examid, scope, teacherid, departme
       WHERE 1=1 ${filters}
       GROUP BY cs.class_subject_id
     ) x
-  `, params);
+  `,
+    params,
+  );
 
   const k = rows[0] || {};
   const expected = Number(k.expected_marks || 0);
@@ -79,18 +96,36 @@ exports.getSummary = async ({ yearid, termid, examid, scope, teacherid, departme
     missingMarks: Number(k.missing_marks || 0),
     expectedMarks: expected,
     enteredMarks: entered,
-    completionPercentage: expected ? Number((entered * 100 / expected).toFixed(1)) : 0
+    completionPercentage: expected
+      ? Number(((entered * 100) / expected).toFixed(1))
+      : 0,
   };
 };
 
-exports.getMonitoringRows = async ({ yearid, termid, examid, scope, teacherid, departmentid, classid, status }) => {
+exports.getMonitoringRows = async ({
+  yearid,
+  termid,
+  examid,
+  scope,
+  teacherid,
+  departmentid,
+  classid,
+  status,
+}) => {
   const params = [termid, yearid, examid, examid];
   let filters = "";
-  if (departmentid) { filters += " AND su.departmentid = ?"; params.push(departmentid); }
-  if (classid) { filters += " AND c.classid = ?"; params.push(classid); }
+  if (departmentid) {
+    filters += " AND su.departmentid = ?";
+    params.push(departmentid);
+  }
+  if (classid) {
+    filters += " AND c.classid = ?";
+    params.push(classid);
+  }
   filters += applyScope(scope, teacherid, params);
 
-  const rows = await query(`
+  const rows = await query(
+    `
     SELECT
       cs.class_subject_id, 
       c.classid, 
@@ -128,30 +163,57 @@ exports.getMonitoringRows = async ({ yearid, termid, examid, scope, teacherid, d
              d.departmentname, ta.teacherid, t.fname, t.lname,
              ex.examid, ex.exam_title, ex.marks_deadline
     ORDER BY d.departmentname, c.class, yl.levelname, su.subjectname
-  `, params);
+  `,
+    params,
+  );
 
   const now = Date.now();
-  return rows.map(row => {
-    const expected = Number(row.expected_marks || 0);
-    const entered = Number(row.entered_marks || 0);
-    const missing = Math.max(expected - entered, 0);
-    const completion = expected ? Number((entered * 100 / expected).toFixed(1)) : 0;
-    let completion_status = "NOT_STARTED";
-    if (expected > 0 && entered === expected) completion_status = "COMPLETE";
-    else if (entered > 0) completion_status = "IN_PROGRESS";
-    if (completion_status !== "COMPLETE" && row.marks_deadline && new Date(row.marks_deadline).getTime() < now) {
-      completion_status = "OVERDUE";
-    }
-    return { ...row, expected_marks: expected, entered_marks: entered, missing_marks: missing, completion_percentage: completion, completion_status };
-  }).filter(row => !status || row.completion_status === status);
+  return rows
+    .map((row) => {
+      const expected = Number(row.expected_marks || 0);
+      const entered = Number(row.entered_marks || 0);
+      const missing = Math.max(expected - entered, 0);
+      const completion = expected
+        ? Number(((entered * 100) / expected).toFixed(1))
+        : 0;
+      let completion_status = "NOT_STARTED";
+      if (expected > 0 && entered === expected) completion_status = "COMPLETE";
+      else if (entered > 0) completion_status = "IN_PROGRESS";
+      if (
+        completion_status !== "COMPLETE" &&
+        row.marks_deadline &&
+        new Date(row.marks_deadline).getTime() < now
+      ) {
+        completion_status = "OVERDUE";
+      }
+      return {
+        ...row,
+        expected_marks: expected,
+        entered_marks: entered,
+        missing_marks: missing,
+        completion_percentage: completion,
+        completion_status,
+      };
+    })
+    .filter((row) => !status || row.completion_status === status);
 };
 
-exports.getClasses = async ({ yearid, termid, scope, teacherid, departmentid }) => {
+exports.getClasses = async ({
+  yearid,
+  termid,
+  scope,
+  teacherid,
+  departmentid,
+}) => {
   const params = [termid, yearid];
   let filters = "";
-  if (departmentid) { filters += " AND su.departmentid = ?"; params.push(departmentid); }
+  if (departmentid) {
+    filters += " AND su.departmentid = ?";
+    params.push(departmentid);
+  }
   filters += applyScope(scope, teacherid, params);
-  await query(`
+  await query(
+    `
     SELECT DISTINCT c.classid, c.class, yl.levelname
 FROM class c
 JOIN yearlevel yl 
@@ -164,11 +226,19 @@ WHERE EXISTS (
 	WHERE sc.classid = c.classid AND sc.termid = ? AND sc.yearid = ?
     ) ${filters}
     ORDER BY c.class, yl.levelname
-  `, params
-);
+  `,
+    params,
+  );
 };
 
-exports.getMissingLearners = async ({ class_subject_id, examid, termid, yearid, scope, teacherid }) => {
+exports.getMissingLearners = async ({
+  class_subject_id,
+  examid,
+  termid,
+  yearid,
+  scope,
+  teacherid,
+}) => {
   const params = [examid, examid, termid, yearid, class_subject_id];
   let hodFilter = "";
   if (scope === "hod") {
@@ -182,7 +252,8 @@ exports.getMissingLearners = async ({ class_subject_id, examid, termid, yearid, 
     `;
     params.push(teacherid);
   }
-  const rows = await query(`
+  const rows = await query(
+    `
     SELECT 
       sc.studentclassid, 
       s.examno, 
@@ -213,15 +284,24 @@ exports.getMissingLearners = async ({ class_subject_id, examid, termid, yearid, 
     AND sr.studentclassid IS NULL
     ${hodFilter}
     ORDER BY s.fname, s.lname
-  `, params);
+  `,
+    params,
+  );
   return rows;
 };
 
-exports.getInterventions = async ({ class_subject_id, examid, termid, yearid, status }) => {
+exports.getInterventions = async ({
+  class_subject_id,
+  examid,
+  termid,
+  yearid,
+  status,
+}) => {
   const params = [class_subject_id, examid, termid, yearid];
   const statusSql = status ? " AND mi.status = ?" : "";
   if (status) params.push(status);
-  query(`
+  query(
+    `
     SELECT mi.*, CONCAT(COALESCE(t.fname,''),' ',COALESCE(t.lname,'')) AS teacher_name,
            CONCAT(COALESCE(cb.fname,''),' ',COALESCE(cb.lname,'')) AS created_by_name
     FROM marks_interventions mi
@@ -230,20 +310,31 @@ exports.getInterventions = async ({ class_subject_id, examid, termid, yearid, st
     WHERE mi.class_subject_id = ? AND mi.examid = ? AND mi.termid = ? AND mi.yearid = ?
     ${statusSql}
     ORDER BY mi.created_at DESC
-  `, params);
+  `,
+    params,
+  );
 };
 
-exports.createIntervention = async (data) => 
-  query(`
+exports.createIntervention = async (data) =>
+  query(
+    `
     INSERT INTO marks_interventions
       (class_subject_id, examid, termid, yearid, teacherid, created_by,
        intervention_type, message, due_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `, [data.class_subject_id, data.examid, data.termid, data.yearid,
-      data.teacherid || null, data.created_by, data.intervention_type || "reminder",
-      data.message, data.due_at || null]
-    );
-
+  `,
+    [
+      data.class_subject_id,
+      data.examid,
+      data.termid,
+      data.yearid,
+      data.teacherid || null,
+      data.created_by,
+      data.intervention_type || "reminder",
+      data.message,
+      data.due_at || null,
+    ],
+  );
 
 exports.updateIntervention = async ({ intervention_id, status }) => {
   let sql = `UPDATE marks_interventions SET status = ?`;
@@ -255,8 +346,14 @@ exports.updateIntervention = async ({ intervention_id, status }) => {
   query(sql, params);
 };
 
-exports.updateExamDeadline = async ({ examid, marks_open_at, marks_deadline }) => 
-  query(`
+exports.updateExamDeadline = async ({
+  examid,
+  marks_open_at,
+  marks_deadline,
+}) =>
+  query(
+    `
     UPDATE exams SET marks_open_at = ?, marks_deadline = ? WHERE examid = ?
-  `, [marks_open_at || null, marks_deadline || null, examid]
-);
+  `,
+    [marks_open_at || null, marks_deadline || null, examid],
+  );

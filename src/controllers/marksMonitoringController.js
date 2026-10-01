@@ -1,7 +1,7 @@
 const model = require("../models/marksMonitoringModel");
 
 const scope = req => req.marksMonitoringRole || (String(req.user?.usertype || "").toLowerCase() === "admin" ? "admin" : "hod");
-const teacherId = req => req.user?.teacherid ?? req.user?.id;
+const teacherId = req => req.user?.teacherid;
 const pageError = (res, message, code = 500) => res.status(code).render("./response/response", { message });
 
 exports.page = async (req, res) => {
