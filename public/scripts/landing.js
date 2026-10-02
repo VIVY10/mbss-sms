@@ -556,4 +556,83 @@
       });
     }
   }
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const notificationBar =
+        document.querySelector(".notification-bar");
+
+    const notificationTrack =
+        document.querySelector("#notificationTrack");
+
+    const notificationControl =
+        document.querySelector("#notificationControl");
+
+
+    if (
+        !notificationBar ||
+        !notificationTrack ||
+        !notificationControl
+    ) {
+        return;
+    }
+
+
+    /* =========================================================
+       PAUSE / PLAY
+    ========================================================== */
+
+    notificationControl.addEventListener("click", () => {
+
+        const isPaused =
+            notificationBar.classList.toggle("is-paused");
+
+
+        notificationControl.setAttribute(
+            "aria-label",
+            isPaused
+                ? "Play announcements"
+                : "Pause announcements"
+        );
+
+
+        notificationControl.setAttribute(
+            "title",
+            isPaused
+                ? "Play announcements"
+                : "Pause announcements"
+        );
+
+    });
+
+
+    /* =========================================================
+       PAUSE WHEN TAB IS NOT VISIBLE
+    ========================================================== */
+
+    document.addEventListener(
+        "visibilitychange",
+        () => {
+
+            if (document.hidden) {
+
+                notificationTrack.style
+                    .animationPlayState = "paused";
+
+            } else if (
+                !notificationBar.classList.contains(
+                    "is-paused"
+                )
+            ) {
+
+                notificationTrack.style
+                    .animationPlayState = "running";
+
+            }
+
+        }
+    );
+
+});
+
 })();
