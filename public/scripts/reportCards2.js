@@ -4,21 +4,18 @@
   const form = document.getElementById("rcForm");
   if (!form) return;
 
-  const previewBtn  = document.getElementById("rcPreview");
-  const downloadBtn = document.getElementById("rcDownload");
-  const previewArea = document.getElementById("rcPreviewArea");
-  const previewBox  = document.getElementById("rcPreviewContent");
-  const statusEl    = document.getElementById("rcStatus");
+  const previewBtn   = document.getElementById("rcPreview");
+  const downloadBtn  = document.getElementById("rcDownload");
+  const previewArea  = document.getElementById("rcPreviewArea");
+  const previewBox   = document.getElementById("rcPreviewContent");
+  const statusEl     = document.getElementById("rcStatus");
 
   function showStatus(message, type) {
     statusEl.textContent = message;
     statusEl.className = "rc-status rc-status--" + (type || "info");
     statusEl.hidden = false;
   }
-  function clearStatus() {
-    statusEl.hidden = true;
-    statusEl.textContent = "";
-  }
+  function clearStatus() { statusEl.hidden = true; statusEl.textContent = ""; }
 
   function readForm() {
     const fd = new FormData(form);
@@ -33,7 +30,7 @@
 
   function validate(payload) {
     if (!payload.schoolyearid || !payload.termid || !payload.levelorder || !payload.examid) {
-      showStatus("Please select school year, term, year level and exam.", "error");
+      showStatus("Please select school year, term, level and exam.", "error");
       return false;
     }
     return true;
@@ -48,31 +45,25 @@
     if (!validate(payload)) return;
 
     previewBtn.disabled = true;
+    previewBtn.classList.add("is-loading");
 
     try {
       const res = await fetch("/admin/report-cards/preview", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Preview failed.");
-      }
+      if (!res.ok || !data.success) throw new Error(data.message || "Preview failed.");
 
       renderPreview(data.cards);
-      showStatus(
-        `${data.count} report card${data.count === 1 ? "" : "s"} ready.`,
-        "success"
-      );
+      showStatus(`${data.count} report card${data.count === 1 ? "" : "s"} ready.`, "success");
     } catch (err) {
       showStatus(err.message, "error");
       previewArea.hidden = true;
     } finally {
       previewBtn.disabled = false;
+      previewBtn.classList.remove("is-loading");
     }
   });
 
@@ -86,6 +77,7 @@
     if (!validate(payload)) return;
 
     downloadBtn.disabled = true;
+    downloadBtn.classList.add("is-loading");
 
     try {
       const res = await fetch("/admin/report-cards/pdf", {
@@ -105,7 +97,7 @@
       a.href = url;
       a.download = payload.examno
         ? `report-card-${payload.examno}.pdf`
-        : `report-cards-level-${payload.levelorder}.pdf`;
+        : `report-cards-class-${payload.levelorder}.pdf`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -115,15 +107,16 @@
       showStatus(err.message, "error");
     } finally {
       downloadBtn.disabled = false;
+      downloadBtn.classList.remove("is-loading");
     }
   });
 
   /* ---------------------------------------------------------
-     Preview renderer (safe DOM construction)
+     Preview renderer — safe DOM construction, no innerHTML
      --------------------------------------------------------- */
   function renderPreview(cards) {
     previewBox.replaceChildren();
-    cards.forEach((card) => previewBox.appendChild(buildCardEl(card)));
+    cards.forEach(card => previewBox.appendChild(buildCardEl(card)));
     previewArea.hidden = false;
     previewArea.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -140,26 +133,18 @@
 
     const header = el("div", "rc-preview-header");
     header.appendChild(el("h3", null, `${card.student.fname} ${card.student.lname}`));
-    header.appendChild(
-      el(
-        "p",
-        null,
-        `Exam No. ${card.student.examno} · ${card.student.grade}${card.student.section}`
-      )
-    );
+    header.appendChild(el("p", null, `Exam No. ${card.student.examno} · ${card.student.level}${card.student.className}`));
     wrap.appendChild(header);
 
     const table = el("table", "rc-preview-table");
     const thead = el("thead");
     const trh = el("tr");
-    ["Subject", "Score", "Grade", "Remarks"].forEach((h) =>
-      trh.appendChild(el("th", null, h))
-    );
+    ["Subject", "Score", "Grade", "Remarks"].forEach(h => trh.appendChild(el("th", null, h)));
     thead.appendChild(trh);
     table.appendChild(thead);
 
     const tbody = el("tbody");
-    card.subjects.forEach((s) => {
+    card.subjects.forEach(s => {
       const tr = el("tr");
       tr.appendChild(el("td", null, s.subjectname));
       tr.appendChild(el("td", "num", String(s.scoreDisplay)));

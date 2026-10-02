@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Report Cards · Admin</title>
-  <link rel="stylesheet" href="/styles/reportCardFinal.css">
+  <link rel="stylesheet" href="/styles/reportCard.css">
   <link rel="stylesheet" href="/styles/admin.css">
 </head>
 <body class="rc-admin">
@@ -12,7 +12,7 @@
     <div>
       <p class="rc-eyebrow">Academic Management</p>
       <h1>Report Cards</h1>
-      <p class="rc-sub">Generate a single or bulk report card for a class, term and exam.</p>
+      <p class="rc-sub">Generate a single or bulk report card for a year level, term and exam.</p>
     </div>
   </header>
 
@@ -40,11 +40,11 @@
         </label>
 
         <label class="rc-field">
-          <span>Level</span>
+          <span>Year Level</span>
           <select name="levelorder" id="levelorder" required>
-            <option value="" disabled selected>Select class</option>
-            <% yearlevels.forEach(level => { %>
-              <option value="<%= level.levelorder %>"><%= level.levelname %></option>
+            <option value="" disabled selected>Select year level</option>
+            <% yearlevels.forEach(l => { %>
+              <option value="<%= l.levelorder %>"><%= l.levelname %></option>
             <% }) %>
           </select>
         </label>
@@ -60,18 +60,14 @@
         </label>
 
         <label class="rc-field rc-field--wide">
-          <span>Exam Number <em>(optional — leave blank for the whole class)</em></span>
+          <span>Exam Number <em>(optional — leave blank for the whole year level)</em></span>
           <input type="text" name="examno" id="examno" placeholder="e.g. 2024001">
         </label>
       </div>
- 
+
       <div class="rc-actions">
-        <button type="button" id="rcPreview" class="rc-btn rc-btn--ghost">
-          <i class="i-search"></i> Preview
-        </button>
-        <button type="submit" id="rcDownload" class="rc-btn rc-btn--primary">
-          <i class="i-download"></i> Download PDF
-        </button>
+        <button type="button" id="rcPreview" class="rc-btn rc-btn--ghost">Preview</button>
+        <button type="submit" id="rcDownload" class="rc-btn rc-btn--primary">Download PDF</button>
       </div>
     </form>
 

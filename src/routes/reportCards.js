@@ -1,54 +1,28 @@
 // routes/reportCards.js
 const express = require("express");
-const path = require("path");
-const fs = require("fs");
-const { pathToFileURL } = require("url");
-const { ensureRole } = require("../middleware/authChecker.js");
-const { authChecker } = require("../middleware/authChecker.js");
 
-const service = require("../services/reportCardService.js");
+// ✅ Two separate services, two separate imports
+const { createReportCardService } = require("../services/reportCardService.js");
+const { buildReportCardPdf } = require("../services/reportCardPdf.js");
 
-// const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const { authChecker, ensureRole } = require("../middleware/authChecker.js");
 
-// export default function reportCardRoutes({ db, authChecker }) {
 const router = express.Router();
 
+/* ---------------------------------------------------------
+   Middleware bundle: authenticated + admin role
+   --------------------------------------------------------- */
 const adminOnly = [authChecker, ensureRole("admin")];
-function renderView(res, view, data) {
-  return new Promise((resolve, reject) => {
-    res.render(view, data, (err, html) => (err ? reject(err) : resolve(html)));
-  });
-}
 
 /* ---------------------------------------------------------
-     Reusable: convert HTML → PDF buffer
-     --------------------------------------------------------- */
-async function htmlToPdf(html) {
-  const { default: puppeteer } = await import("puppeteer");
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
-  try {
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
-    // Inline CSS is already in the HTML; wait for fonts/images
-    await page.emulateMediaType("print");
-    return await page.pdf({
-      format: "A4",
-      printBackground: true,
-      margin: { top: "10mm", bottom: "10mm", left: "8mm", right: "8mm" },
-      preferCSSPageSize: true,
-    });
-  } finally {
-    await browser.close();
-  }
-}
+   Instantiate the service 
+   --------------------------------------------------------- */
+const service = createReportCardService();
 
-/* ---------------------------------------------------------
-     GET /admin/report-cards  → generation panel
-     --------------------------------------------------------- */
-router.get("/admin/report-cards", ...adminOnly, async (req, res) => {
+/* =========================================================
+   Admin: generation panel
+   ========================================================= */
+router.get("/admin/report-cards", adminOnly, async (req, res) => {
   try {
     const lookups = await service.getLookups();
     res.render("./reportCards/generate", { ...lookups, user: req.user });
@@ -60,11 +34,12 @@ router.get("/admin/report-cards", ...adminOnly, async (req, res) => {
   }
 });
 
-/* ---------------------------------------------------------
-     POST /admin/report-cards/preview  → JSON for UI preview
-     --------------------------------------------------------- */
-router.post("/admin/report-cards/preview", ...adminOnly, async (req, res) => {
+/* =========================================================
+   Admin: JSON preview (single or bulk)
+   ========================================================= */
+router.post("/admin/report-cards/preview", adminOnly, async (req, res) => {
   const { levelorder, examid, termid, schoolyearid, examno } = req.body;
+
   if (!levelorder || !examid || !termid || !schoolyearid) {
     return res.status(400).json({ success: false, message: "Missing fields." });
   }
@@ -78,22 +53,25 @@ router.post("/admin/report-cards/preview", ...adminOnly, async (req, res) => {
         schoolyearid,
         levelorder,
       });
-      if (!card)
+      if (!card) {
         return res
           .status(404)
           .json({ success: false, message: "No report card found." });
+      }
       return res.json({ success: true, count: 1, cards: [card] });
     }
+
     const cards = await service.getBulkReportCards({
       levelorder,
       examid,
       termid,
       schoolyearid,
     });
-    if (!cards.length)
+    if (!cards.length) {
       return res
         .status(404)
         .json({ success: false, message: "No students found." });
+    }
     return res.json({ success: true, count: cards.length, cards });
   } catch (err) {
     console.error("preview failed:", err);
@@ -101,12 +79,14 @@ router.post("/admin/report-cards/preview", ...adminOnly, async (req, res) => {
   }
 });
 
-/* ---------------------------------------------------------
-     POST /admin/report-cards/pdf  → download PDF (single or bulk)
-     --------------------------------------------------------- */
+/* =========================================================
+   Admin: download PDF
+   ========================================================= */
 router.post("/admin/report-cards/pdf", ...adminOnly, async (req, res) => {
   const { levelorder, examid, termid, schoolyearid, examno } = req.body;
+
   try {
+    /* 1. Load one or many report cards */
     let cards;
     if (examno) {
       const single = await service.getReportCard({
@@ -116,10 +96,11 @@ router.post("/admin/report-cards/pdf", ...adminOnly, async (req, res) => {
         schoolyearid,
         levelorder,
       });
-      if (!single)
-        return res
-          .status(404)
-          .render("./response/response", { message: "No report card found." });
+      if (!single) {
+        return res.status(404).render("./response/response", {
+          message: "No report card found.",
+        });
+      }
       cards = [single];
     } else {
       cards = await service.getBulkReportCards({
@@ -128,63 +109,24 @@ router.post("/admin/report-cards/pdf", ...adminOnly, async (req, res) => {
         termid,
         schoolyearid,
       });
-      if (!cards.length)
-        return res
-          .status(404)
-          .render("./response/response", { message: "No students found." });
+      if (!cards.length) {
+        return res.status(404).render("./response/response", {
+          message: "No students found.",
+        });
+      }
     }
 
-    const logoFile = path.join(
-      __dirname,
-      "..",
-      "..",
-      "public",
-      "images",
-      "logo.png",
-    );
-
-    const ministryLogoFile = path.join(
-      __dirname,
-      "..",
-      "..",
-      "public",
-      "images",
-      "ministryLogo.png",
-    );
-
-    function imageToDataUrl(filePath) {
-      const ext = path.extname(filePath).toLowerCase();
-
-      const mimeTypes = {
-        ".png": "image/png",
-        ".jpg": "image/jpeg",
-        ".jpeg": "image/jpeg",
-        ".webp": "image/webp",
-      };
-
-      const mime = mimeTypes[ext] || "application/octet-stream";
-      const base64 = fs.readFileSync(filePath).toString("base64");
-
-      return `data:${mime};base64,${base64}`;
-    }
-
-    const logoPath = imageToDataUrl(logoFile);
-    const ministryLogoPath = imageToDataUrl(ministryLogoFile);
-
-    const html = await renderView(res, "./reportCards/bulk", {
-      cards,
+    /* 2. Build the PDF (pdfkit — no Puppeteer) */
+    const pdf = await buildReportCardPdf(cards, {
       schoolName: "Milenge Boarding Secondary School",
       ministry: "Ministry of Education",
-      logoPath,
-      ministryLogoPath,
     });
-
-    const pdf = await htmlToPdf(html);
-
+ 
+    /* 3. Send it */
     const filename =
       cards.length === 1
         ? `report-card-${cards[0].student.examno}.pdf`
-        : `report-cards-class-${levelorder}-term-${termid}.pdf`;
+        : `report-cards-level-${levelorder}-term-${termid}.pdf`;
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
@@ -192,9 +134,9 @@ router.post("/admin/report-cards/pdf", ...adminOnly, async (req, res) => {
     return res.end(pdf);
   } catch (err) {
     console.error("pdf generation failed:", err);
-    return res
-      .status(500)
-      .render("./response/response", { message: "PDF generation failed." });
+    return res.status(500).render("./response/response", {
+      message: err.message,
+    });
   }
 });
 
@@ -204,7 +146,7 @@ router.post("/admin/report-cards/pdf", ...adminOnly, async (req, res) => {
      Parents authenticate (authChecker) and supply their child's
      examno + the term they want to view.
      --------------------------------------------------------- */
-router.get("/parent/report-card", ...adminOnly, async (req, res) => {
+router.get("/parent/report-card", async (req, res) => {
   try {
     const lookups = await service.getLookups();
     res.render("./reportCards/parentGenerate", { ...lookups, user: req.user });
@@ -216,76 +158,87 @@ router.get("/parent/report-card", ...adminOnly, async (req, res) => {
   }
 });
 
-/* ---------------------------------------------------------
-     POST /parent/report-card/preview  → JSON for UI preview
-     --------------------------------------------------------- */
+/* =========================================================
+   Parent: JSON preview (single or bulk)
+   ========================================================= */
 router.post("/parent/report-card/preview", async (req, res) => {
   const { examid, termid, schoolyearid, examno } = req.body;
+
   if (!examno || !examid || !termid || !schoolyearid) {
     return res.status(400).json({ success: false, message: "Missing fields." });
   }
+
   try {
+    if (examno) {
     const card = await service.getReportCard({
       examno,
       examid,
       termid,
       schoolyearid,
     });
-    if (!card)
-      return res
-        .status(404)
-        .json({ success: false, message: "No report card found." });
-    return res.json({ success: true, count: 1, cards: [card] });
+      if (!card) {
+        return res
+          .status(404)
+          .json({ success: false, message: "No report card found." });
+      }
+      return res.json({ success: true, count: 1, cards: [card] });
+    }
+    return res.json({ success: true, count: cards.length, cards });
   } catch (err) {
     console.error("preview failed:", err);
     return res.status(500).json({ success: false, message: "Server error." });
   }
 });
 
+/* =========================================================
+   Parent: download PDF
+   ========================================================= */
 router.post("/parent/report-card/pdf", async (req, res) => {
-  const { examno, examid, termid, schoolyearid } = req.body;
-  if (!examno || !examid || !termid || !schoolyearid) {
+   const { examno, examid, termid, schoolyearid } = req.body;
+     if (!examno || !examid || !termid || !schoolyearid) {
     return res
       .status(400)
       .render("./response/response", { message: "Missing query parameters." });
   }
   try {
+    /* 1. Load one or many report cards */
     let cards;
-    const card = await service.getReportCard({
-      examno,
-      examid,
-      termid,
-      schoolyearid,
-    });
-    if (!card)
-      return res
-        .status(404)
-        .render("./response/response", { message: "No report card found." });
-    cards = [card];
-    const html = await renderView(res, "./reportCards/bulk", {
-      cards,
+    
+      const single = await service.getReportCard({
+            examno,
+            examid,
+            termid,
+            schoolyearid,
+          });
+      if (!single) {
+        return res.status(404).render("./response/response", {
+          message: "No report card found.",
+        });
+      }
+      cards = [single];
+
+    /* 2. Build the PDF */
+    const pdf = await buildReportCardPdf(cards, {
       schoolName: "Milenge Boarding Secondary School",
       ministry: "Ministry of Education",
-      logoPath: "/images/logo.png",
-      ministryLogoPath: "/images/ministryLogo.png",
     });
-
-    const pdf = await htmlToPdf(html);
-
+ 
+    /* 3. Send it */
     const filename =
       cards.length === 1
         ? `report-card-${cards[0].student.examno}.pdf`
-        : `report-cards-class-${levelorder}-term-${termid}.pdf`;
+        : `report-cards-level-${levelorder}-term-${termid}.pdf`;
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
     res.setHeader("Content-Length", pdf.length);
     return res.end(pdf);
   } catch (err) {
-    console.error("parent view failed:", err);
-    res.status(500).render("./response/response", { message: "Server error." });
+    console.error("pdf generation failed:", err);
+    return res.status(500).render("./response/response", {
+      message: err.message,
+    });
   }
 });
 
 module.exports = router;
-// }
