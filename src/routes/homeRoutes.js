@@ -9,5 +9,21 @@ router.get("/", (req, res) => {
 router.get("/about", (req, res) => {
   res.render("./main/about");
 });
+
+router.get("/academics", (req, res) => {
+  res.render("./main/academics");
+});
+
+router.get("/boarding", (req, res) => {
+  res.render("./main/boarding");
+});
+
+router.get("/admissions", (req, res) => {
+  res.render("./main/admissions");
+});
+
+router.get("/news", (req, res) => {
+  res.render("./main/news");
+});
  
 module.exports = router;

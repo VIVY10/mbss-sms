@@ -1,51 +1,1497 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-		<title>eduTrack</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link 
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" 
-			rel="stylesheet" 
-			integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" 
-			crossorigin="anonymous">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
-		<link rel="stylesheet" href="/styles/main.css" />
-		<!-- <link rel="stylesheet" href="/styles/noscript.css" /> -->
-		<link rel="icon" href="/images/logo.png" type="image/x-icon">
-	</head>
-	<body class="is-preload">
-		<div id="wrapper">
-			<div id="bg"></div>
-			<div id="overlay"></div>
-			<div id="main">
-				<!-- Header -->
-					<header id="header">
-						<h1>MBSS SMS</h1>
-						<p>A system for managing school information, performance, attendance and activities</p>
-            <a href="/studentLogin"><button type="button" class="btn btn-info login-home-btn">Student Login</button></a>
-						<a href="/login"><button type="button" class="btn btn-info login-home-btn">Staff Login</button></a>
-						<nav>
-							<ul>
-								<li><a href="#" class="fa-brands fa-twitter"><span class="label">Twitter</span></a></li>
-								<li><a href="#" class="fa-brands fa-facebook"><span class="label">Facebook</span></a></li>
-								<li><a href="#" class="fa-solid fa-envelope"><span class="label">Email</span></a></li>
-							</ul>
-						</nav>
-					</header>
+<%- include("../partials/navBar.ejs") %>
+<!-- =========================================================
+     HERO
+========================================================= -->
+<section
+    class="hero"
+    id="home"
+>
 
-				<!-- Footer -->
-					<footer id="footer">
-						<span class="copyright"> &copy; 2024 - <%= new Date().getFullYear() %> Copyright | All rights reserved.</span>
-					</footer>
+    <div class="hero-overlay"></div>
 
-			</div>
-		</div>
-		<script 
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
-		integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" 
-		crossorigin="anonymous">
-		</script>
-		<script src="/scripts/index.js"></script>
-	</body>
-</html>
+    <div class="container hero-container">
+
+        <div class="hero-content">
+
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Welcome to Milenge Boarding Secondary School
+            </div>
+
+            <h1>
+                Inspiring
+                <span>Excellence.</span>
+                Building
+                <strong>Leaders.</strong>
+            </h1>
+
+            <p class="hero-description">
+                We provide a supportive and disciplined learning
+                environment where learners develop academically,
+                socially and morally, preparing them for responsible
+                leadership and meaningful contribution to society.
+            </p>
+
+            <div class="hero-actions">
+
+                <a
+                    href="/admissions"
+                    class="button button-primary"
+                >
+                    Explore Admissions
+                    
+                </a>
+
+                <a
+                    href="/about"
+                    class="button button-outline"
+                >
+                    Discover Our School
+                </a>
+
+            </div>
+
+            <div class="hero-highlights">
+
+                <div class="hero-highlight">
+                    <strong>Quality</strong>
+                    <span>Education</span>
+                </div>
+
+                <div class="hero-highlight">
+                    <strong>Strong</strong>
+                    <span>Discipline</span>
+                </div>
+
+                <div class="hero-highlight">
+                    <strong>Holistic</strong>
+                    <span>Development</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <a
+        href="/about"
+        class="hero-scroll"
+        aria-label="Scroll to about section"
+    >
+        <span>Scroll to explore</span>
+        <span class="scroll-arrow">↓</span>
+    </a>
+
+</section>
+
+
+<!-- =========================================================
+     QUICK INFORMATION
+========================================================= -->
+<section class="quick-info">
+
+    <div class="container quick-info-grid">
+
+        <div class="quick-card">
+
+            <div class="quick-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3L3 8l9 5 7-3.89V15h2V8L12 3z"/>
+                    <path d="M5 10v5c0 1.66 3.13 3 7 3s7-1.34 7-3v-5l-7 3.89L5 10z"/>
+                </svg>
+            </div>
+
+            <div>
+                <strong>Quality Education</strong>
+                <span>Focused on academic achievement</span>
+            </div>
+
+        </div>
+
+
+        <div class="quick-card">
+
+            <div class="quick-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2l8 4v6c0 5-3.5 9.74-8 11-4.5-1.26-8-6-8-11V6l8-4zm0 4.2L6 9v3c0 3.7 2.4 7.3 6 8.54 3.6-1.24 6-4.84 6-8.54V9l-6-2.8z"/>
+                </svg>
+            </div>
+
+            <div>
+                <strong>Safe Environment</strong>
+                <span>Care, discipline and responsibility</span>
+            </div>
+
+        </div>
+
+
+        <div class="quick-card">
+
+            <div class="quick-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.91 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                </svg>
+            </div>
+
+            <div>
+                <strong>Community</strong>
+                <span>Working together for learner success</span>
+            </div>
+
+        </div>
+
+
+        <div class="quick-card">
+
+            <div class="quick-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2l2.2 6.8H21l-5.5 4.1 2.1 6.7L12 15.5 6.4 19.6l2.1-6.7L3 8.8h6.8L12 2z"/>
+                </svg>
+            </div>
+
+            <div>
+                <strong>Student Development</strong>
+                <span>Academics, sports and leadership</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     ABOUT
+========================================================= -->
+<section
+    class="section about-section"
+    id="about"
+>
+
+    <div class="container">
+
+        <div class="section-heading centered">
+
+            <span class="eyebrow">
+                About Our School
+            </span>
+
+            <h2>
+                A place where
+                <span>potential becomes purpose.</span>
+            </h2>
+
+            <p>
+                Milenge Boarding Secondary School is committed to
+                providing learners with the knowledge, skills,
+                values and confidence needed to thrive in a
+                changing world.
+            </p>
+
+        </div>
+
+
+        <div class="about-grid">
+
+            <div class="about-image">
+
+                <img
+                    src="/images/bg3.jpg"
+                    alt="Milenge Boarding Secondary School campus"
+                    loading="lazy"
+                >
+
+                <div class="experience-card">
+
+                    <strong>Excellence</strong>
+
+                    <span>
+                        At the heart of everything we do
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="about-content">
+
+                <span class="content-label">
+                    Who We Are
+                </span>
+
+                <h3>
+                    Developing learners for academic
+                    and lifelong success.
+                </h3>
+
+                <p>
+                    Our school provides an environment where
+                    learners are encouraged to think critically,
+                    work collaboratively and develop strong
+                    personal values.
+                </p>
+
+                <p>
+                    Through quality teaching, co-curricular
+                    activities, leadership opportunities and
+                    responsible boarding life, we seek to develop
+                    well-rounded young people who are ready for
+                    the future.
+                </p>
+
+
+                <div class="about-features">
+
+                    <div>
+                        <span class="feature-check">✓</span>
+                        <span>Qualified teaching staff</span>
+                    </div>
+
+                    <div>
+                        <span class="feature-check">✓</span>
+                        <span>Structured boarding environment</span>
+                    </div>
+
+                    <div>
+                        <span class="feature-check">✓</span>
+                        <span>Academic and personal support</span>
+                    </div>
+
+                    <div>
+                        <span class="feature-check">✓</span>
+                        <span>Sports and co-curricular activities</span>
+                    </div>
+
+                </div>
+
+                <a
+                    href="#contact"
+                    class="text-link"
+                >
+                    Learn more about our school
+                    <span>→</span>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     VALUES
+========================================================= -->
+<section class="values-section">
+
+    <div class="container">
+
+        <div class="values-header">
+
+            <div>
+
+                <span class="eyebrow light">
+                    Our Foundation
+                </span>
+
+                <h2>
+                    Values that shape
+                    <span>tomorrow's leaders.</span>
+                </h2>
+
+            </div>
+
+            <p>
+                We believe education extends beyond the classroom.
+                Our learners are encouraged to demonstrate integrity,
+                respect, responsibility and a commitment to excellence.
+            </p>
+
+        </div>
+
+
+        <div class="values-grid">
+
+            <article class="value-card">
+
+                <div class="value-number">
+                    01
+                </div>
+
+                <h3>Integrity</h3>
+
+                <p>
+                    Encouraging honesty, responsibility and
+                    ethical decision-making.
+                </p>
+
+            </article>
+
+
+            <article class="value-card">
+
+                <div class="value-number">
+                    02
+                </div>
+
+                <h3>Discipline</h3>
+
+                <p>
+                    Building self-discipline, respect and
+                    responsible conduct.
+                </p>
+
+            </article>
+
+
+            <article class="value-card">
+
+                <div class="value-number">
+                    03
+                </div>
+
+                <h3>Excellence</h3>
+
+                <p>
+                    Inspiring every learner to pursue their
+                    highest potential.
+                </p>
+
+            </article>
+
+
+            <article class="value-card">
+
+                <div class="value-number">
+                    04
+                </div>
+
+                <h3>Leadership</h3>
+
+                <p>
+                    Developing confident learners who can
+                    positively influence their communities.
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     ACADEMICS
+========================================================= -->
+<section
+    class="section academics-section"
+    id="academics"
+>
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="eyebrow">
+                    Academic Life
+                </span>
+
+                <h2>
+                    Learning designed
+                    <span>for the future.</span>
+                </h2>
+            </div>
+
+            <p>
+                Our academic programme combines classroom
+                learning with practical skills, critical
+                thinking and personal development.
+            </p>
+
+        </div>
+
+
+        <div class="academic-grid">
+
+            <article class="academic-card large">
+
+                <div class="academic-image">
+
+                    <img
+                        src="/images/bg2.jpg"
+                        alt="Students learning in a classroom"
+                        loading="lazy"
+                    >
+
+                </div>
+
+                <div class="academic-content">
+
+                    <span class="academic-number">
+                        01
+                    </span>
+
+                    <h3>
+                        Strong Academic Foundation
+                    </h3>
+
+                    <p>
+                        A structured learning environment designed
+                        to help learners understand concepts,
+                        develop analytical skills and achieve
+                        strong academic outcomes.
+                    </p>
+
+                    <a href="#contact">
+                        Academic enquiries →
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <article class="academic-card">
+
+                <div class="academic-icon">
+                    ◇
+                </div>
+
+                <span class="academic-number">
+                    02
+                </span>
+
+                <h3>
+                    Science & Technology
+                </h3>
+
+                <p>
+                    Encouraging curiosity, innovation,
+                    experimentation and digital literacy.
+                </p>
+
+            </article>
+
+
+            <article class="academic-card">
+
+                <div class="academic-icon">
+                    ◇
+                </div>
+
+                <span class="academic-number">
+                    03
+                </span>
+
+                <h3>
+                    Languages & Humanities
+                </h3>
+
+                <p>
+                    Developing communication, cultural awareness,
+                    reasoning and an understanding of society.
+                </p>
+
+            </article>
+
+
+            <article class="academic-card">
+
+                <div class="academic-icon">
+                    ◇
+                </div>
+
+                <span class="academic-number">
+                    04
+                </span>
+
+                <h3>
+                    Co-Curricular Activities
+                </h3>
+
+                <p>
+                    Sports, clubs, leadership and other activities
+                    that support holistic learner development.
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     STATISTICS
+========================================================= -->
+<section class="statistics-section">
+
+    <div class="container statistics-grid">
+
+        <div class="stat-item">
+
+            <strong
+                class="counter"
+                data-target="100"
+            >
+                0
+            </strong>
+
+            <span>%</span>
+
+            <p>
+                Commitment to learner development
+            </p>
+
+        </div>
+
+
+        <div class="stat-item">
+
+            <strong
+                class="counter"
+                data-target="24"
+            >
+                0
+            </strong>
+
+            <span>/7</span>
+
+            <p>
+                A structured boarding environment
+            </p>
+
+        </div>
+
+
+        <div class="stat-item">
+
+            <strong
+                class="counter"
+                data-target="4"
+            >
+                0
+            </strong>
+
+            <p>
+                Core values
+            </p>
+
+        </div>
+
+
+        <div class="stat-item">
+
+            <strong
+                class="counter"
+                data-target="1"
+            >
+                0
+            </strong>
+
+            <span> Community</span>
+
+            <p>
+                Working together for success
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     BOARDING
+========================================================= -->
+<section
+    class="section boarding-section"
+    id="boarding"
+>
+
+    <div class="container boarding-grid">
+
+        <div class="boarding-content">
+
+            <span class="eyebrow">
+                Boarding Life
+            </span>
+
+            <h2>
+                More than a school.
+                <span>A community.</span>
+            </h2>
+
+            <p>
+                Boarding life gives learners the opportunity
+                to develop independence, responsibility,
+                friendship and strong routines within a
+                supportive school community.
+            </p>
+
+
+            <div class="boarding-list">
+
+                <div class="boarding-item">
+
+                    <span class="boarding-check">
+                        ✓
+                    </span>
+
+                    <div>
+                        <strong>
+                            Safe & Structured Environment
+                        </strong>
+
+                        <p>
+                            Clear routines and responsible
+                            supervision throughout boarding life.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="boarding-item">
+
+                    <span class="boarding-check">
+                        ✓
+                    </span>
+
+                    <div>
+                        <strong>
+                            Personal Development
+                        </strong>
+
+                        <p>
+                            Learners develop independence,
+                            responsibility and teamwork.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="boarding-item">
+
+                    <span class="boarding-check">
+                        ✓
+                    </span>
+
+                    <div>
+                        <strong>
+                            Community & Belonging
+                        </strong>
+
+                        <p>
+                            A school community where learners
+                            are encouraged to support one another.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="boarding-image">
+
+            <img
+                src="/images/cleanpic.jpg"
+                alt="Boarding students at school"
+                loading="lazy"
+            >
+
+            <div class="boarding-caption">
+
+                <span>
+                    Boarding Life
+                </span>
+
+                <strong>
+                    Growing together.
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     ADMISSIONS
+========================================================= -->
+<section
+    class="admissions-section"
+    id="admissions"
+>
+
+    <div class="container admissions-container">
+
+        <div class="admissions-content">
+
+            <span class="eyebrow light">
+                Admissions
+            </span>
+
+            <h2>
+                Begin your child's
+                <span>journey with us.</span>
+            </h2>
+
+            <p>
+                Interested in joining Milenge Boarding Secondary
+                School? Our admissions team is available to guide
+                parents and guardians through the admission process.
+            </p>
+
+
+            <div class="admission-steps">
+
+                <div class="admission-step">
+
+                    <span>01</span>
+
+                    <div>
+                        <strong>
+                            Make an enquiry
+                        </strong>
+
+                        <p>
+                            Contact the school for current
+                            admission information.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="admission-step">
+
+                    <span>02</span>
+
+                    <div>
+                        <strong>
+                            Submit required documents
+                        </strong>
+
+                        <p>
+                            Provide the documentation required
+                            by the school.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="admission-step">
+
+                    <span>03</span>
+
+                    <div>
+                        <strong>
+                            Complete admission
+                        </strong>
+
+                        <p>
+                            Follow the school's admission
+                            guidance and reporting process.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="admission-panel">
+
+            <div class="admission-panel-header">
+
+                <span>
+                    2026 Admissions
+                </span>
+
+                <div class="status-indicator">
+                    <span></span>
+                    Enquiries Open
+                </div>
+
+            </div>
+
+            <h3>
+                Ready to get started?
+            </h3>
+
+            <p>
+                Speak to the school administration about
+                admission requirements and availability.
+            </p>
+
+            <a
+                href="#contact"
+                class="button button-light"
+            >
+                Contact Admissions
+                <span>→</span>
+            </a>
+
+            <a
+                href="tel:+260000000000"
+                class="admission-phone"
+            >
+                Call the school
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     NEWS / ANNOUNCEMENTS
+========================================================= -->
+<section
+    class="section news-section"
+    id="news"
+>
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="eyebrow">
+                    Latest Updates
+                </span>
+
+                <h2>
+                    School news &
+                    <span>announcements.</span>
+                </h2>
+
+            </div>
+
+            <a
+                href="#contact"
+                class="text-link"
+            >
+                View school updates →
+            </a>
+
+        </div>
+
+
+        <div class="news-grid">
+
+            <article class="news-card">
+
+                <div class="news-date">
+
+                    <strong>
+                        01
+                    </strong>
+
+                    <span>
+                        OCT
+                    </span>
+
+                </div>
+
+                <div class="news-body">
+
+                    <span class="news-category">
+                        Announcement
+                    </span>
+
+                    <h3>
+                        Welcome to Milenge Boarding Secondary School
+                    </h3>
+
+                    <p>
+                        Important school announcements and
+                        information for parents, guardians
+                        and learners will appear here.
+                    </p>
+
+                    <a href="#contact">
+                        Read more →
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <article class="news-card">
+
+                <div class="news-date">
+
+                    <strong>
+                        02
+                    </strong>
+
+                    <span>
+                        OCT
+                    </span>
+
+                </div>
+
+                <div class="news-body">
+
+                    <span class="news-category">
+                        Academic
+                    </span>
+
+                    <h3>
+                        Supporting academic excellence
+                    </h3>
+
+                    <p>
+                        Follow this section for academic
+                        programmes, examinations and
+                        learner development updates.
+                    </p>
+
+                    <a href="#contact">
+                        Read more →
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <article class="news-card">
+
+                <div class="news-date">
+
+                    <strong>
+                        03
+                    </strong>
+
+                    <span>
+                        OCT
+                    </span>
+
+                </div>
+
+                <div class="news-body">
+
+                    <span class="news-category">
+                        Community
+                    </span>
+
+                    <h3>
+                        Building a stronger school community
+                    </h3>
+
+                    <p>
+                        School activities, events and
+                        community initiatives will be
+                        shared with our school community.
+                    </p>
+
+                    <a href="#contact">
+                        Read more →
+                    </a>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     FAQ
+========================================================= -->
+<section class="faq-section">
+
+    <div class="container faq-container">
+
+        <div class="section-heading centered">
+
+            <span class="eyebrow">
+                Frequently Asked Questions
+            </span>
+
+            <h2>
+                Questions parents
+                <span>often ask.</span>
+            </h2>
+
+        </div>
+
+
+        <div class="faq-list">
+
+            <div class="faq-item">
+
+                <button
+                    type="button"
+                    class="faq-question"
+                    aria-expanded="false"
+                >
+                    <span>
+                        How can I enquire about admission?
+                    </span>
+
+                    <span class="faq-plus">
+                        +
+                    </span>
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        Parents and guardians can contact the
+                        school administration using the contact
+                        information provided below for current
+                        admission requirements and guidance.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <button
+                    type="button"
+                    class="faq-question"
+                    aria-expanded="false"
+                >
+                    <span>
+                        Is the school a boarding school?
+                    </span>
+
+                    <span class="faq-plus">
+                        +
+                    </span>
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        Yes. Milenge Boarding Secondary School
+                        provides a structured boarding environment
+                        designed to support learners' academic and
+                        personal development.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <button
+                    type="button"
+                    class="faq-question"
+                    aria-expanded="false"
+                >
+                    <span>
+                        How can parents receive school updates?
+                    </span>
+
+                    <span class="faq-plus">
+                        +
+                    </span>
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        School announcements and important
+                        information can be published through
+                        the school's official communication
+                        channels and this website.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="faq-item">
+
+                <button
+                    type="button"
+                    class="faq-question"
+                    aria-expanded="false"
+                >
+                    <span>
+                        How can I contact the school?
+                    </span>
+
+                    <span class="faq-plus">
+                        +
+                    </span>
+                </button>
+
+                <div class="faq-answer">
+
+                    <p>
+                        You can use the contact information
+                        provided in the Contact section to
+                        communicate with the school administration.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+ 
+<!-- =========================================================
+     CONTACT
+========================================================= -->
+<section
+    class="section contact-section"
+    id="contact"
+>
+
+    <div class="container contact-grid">
+
+        <div class="contact-information">
+
+            <span class="eyebrow">
+                Get In Touch
+            </span>
+
+            <h2>
+                We're here to
+                <span>help.</span>
+            </h2>
+
+            <p>
+                Whether you are a parent, guardian, learner
+                or member of the community, our school
+                administration is available to assist you.
+            </p>
+
+
+            <div class="contact-details">
+
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        @
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Email
+                        </span>
+
+                        <a href="mailto:info@milengeboardingsecondary.edu.zm">
+                            info@milengeboardingsecondary.edu.zm
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        ☎
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Telephone
+                        </span>
+
+                        <a href="tel:+260000000000">
+                            +260 000 000 000
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        ◉
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Location
+                        </span>
+
+                        <p>
+                            Milenge District, Luapula Province,
+                            Zambia
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTACT FORM -->
+        <div class="contact-form-card">
+
+            <div class="form-header">
+
+                <span>
+                    Send an enquiry
+                </span>
+
+                <h3>
+                    How can we help?
+                </h3>
+
+            </div>
+
+
+            <div
+                id="formMessage"
+                class="form-message"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+
+            <form
+                id="contactForm"
+                method="POST"
+                action="/contact"
+                novalidate
+            >
+
+                <!-- Honeypot -->
+                <div
+                    class="form-hidden"
+                    aria-hidden="true"
+                >
+                    <label for="website">
+                        Website
+                    </label>
+
+                    <input
+                        type="text"
+                        id="website"
+                        name="website"
+                        tabindex="-1"
+                        autocomplete="off"
+                    >
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Your full name"
+                            autocomplete="name"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            maxlength="150"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="subject">
+                        Subject
+                    </label>
+
+                    <select
+                        id="subject"
+                        name="subject"
+                        required
+                    >
+
+                        <option value="">
+                            Select an enquiry type
+                        </option>
+
+                        <option value="admissions">
+                            Admissions
+                        </option>
+
+                        <option value="academics">
+                            Academic Enquiry
+                        </option>
+
+                        <option value="boarding">
+                            Boarding
+                        </option>
+
+                        <option value="general">
+                            General Enquiry
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="message">
+                        Message
+                    </label>
+
+                    <textarea
+                        id="message"
+                        name="message"
+                        rows="5"
+                        maxlength="1000"
+                        placeholder="How can we assist you?"
+                        required
+                    ></textarea>
+
+                    <div class="character-count">
+                        <span id="characterCount">0</span>
+                        / 1000
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="button button-primary form-submit"
+                    id="formSubmit"
+                >
+                    <span>
+                        Send Enquiry
+                    </span>
+
+                    <span aria-hidden="true">
+                        →
+                    </span>
+                </button>
+
+
+                <p class="form-security-note">
+                    Your information is used only to respond
+                    to your enquiry.
+                </p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     FINAL CTA
+========================================================= -->
+<section class="final-cta">
+
+    <div class="container final-cta-inner">
+
+        <div>
+
+            <span class="eyebrow light">
+                Milenge Boarding Secondary School
+            </span>
+
+            <h2>
+                Education today.
+                <span>Leadership tomorrow.</span>
+            </h2>
+
+        </div>
+
+        <a
+            href="#admissions"
+            class="button button-light"
+        >
+            Start Your Enquiry
+            <span>→</span>
+        </a>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+<%- include("../partials/footer.ejs") %>

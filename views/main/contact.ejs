@@ -1,72 +1,457 @@
-<!DOCTYPE html>
-<html>
-<head>
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
- <link href="https://fonts.googleapis.com/css?family=Montserrat:500,700,900|Work+Sans:300" rel="stylesheet">
-   <link rel="icon" href="/images/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/styles/contactus.css" /> 
- <title>Contact Us</title>
-</head>
-<body>
+<%- include("../partials/navBar.ejs") %>
+<!-- =========================================================
+     CONTACT
+========================================================= -->
+<section
+    class="section contact-section"
+    id="contact"
+>
 
-<div class="contact-container">
-  <div class="contact-inner-container">
-    <div class="contact-info-container">
-      <h1 class="contact-heading">Contact Us</h1>
-      <p class="contact-description">
-        We're open for any suggestion.
-      </p>
-      <div class="line"></div>
+    <div class="container contact-grid">
 
-      <div class="contact-details">
-        <h3><i class="fa fa-map-marker icon"></i> Address</h3>
-        <p>Milenge Boma, Milenge, Luapula, Zambia</p>
-      </div>
-      <hr />
+        <div class="contact-information">
 
-      <div class="contact-details">
-        <h3><i class="fa fa-envelope"></i> Email</h3>
-        <p><strong>Email:</strong> <a href="mailto:support@milengesecodary.com" style="color: #fff; text-decoration: none;">support@milengesecodary.com</a></p>
-      </div>
-      <hr />
+            <span class="eyebrow">
+                Get In Touch
+            </span>
 
-      <div class="contact-details">
-        <h3><i class="fa fa-phone"></i> Lets Talk</h3>
-        <p>+260 974446548</p>
-      </div>
-      <hr />
+            <h2>
+                We're here to
+                <span>help.</span>
+            </h2>
 
-      <div class="social-link-container">
-        <i class="fa fa-instagram"></i>
-        <i class="fa fa-facebook"></i>
-        <i class="fa fa-twitter"></i>
-        <i class="fa fa-linkedin"></i>
-      </div>
+            <p>
+                Whether you are a parent, guardian, learner
+                or member of the community, our school
+                administration is available to assist you.
+            </p>
+
+
+            <div class="contact-details">
+
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        @
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Email
+                        </span>
+
+                        <a href="mailto:info@milengeboardingsecondary.edu.zm">
+                            info@milengeboardingsecondary.edu.zm
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        ☎
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Telephone
+                        </span>
+
+                        <a href="tel:+260000000000">
+                            +260 000 000 000
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        ◉
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Location
+                        </span>
+
+                        <p>
+                            Milenge District, Luapula Province,
+                            Zambia
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTACT FORM -->
+        <div class="contact-form-card">
+
+            <div class="form-header">
+
+                <span>
+                    Send an enquiry
+                </span>
+
+                <h3>
+                    How can we help?
+                </h3>
+
+            </div>
+
+
+            <div
+                id="formMessage"
+                class="form-message"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+
+            <form
+                id="contactForm"
+                method="POST"
+                action="/contact"
+                novalidate
+            >
+
+                <!-- Honeypot -->
+                <div
+                    class="form-hidden"
+                    aria-hidden="true"
+                >
+                    <label for="website">
+                        Website
+                    </label>
+
+                    <input
+                        type="text"
+                        id="website"
+                        name="website"
+                        tabindex="-1"
+                        autocomplete="off"
+                    >
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Your full name"
+                            autocomplete="name"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            maxlength="150"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="subject">
+                        Subject
+                    </label>
+
+                    <select
+                        id="subject"
+                        name="subject"
+                        required
+                    >
+
+                        <option value="">
+                            Select an enquiry type
+                        </option>
+
+                        <option value="admissions">
+                            Admissions
+                        </option>
+
+                        <option value="academics">
+                            Academic Enquiry
+                        </option>
+
+                        <option value="boarding">
+                            Boarding
+                        </option>
+
+                        <option value="general">
+                            General Enquiry
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="message">
+                        Message
+                    </label>
+
+                    <textarea
+                        id="message"
+                        name="message"
+                        rows="5"
+                        maxlength="1000"
+                        placeholder="How can we assist you?"
+                        required
+                    ></textarea>
+
+                    <div class="character-count">
+                        <span id="characterCount">0</span>
+                        / 1000
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="button button-primary form-submit"
+                    id="formSubmit"
+                >
+                    <span>
+                        Send Enquiry
+                    </span>
+
+                    <span aria-hidden="true">
+                        →
+                    </span>
+                </button>
+
+
+                <p class="form-security-note">
+                    Your information is used only to respond
+                    to your enquiry.
+                </p>
+
+            </form>
+
+        </div>
+
     </div>
 
-    <div class="contact-form">
-      <form class="form" action="/contactUs" method="post">
-        <div class="form-group">
-          <input type="text" name="senderName" class="input-field form-input" placeholder="Name" required>
-        </div>
-        <div class="form-group">
-          <input type="email" name="emailAddress" class="input-field form-input" placeholder="Email" required>
-        </div>
-        <div id="job-title">
-            <input type="text" name="jobtitle" class="input-field form-input">
-        </div>
-        <div class="form-group">
-          <textarea name="emailMessage" rows="5" class="input-field form-input" placeholder="Message" required></textarea>
-        </div>
-        <div class="form-group">
-          <input type="submit" class="input-field submit-btn" value="Submit" >
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+</section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/gsap.min.js"></script>
-<script src="/scripts/contactUsScript.js"></script>
+
+<!-- =========================================================
+     FINAL CTA
+========================================================= -->
+<section class="final-cta">
+
+    <div class="container final-cta-inner">
+
+        <div>
+
+            <span class="eyebrow light">
+                Milenge Boarding Secondary School
+            </span>
+
+            <h2>
+                Education today.
+                <span>Leadership tomorrow.</span>
+            </h2>
+
+        </div>
+
+        <a
+            href="#admissions"
+            class="button button-light"
+        >
+            Start Your Enquiry
+            <span>→</span>
+        </a>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+<footer class="site-footer">
+
+    <div class="container footer-main">
+
+        <div class="footer-brand">
+
+            <div class="footer-logo-row">
+
+                <img
+                    src="/images/logo.png"
+                    alt="Milenge Boarding Secondary School logo"
+                >
+
+                <img
+                    src="/images/ministryLogo.png"
+                    alt="Ministry of Education logo"
+                    class="ministry-logo"
+                >
+
+            </div>
+
+            <h3>
+                Milenge Boarding
+                <span>Secondary School</span>
+            </h3>
+
+            <p>
+                Education • Discipline • Excellence
+            </p>
+
+            <span class="footer-ministry">
+                Ministry of Education
+            </span>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>
+                School
+            </h4>
+
+            <a href="#about">About Us</a>
+            <a href="#academics">Academics</a>
+            <a href="#boarding">Boarding</a>
+            <a href="#news">News</a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>
+                Admissions
+            </h4>
+
+            <a href="#admissions">
+                Admission Information
+            </a>
+
+            <a href="#contact">
+                Contact Admissions
+            </a>
+
+            <a href="#contact">
+                Enquiries
+            </a>
+
+        </div>
+
+
+        <div class="footer-column">
+
+            <h4>
+                Contact
+            </h4>
+
+            <a href="tel:+260000000000">
+                +260 000 000 000
+            </a>
+
+            <a href="mailto:info@milengeboardingsecondary.edu.zm">
+                Email School
+            </a>
+
+            <span>
+                Milenge District
+            </span>
+
+            <span>
+                Luapula Province, Zambia
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="container footer-bottom">
+
+        <p>
+            © <span id="currentYear"></span>
+            Milenge Boarding Secondary School.
+            All rights reserved.
+        </p>
+
+        <div class="footer-bottom-links">
+
+            <a href="#">
+                Privacy
+            </a>
+
+            <a href="#">
+                Terms
+            </a>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- BACK TO TOP -->
+<button
+    type="button"
+    id="backToTop"
+    class="back-to-top"
+    aria-label="Back to top"
+>
+    ↑
+</button>
+
+
+<script src="/scripts/landing.js" defer></script>
+
 </body>
 </html>
