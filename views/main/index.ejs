@@ -1,4 +1,5 @@
-<%- include("../partials/navBar.ejs") %>
+<%- include("../partials/header.ejs") %>
+<%- include("../partials/announcements.ejs") %>
 <!-- =========================================================
      HERO
 ========================================================= -->
@@ -76,7 +77,7 @@
 
 
     <a
-        href="/about"
+        href="#about"
         class="hero-scroll"
         aria-label="Scroll to about section"
     >
@@ -711,7 +712,7 @@
         <div class="boarding-image">
 
             <img
-                src="/images/cleanpic.jpg"
+                src="/images/bg22.jpg"
                 alt="Boarding students at school"
                 loading="lazy"
             >
@@ -758,7 +759,7 @@
 
             <p>
                 Interested in joining Milenge Boarding Secondary
-                School? Our admissions team is available to guide
+                School? Our school administration is available to guide
                 parents and guardians through the admission process.
             </p>
 
@@ -828,7 +829,7 @@
             <div class="admission-panel-header">
 
                 <span>
-                    2026 Admissions
+                    Admissions
                 </span>
 
                 <div class="status-indicator">
@@ -848,7 +849,7 @@
             </p>
 
             <a
-                href="#contact"
+                href="/contact"
                 class="button button-light"
             >
                 Contact Admissions
@@ -856,7 +857,7 @@
             </a>
 
             <a
-                href="tel:+260000000000"
+                href="tel:+260977222969"
                 class="admission-phone"
             >
                 Call the school
@@ -895,7 +896,7 @@
             </div>
 
             <a
-                href="#contact"
+                href="#news"
                 class="text-link"
             >
                 View school updates →
@@ -936,7 +937,7 @@
                         and learners will appear here.
                     </p>
 
-                    <a href="#contact">
+                    <a href="#news">
                         Read more →
                     </a>
 
@@ -975,7 +976,7 @@
                         learner development updates.
                     </p>
 
-                    <a href="#contact">
+                    <a href="#news">
                         Read more →
                     </a>
 
@@ -1014,7 +1015,7 @@
                         shared with our school community.
                     </p>
 
-                    <a href="#contact">
+                    <a href="#news">
                         Read more →
                     </a>
 
@@ -1180,281 +1181,7 @@
 <!-- =========================================================
      CONTACT
 ========================================================= -->
-<section
-    class="section contact-section"
-    id="contact"
->
-
-    <div class="container contact-grid">
-
-        <div class="contact-information">
-
-            <span class="eyebrow">
-                Get In Touch
-            </span>
-
-            <h2>
-                We're here to
-                <span>help.</span>
-            </h2>
-
-            <p>
-                Whether you are a parent, guardian, learner
-                or member of the community, our school
-                administration is available to assist you.
-            </p>
-
-
-            <div class="contact-details">
-
-                <div class="contact-detail">
-
-                    <div class="contact-icon">
-                        @
-                    </div>
-
-                    <div>
-
-                        <span>
-                            Email
-                        </span>
-
-                        <a href="mailto:info@milengeboardingsecondary.edu.zm">
-                            info@milengeboardingsecondary.edu.zm
-                        </a>
-
-                    </div>
-
-                </div>
-
-
-                <div class="contact-detail">
-
-                    <div class="contact-icon">
-                        ☎
-                    </div>
-
-                    <div>
-
-                        <span>
-                            Telephone
-                        </span>
-
-                        <a href="tel:+260000000000">
-                            +260 000 000 000
-                        </a>
-
-                    </div>
-
-                </div>
-
-
-                <div class="contact-detail">
-
-                    <div class="contact-icon">
-                        ◉
-                    </div>
-
-                    <div>
-
-                        <span>
-                            Location
-                        </span>
-
-                        <p>
-                            Milenge District, Luapula Province,
-                            Zambia
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- CONTACT FORM -->
-        <div class="contact-form-card">
-
-            <div class="form-header">
-
-                <span>
-                    Send an enquiry
-                </span>
-
-                <h3>
-                    How can we help?
-                </h3>
-
-            </div>
-
-
-            <div
-                id="formMessage"
-                class="form-message"
-                role="alert"
-                aria-live="polite"
-            ></div>
-
-
-            <form
-                id="contactForm"
-                method="POST"
-                action="/contact"
-                novalidate
-            >
-
-                <!-- Honeypot -->
-                <div
-                    class="form-hidden"
-                    aria-hidden="true"
-                >
-                    <label for="website">
-                        Website
-                    </label>
-
-                    <input
-                        type="text"
-                        id="website"
-                        name="website"
-                        tabindex="-1"
-                        autocomplete="off"
-                    >
-                </div>
-
-
-                <div class="form-row">
-
-                    <div class="form-group">
-
-                        <label for="name">
-                            Full Name
-                        </label>
-
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            placeholder="Your full name"
-                            autocomplete="name"
-                            maxlength="100"
-                            required
-                        >
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="email">
-                            Email Address
-                        </label>
-
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="you@example.com"
-                            autocomplete="email"
-                            maxlength="150"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="subject">
-                        Subject
-                    </label>
-
-                    <select
-                        id="subject"
-                        name="subject"
-                        required
-                    >
-
-                        <option value="">
-                            Select an enquiry type
-                        </option>
-
-                        <option value="admissions">
-                            Admissions
-                        </option>
-
-                        <option value="academics">
-                            Academic Enquiry
-                        </option>
-
-                        <option value="boarding">
-                            Boarding
-                        </option>
-
-                        <option value="general">
-                            General Enquiry
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="message">
-                        Message
-                    </label>
-
-                    <textarea
-                        id="message"
-                        name="message"
-                        rows="5"
-                        maxlength="1000"
-                        placeholder="How can we assist you?"
-                        required
-                    ></textarea>
-
-                    <div class="character-count">
-                        <span id="characterCount">0</span>
-                        / 1000
-                    </div>
-
-                </div>
-
-
-                <button
-                    type="submit"
-                    class="button button-primary form-submit"
-                    id="formSubmit"
-                >
-                    <span>
-                        Send Enquiry
-                    </span>
-
-                    <span aria-hidden="true">
-                        →
-                    </span>
-                </button>
-
-
-                <p class="form-security-note">
-                    Your information is used only to respond
-                    to your enquiry.
-                </p>
-
-            </form>
-
-        </div>
-
-    </div>
-
-</section>
-
+<%- include("../partials/contact-us-page.ejs") %>
 
 <!-- =========================================================
      FINAL CTA
@@ -1477,7 +1204,7 @@
         </div>
 
         <a
-            href="#admissions"
+            href="/contact"
             class="button button-light"
         >
             Start Your Enquiry

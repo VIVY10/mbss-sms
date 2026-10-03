@@ -1,0 +1,126 @@
+<!-- =========================================================
+     SCHOOL NOTIFICATION / ANNOUNCEMENT TICKER
+========================================================== -->
+<section
+    class="notification-bar"
+    aria-label="School announcements"
+>
+
+    <div class="notification-container">
+
+        <!-- Fixed notification label -->
+        <div class="notification-label">
+
+            <span
+                class="notification-bell"
+                aria-hidden="true"
+            >
+                <svg
+                    viewBox="0 0 24 24"
+                    focusable="false"
+                >
+                    <path
+                        d="M18 8a6 6 0 0 0-12 0
+                           c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10
+                           21h4"
+                    />
+                </svg>
+            </span>
+
+            <span>
+                Announcements
+            </span>
+
+        </div>
+
+
+        <!-- Moving notification area -->
+        <div
+            class="notification-track-wrapper"
+            aria-live="polite"
+        >
+
+            <div
+                class="notification-track"
+                id="notificationTrack"
+            >
+
+                <!-- Notification 2 -->
+                <a
+                    href="/news"
+                    class="notification-item"
+                >
+
+                    <span class="notification-dot"></span>
+
+                    <span>
+                        this is a first test announcement
+                    </span>
+
+                    <span class="notification-link">
+                        View Notice →
+                    </span>
+
+                </a>
+
+
+                <span
+                    class="notification-separator"
+                    aria-hidden="true"
+                >
+                    •
+                </span>
+
+
+                <!-- Notification 3 -->
+                <a
+                    href="/news"
+                    class="notification-item"
+                >
+
+                    <span class="notification-dot"></span>
+
+                    <span>
+                       this is a second test announcement
+                    </span>
+
+                    <span class="notification-link">
+                        View Notice →
+                    </span>
+
+                </a>
+            </div>
+
+        </div>
+
+
+        <!-- Pause / play -->
+        <button
+            type="button"
+            class="notification-control"
+            id="notificationControl"
+            aria-label="Pause announcements"
+            title="Pause announcements"
+        >
+
+            <svg
+                class="pause-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+            >
+                <path d="M8 5v14M16 5v14"/>
+            </svg>
+
+            <svg
+                class="play-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+            >
+                <path d="m8 5 11 7-11 7V5Z"/>
+            </svg>
+
+        </button>
+
+    </div>
+
+</section>

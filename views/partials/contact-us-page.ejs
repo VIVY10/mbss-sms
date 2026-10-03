@@ -1,0 +1,274 @@
+<section
+    class="section contact-section"
+    id="contact"
+>
+
+    <div class="container contact-grid">
+
+        <div class="contact-information">
+
+            <span class="eyebrow">
+                Get In Touch
+            </span>
+
+            <h2>
+                We're here to
+                <span>help.</span>
+            </h2>
+
+            <p>
+                Whether you are a parent, guardian, learner
+                or member of the community, our school
+                administration is available to assist you.
+            </p>
+
+
+            <div class="contact-details">
+
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        @
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Email
+                        </span>
+
+                        <a href="mailto:milengesecondary2@gmail.com">
+                            milengesecondary2@gmail.com
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        ☎
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Phone
+                        </span>
+
+                        <a href="tel:+260977222969">
+                            +260 977 222 969
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="contact-detail">
+
+                    <div class="contact-icon">
+                        ◉
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Location
+                        </span>
+
+                        <p>
+                            Milenge District, Luapula Province,
+                            Zambia
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTACT FORM -->
+        <div class="contact-form-card">
+
+            <div class="form-header">
+
+                <span>
+                    Send an enquiry
+                </span>
+
+                <h3>
+                    How can we help?
+                </h3>
+
+            </div>
+
+
+            <div
+                id="formMessage"
+                class="form-message"
+                role="alert"
+                aria-live="polite"
+            ></div>
+
+
+            <form
+                id="contactForm"
+            >
+
+                <!-- Honeypot -->
+                <div
+                class="form-hidden"
+                aria-hidden="true"
+            >
+                <label for="companyWebsite">
+                    Website
+                </label>
+
+                <input
+                    type="text"
+                    id="companyWebsite"
+                    name="companyWebsite"
+                    tabindex="-1"
+                    autocomplete="off"
+                    aria-hidden="true"
+                />
+            </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="senderName"
+                            placeholder="Your full name"
+                            autocomplete="name"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+                    <input type="text" name="jobtitle" id="jobtitle" hidden />
+
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="emailAddress"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            maxlength="150"
+                            required
+                        />
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="subject">
+                        Subject
+                    </label>
+
+                    <select
+                        id="subject"
+                        name="subject"
+                        required
+                    >
+
+                        <option value="">
+                            Select an enquiry type
+                        </option>
+
+                        <option value="admissions">
+                            Admissions
+                        </option>
+
+                        <option value="academics">
+                            Academic Enquiry
+                        </option>
+
+                        <option value="boarding">
+                            Boarding
+                        </option>
+
+                        <option value="general">
+                            General Enquiry
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="message">
+                        Message
+                    </label>
+
+                    <textarea
+                        id="message"
+                        name="emailMessage"
+                        rows="5"
+                        maxlength="1000"
+                        placeholder="How can we assist you?"
+                        required
+                    ></textarea>
+
+                    <div class="character-count">
+                        <span id="characterCount">0</span>
+                        / 1000
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="button button-primary form-submit"
+                    id="formSubmit"
+                >
+                    <span>
+                        Send Enquiry
+                    </span>
+
+                    <span aria-hidden="true">
+                        →
+                    </span>
+                </button>
+
+
+                <p class="form-security-note">
+                    Your information is used only to respond
+                    to your enquiry.
+                </p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>

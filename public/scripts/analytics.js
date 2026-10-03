@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
-
+ 
     // Set default dates
     const endDate = new Date();
     const startDate = new Date();

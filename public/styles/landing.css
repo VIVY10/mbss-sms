@@ -184,7 +184,7 @@ button {
     gap: 13px;
     min-width: 0;
 }
-
+ 
 .school-logo-wrap {
     width: 58px;
     height: 58px;
@@ -196,6 +196,7 @@ button {
 .school-logo {
     width: 100%;
     height: 100%;
+    border-radius: 30%;
     object-fit: contain;
 }
 

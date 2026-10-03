@@ -846,6 +846,14 @@ const contactusValidationRules = () => [
     .withMessage("Sender name contains invalid characters.")
     .escape(),
 
+  body("subject")
+    .trim()
+    .notEmpty()
+    .withMessage("subject is required.")
+    .isLength({ max: 300 })
+    .withMessage("Message is too long.")
+    .escape(),
+
   body("emailAddress")
     .trim()
     .notEmpty()
@@ -862,7 +870,7 @@ const contactusValidationRules = () => [
     .withMessage("Message is too long.")
     .escape(),
 
-  body("jobtitle")
+  body("companyWebsite")
     .optional({ values: "falsy" })
     .trim()
     .isLength({ max: 100 })

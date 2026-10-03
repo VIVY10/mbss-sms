@@ -7,9 +7,9 @@ const controller = require('../controllers/contactController');
 const router = express.Router();
 
 router.get('/contact', controller.showContactPage);
-
+  
 router.post(
-    '/contactUs',
+    '/contact',
     contactusValidationRules(),
     validate,
     controller.sendContactMessage

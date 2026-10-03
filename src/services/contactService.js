@@ -1,26 +1,19 @@
-const { sendContactEmail } = require('../config/mailer.js');
+const { sendContactEmail } = require("../config/mailer.js");
 
+async function sendContactMessage(data) {
+  await sendContactEmail(
+    data.senderName,
+    data.subject,
+    data.emailAddress,
+    data.emailMessage,
+  );
 
-async function sendContactMessage({
-    senderName,
-    emailAddress,
-    emailMessage,
-    jobtitle
-}) {
-    if (jobtitle !== '') {
-        return { sent: false };
-    }
-
-    await sendContactEmail({
-        senderName,
-        emailAddress,
-        emailMessage
-    });
-
-    return { sent: true };
+  return {
+    success: true,
+    message: "Your enquiry has been sent successfully."
+  };
 }
 
-
 module.exports = {
-    sendContactMessage
+  sendContactMessage,
 };

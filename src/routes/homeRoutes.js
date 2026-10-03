@@ -18,10 +18,6 @@ router.get("/boarding", (req, res) => {
   res.render("./main/boarding");
 });
 
-router.get("/admissions", (req, res) => {
-  res.render("./main/admissions");
-});
-
 router.get("/news", (req, res) => {
   res.render("./main/news");
 });

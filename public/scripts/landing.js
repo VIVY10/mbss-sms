@@ -28,11 +28,7 @@
       return;
     }
 
-    if (window.scrollY > 20) {
-      header.classList.add("scrolled");
-    } else {
-      header.classList.remove("scrolled");
-    }
+    header.classList.toggle("scrolled", window.scrollY > 20);
   }
 
   window.addEventListener("scroll", updateHeader, { passive: true });
@@ -130,6 +126,7 @@
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
           ? "auto"
           : "smooth",
+
         block: "start",
       });
     });
@@ -216,8 +213,9 @@
       const isOpen = item.classList.contains("open");
 
       /*
-       * Close other questions.
+       * Close other questions
        */
+
       $$(".faq-item").forEach((otherItem) => {
         if (otherItem !== item) {
           otherItem.classList.remove("open");
@@ -231,8 +229,9 @@
       });
 
       /*
-       * Toggle current question.
+       * Toggle current question
        */
+
       item.classList.toggle("open", !isOpen);
 
       button.setAttribute("aria-expanded", String(!isOpen));
@@ -251,6 +250,24 @@
   const messageInput = $("#message");
   const characterCount = $("#characterCount");
 
+  /*
+   * Only access form fields if the form exists.
+   */
+
+  const fields = contactForm
+    ? $$("input:not([type='hidden']), select, textarea", contactForm)
+    : [];
+
+  /*
+   * Honeypot
+   */
+
+  const honeypot = contactForm ? $("#companyWebsite", contactForm) : null;
+
+  /*
+   * Character counter
+   */
+
   if (messageInput && characterCount) {
     const updateCharacterCount = () => {
       characterCount.textContent = messageInput.value.length;
@@ -262,10 +279,9 @@
   }
 
   /*
-   * Client-side validation.
-   *
-   * IMPORTANT:
-   * Server-side validation must ALSO be implemented.
+   * =========================================================
+   * FIELD VALIDATION
+   * =========================================================
    */
 
   function validateField(field) {
@@ -277,9 +293,17 @@
 
     let valid = true;
 
+    /*
+     * Required fields
+     */
+
     if (field.required && !value) {
       valid = false;
     }
+
+    /*
+     * Email validation
+     */
 
     if (field.type === "email" && value) {
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -287,10 +311,20 @@
       valid = emailPattern.test(value);
     }
 
+    /*
+     * Apply validation class
+     */
+
     field.classList.toggle("invalid", !valid);
 
     return valid;
   }
+
+  /*
+   * =========================================================
+   * CONTACT FORM SUBMISSION
+   * =========================================================
+   */
 
   if (contactForm) {
     contactForm.addEventListener("submit", async (event) => {
@@ -299,9 +333,10 @@
       clearFormMessage();
 
       /*
-       * Honeypot protection.
+       * =================================================
+       * HONEYPOT CHECK
+       * =================================================
        */
-      const honeypot = $("#website");
 
       if (honeypot && honeypot.value.trim() !== "") {
         showFormMessage("Your enquiry could not be submitted.", "error");
@@ -309,7 +344,11 @@
         return;
       }
 
-      const fields = [$("#name"), $("#email"), $("#subject"), $("#message")];
+      /*
+       * =================================================
+       * VALIDATE REAL FORM FIELDS
+       * =================================================
+       */
 
       const valid = fields.every(validateField);
 
@@ -319,7 +358,7 @@
           "error",
         );
 
-        const firstInvalid = $(".invalid");
+        const firstInvalid = $(".invalid", contactForm);
 
         if (firstInvalid) {
           firstInvalid.focus();
@@ -329,14 +368,53 @@
       }
 
       /*
-       * Additional length checks.
+       * =================================================
+       * ADDITIONAL VALIDATION
+       * =================================================
        */
-      const name = $("#name").value.trim();
 
-      const message = $("#message").value.trim();
+      const nameInput = $("#name", contactForm);
+
+      const emailInput = $("#email", contactForm);
+
+      const subjectInput = $("#subject", contactForm);
+
+      const messageInput = $("#message", contactForm);
+
+      const name = nameInput ? nameInput.value.trim() : "";
+
+      const email = emailInput ? emailInput.value.trim() : "";
+
+      const subject = subjectInput ? subjectInput.value.trim() : "";
+
+      const message = messageInput ? messageInput.value.trim() : "";
 
       if (name.length < 2 || name.length > 100) {
         showFormMessage("Please enter a valid name.", "error");
+
+        if (nameInput) {
+          nameInput.focus();
+        }
+
+        return;
+      }
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showFormMessage("Please enter a valid email address.", "error");
+
+        if (emailInput) {
+          emailInput.focus();
+        }
+
+        return;
+      }
+
+      if (!subject) {
+        showFormMessage("Please select an enquiry type.", "error");
+
+        if (subjectInput) {
+          subjectInput.focus();
+        }
 
         return;
       }
@@ -347,15 +425,24 @@
           "error",
         );
 
+        if (messageInput) {
+          messageInput.focus();
+        }
+
         return;
       }
 
       /*
-       * Disable submission while sending.
+       * =================================================
+       * DISABLE SUBMIT BUTTON
+       * =================================================
        */
-      formSubmit.disabled = true;
 
-      const submitText = $("span:first-child", formSubmit);
+      if (formSubmit) {
+        formSubmit.disabled = true;
+      }
+
+      const submitText = formSubmit ? $("span:first-child", formSubmit) : null;
 
       const originalText = submitText ? submitText.textContent : "Send Enquiry";
 
@@ -363,32 +450,58 @@
         submitText.textContent = "Sending...";
       }
 
+      /*
+       * =================================================
+       * SEND REQUEST
+       * =================================================
+       */
+
       try {
         const formData = new FormData(contactForm);
 
-        const response = await fetch(contactForm.action, {
+        const payload = Object.fromEntries(formData.entries());
+
+        const response = await fetch("/contact", {
           method: "POST",
-          body: formData,
+
           credentials: "same-origin",
+
           headers: {
             Accept: "application/json",
+
+            "Content-Type": "application/json",
           },
+
+          body: JSON.stringify(payload),
         });
 
         /*
-         * Do not trust HTTP 200 alone.
+         * Safely parse response
          */
+
         let data = null;
 
         try {
           data = await response.json();
-        } catch {
-          data = null;
+        } catch (parseError) {
+          throw new Error("The server returned an invalid response.");
         }
+
+        /*
+         * =================================================
+         * RESPONSE CHECK
+         * =================================================
+         */
 
         if (!response.ok || !data || data.success !== true) {
           throw new Error(data?.message || "Unable to send your enquiry.");
         }
+
+        /*
+         * =================================================
+         * SUCCESS
+         * =================================================
+         */
 
         showFormMessage(
           data.message || "Your enquiry has been sent successfully.",
@@ -405,16 +518,15 @@
           field.classList.remove("invalid");
         });
       } catch (error) {
-        /*
-         * Do not expose technical errors
-         * to public users.
-         */
         showFormMessage(
-          "We could not send your enquiry. Please try again later.",
+          error.message ||
+            "We could not send your enquiry. Please try again later.",
           "error",
         );
       } finally {
-        formSubmit.disabled = false;
+        if (formSubmit) {
+          formSubmit.disabled = false;
+        }
 
         if (submitText) {
           submitText.textContent = originalText;
@@ -423,16 +535,21 @@
     });
 
     /*
-     * Validate on blur.
+     * =========================================================
+     * VALIDATE ON BLUR
+     * =========================================================
      */
-    [$("#name"), $("#email"), $("#subject"), $("#message")].forEach((field) => {
-      if (!field) {
-        return;
-      }
 
+    fields.forEach((field) => {
       field.addEventListener("blur", () => validateField(field));
     });
   }
+
+  /*
+   * =========================================================
+   * FORM MESSAGE
+   * =========================================================
+   */
 
   function showFormMessage(message, type) {
     if (!formMessage) {
@@ -468,12 +585,15 @@
       () => {
         backToTop.classList.toggle("visible", window.scrollY > 600);
       },
-      { passive: true },
+      {
+        passive: true,
+      },
     );
 
     backToTop.addEventListener("click", () => {
       window.scrollTo({
         top: 0,
+
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
           ? "auto"
           : "smooth",
@@ -496,9 +616,6 @@
   /*
    * =========================================================
    * IMAGE FALLBACK
-   *
-   * Prevents a broken image from destroying the layout.
-   * Replace the fallback with your preferred placeholder.
    * =========================================================
    */
 
@@ -508,131 +625,115 @@
       () => {
         image.classList.add("image-load-error");
       },
-      { once: true },
+      {
+        once: true,
+      },
     );
   });
 
-  /* * ========================================================= * LOGIN DROPDOWN * ========================================================= */ const loginDropdown =
-    document.querySelector(".login-dropdown");
-  const loginDropdownButton = document.querySelector("#loginDropdownButton");
+  /*
+   * =========================================================
+   * LOGIN DROPDOWN
+   * =========================================================
+   */
+
+  const loginDropdown = $(".login-dropdown");
+
+  const loginDropdownButton = $("#loginDropdownButton");
+
   if (loginDropdown && loginDropdownButton) {
-    const loginMenu = document.querySelector("#loginDropdownMenu");
+    const loginMenu = $("#loginDropdownMenu");
+
     function closeLoginDropdown() {
       loginDropdown.classList.remove("open");
+
       loginDropdownButton.setAttribute("aria-expanded", "false");
     }
+
     function toggleLoginDropdown() {
       const isOpen = loginDropdown.classList.contains("open");
+
       if (isOpen) {
         closeLoginDropdown();
       } else {
         loginDropdown.classList.add("open");
+
         loginDropdownButton.setAttribute("aria-expanded", "true");
       }
     }
+
     loginDropdownButton.addEventListener("click", (event) => {
       event.stopPropagation();
+
       toggleLoginDropdown();
     });
-    /* * Close when clicking outside. */ document.addEventListener(
-      "click",
-      (event) => {
-        if (!loginDropdown.contains(event.target)) {
-          closeLoginDropdown();
-        }
-      },
-    );
-    /* * Close with Escape. */ document.addEventListener("keydown", (event) => {
+
+    document.addEventListener("click", (event) => {
+      if (!loginDropdown.contains(event.target)) {
+        closeLoginDropdown();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         closeLoginDropdown();
+
         loginDropdownButton.focus();
       }
     });
-    /* * Prevent clicks inside the menu from * bubbling to the document handler. */ if (
-      loginMenu
-    ) {
+
+    if (loginMenu) {
       loginMenu.addEventListener("click", (event) => {
         event.stopPropagation();
       });
     }
   }
 
-document.addEventListener("DOMContentLoaded", () => {
+  /*
+   * =========================================================
+   * NOTIFICATION BAR
+   * =========================================================
+   */
 
-    const notificationBar =
-        document.querySelector(".notification-bar");
+  const notificationBar = $(".notification-bar");
 
-    const notificationTrack =
-        document.querySelector("#notificationTrack");
+  const notificationTrack = $("#notificationTrack");
 
-    const notificationControl =
-        document.querySelector("#notificationControl");
+  const notificationControl = $("#notificationControl");
 
-
-    if (
-        !notificationBar ||
-        !notificationTrack ||
-        !notificationControl
-    ) {
-        return;
-    }
-
-
-    /* =========================================================
-       PAUSE / PLAY
-    ========================================================== */
+  if (notificationBar && notificationTrack && notificationControl) {
+    /*
+     * PAUSE / PLAY
+     */
 
     notificationControl.addEventListener("click", () => {
+      const isPaused = notificationBar.classList.toggle("is-paused");
 
-        const isPaused =
-            notificationBar.classList.toggle("is-paused");
+      notificationControl.setAttribute(
+        "aria-label",
+        isPaused ? "Play announcements" : "Pause announcements",
+      );
 
+      notificationControl.setAttribute(
+        "title",
+        isPaused ? "Play announcements" : "Pause announcements",
+      );
 
-        notificationControl.setAttribute(
-            "aria-label",
-            isPaused
-                ? "Play announcements"
-                : "Pause announcements"
-        );
-
-
-        notificationControl.setAttribute(
-            "title",
-            isPaused
-                ? "Play announcements"
-                : "Pause announcements"
-        );
-
+      notificationTrack.style.animationPlayState = isPaused
+        ? "paused"
+        : "running";
     });
 
+    /*
+     * PAUSE WHEN TAB IS HIDDEN
+     */
 
-    /* =========================================================
-       PAUSE WHEN TAB IS NOT VISIBLE
-    ========================================================== */
-
-    document.addEventListener(
-        "visibilitychange",
-        () => {
-
-            if (document.hidden) {
-
-                notificationTrack.style
-                    .animationPlayState = "paused";
-
-            } else if (
-                !notificationBar.classList.contains(
-                    "is-paused"
-                )
-            ) {
-
-                notificationTrack.style
-                    .animationPlayState = "running";
-
-            }
-
-        }
-    );
-
-});
-
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        notificationTrack.style.animationPlayState = "paused";
+      } else if (!notificationBar.classList.contains("is-paused")) {
+        notificationTrack.style.animationPlayState = "running";
+      }
+    });
+  }
 })();

@@ -2,7 +2,7 @@
 const axios = require('axios');
 const logger = require('../config/loggerConfig');
 
-const geoCache = new Map(); // Simple in-memory cache (or use Redis in production)
+const geoCache = new Map(); // Simple in-memory cache (Redis in production)
 
 async function getGeoLocation(ip) {
     if (!ip || ip === '::1' || ip.startsWith('127.') || ip.startsWith('192.168.')) {

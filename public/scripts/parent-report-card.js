@@ -32,7 +32,7 @@
 
   function validate(payload) {
     if (!payload.schoolyearid || !payload.termid || !payload.examno || !payload.examid) {
-      showStatus("Please select school year, term and exam type.", "error");
+      showStatus("Please select school year, term, exam type and enter correct exam number.", "error");
       return false;
     }
     return true;
