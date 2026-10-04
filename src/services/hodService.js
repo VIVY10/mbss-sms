@@ -5,7 +5,7 @@ const examModel = require('../models/examModel');
 exports.getHodDashboardStats = async (departmentid, termid) => {
 
   const [
-    teachers,
+    teachers, 
     subjects,
     classSubjects,
     unallocatedSubjects,
@@ -35,4 +35,12 @@ exports.getdepartmentTeachers = async (departmentid, termid) => {
   const departmentTeachers = await  dashboardModel.getTermDepartmentTeachersStats(departmentid, termid)
 
   return departmentTeachers;
+};
+
+
+exports.getClassAllocations = async (termid, departmentid) => {
+
+  const results = await  dashboardModel.department_teaching_allocation(termid, departmentid)
+
+  return results;
 };

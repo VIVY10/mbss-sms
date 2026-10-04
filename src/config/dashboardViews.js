@@ -1,27 +1,3 @@
-// module.exports = {
-//     admin: {
-//         view: "admin/adminDashboard",
-//         dataKey: "user"
-//     },
-
-//     teacher: {
-//         view: "teacher/teacherDashboard",
-//         dataKey: "user",
-        
-//     },
-
-//     HOD: {
-//         view: "hod/hod-dashboard",
-//         dataKey: "user",
-//     },
-
-//     Student: {
-//         view: "pupil/pupilDashboard",
-//         dataKey: "pupil"
-//     }
-// };
-
-
 const dashboardService = require("../services/dashboardService");
 const dashboardController = require("../controllers/dashboardController")
 

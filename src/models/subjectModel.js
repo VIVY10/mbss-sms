@@ -59,7 +59,19 @@ exports.getSubjects = () =>
       ORDER BY s.subjectcode ASC
       `
     )
+// ==================== CLASS SUBJECT OPTIONS ====================
 
+exports.getDepartmentSubjects = (departmentId) =>
+    query(
+      `
+      SELECT
+        s.subjectcode,
+        s.subjectname
+      FROM subjects AS s
+      WHERE s.departmentid = ?
+      ORDER BY s.subjectcode ASC
+      `, [departmentId]
+    )
 // ==================== FIND CLASS SUBJECT ====================
 
 exports.findClassSubject = (classid, subjectcode) =>

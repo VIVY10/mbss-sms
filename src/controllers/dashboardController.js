@@ -75,6 +75,7 @@ exports.getHodDashboardStats = async (teacherid) => {
     );
 
     const stats = {
+      department: foundDepartment[0],
       teachers: results["teachers"][0].teachers,
       subjects: results["subjects"][0].subjects,
       classSubjects: results["classSubjects"][0].classSubjects,
@@ -109,14 +110,14 @@ exports.getTeacherDashboardStats = async (teacherid) => {
 
 }
 
-exports.ourTeam = (req, res) => {
-  res.render("./main/ourteam");
-};
+// exports.ourTeam = (req, res) => {
+//   res.render("./main/ourteam");
+// };
 
-exports.gallery = (req, res) => {
-  res.render("./main/gallery");
-};
+// exports.gallery = (req, res) => {
+//   res.render("./main/gallery");
+// };
 
-exports.academics = (req, res) => {
-  res.render("./main/academic");
-};
+// exports.academics = (req, res) => {
+//   res.render("./main/academic");
+// };

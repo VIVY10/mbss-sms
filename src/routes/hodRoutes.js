@@ -10,19 +10,19 @@ router.get("/hod/dashboard", authChecker, dashboardController.showDashboard);
 
 router.get("/myClasses", authChecker, controller.showHodClasses);
 
-// router.get("/hod/teachers", authChecker, controller.repartmentTeachers);
+router.get("/hod/teachers", authChecker, controller.departmentTeachers);
 
-// router.get(
-//   "/hod/subject-allocations",
-//   authChecker,
-//   controller.subjectAllocations,
-// );
+router.get(
+  "/hod/subject-allocations",
+  authChecker,
+  controller.subjectAllocations,
+);
 
-// router.get("/hod/class-subjects", authChecker, controller.classSubjects);
+router.get("/hod/class-subjects", authChecker, controller.classSubjects);
 
-// router.get("/hod/marks", authChecker, controller.marks);
+router.get("/hod/marks", authChecker, controller.marks);
 
-// router.get("/hod/results", authChecker, controller.results);
+router.get("/hod/results", authChecker, controller.results);
 
 // router.get("/hod/progress", authChecker, controller.progress);
 

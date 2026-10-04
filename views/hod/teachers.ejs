@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include("../partials/hod/head", { pageTitle: "Department Teachers" }) %>
+    <%- include("../partials/head", { pageTitle: "Department Teachers" }) %>
 </head>
 <body>
 <div class="app-shell">
-    <%- include("../partials/hod/sidebar", { currentPage: "teachers" }) %>
+    <%- include("../partials/hod-sidebar", { currentPage: "teachers" }) %>
     <main class="main-content">
-        <%- include("../partials/hod/topbar", { pageTitle: "Department Teachers", eyebrow: "STAFF" }) %>
+        <%- include("../partials/topbar", { pageTitle: "Department Teachers", eyebrow: "STAFF" }) %>
         <div class="content-container">
             <section class="module-page-header">
                 <div>
@@ -92,9 +92,9 @@
 
                             <tbody>
 
-                            <% if (typeof stats.departmentTeachers !== 'undefined' && stats.departmentTeachers.length) { %>
+                            <% if (typeof departmentTeachers !== 'undefined' && departmentTeachers.length) { %>
 
-                                <% stats.departmentTeachers.forEach(teacher => { %>
+                                <% departmentTeachers.forEach(teacher => { %>
 
                                     <tr>
 
@@ -209,6 +209,6 @@
         </div>
     </main>
 </div>
-<%- include("../partials/hod/scripts") %>
+<%- include("../partials/scripts") %>
 </body>
 </html>

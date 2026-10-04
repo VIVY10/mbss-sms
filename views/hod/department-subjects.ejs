@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include("../partials/hod/head", { pageTitle: "Class Subject Status" }) %>
+    <%- include("../partials/head", { pageTitle: "Class Subject Status" }) %>
 </head>
 <body>
 <div class="app-shell">
-    <%- include("../partials/hod/sidebar", { currentPage: "class-subjects" }) %>
+    <%- include("../partials/hod-sidebar", { currentPage: "class-subjects" }) %>
     <main class="main-content">
-        <%- include("../partials/hod/topbar", { pageTitle: "Class Subject Status", eyebrow: "CLASS CONFIGURATION" }) %>
+        <%- include("../partials/topbar", { pageTitle: "Class Subject Status", eyebrow: "CLASS CONFIGURATION" }) %>
         <div class="content-container">
             <section class="module-page-header">
                 <div>
@@ -33,6 +33,7 @@
 
                 </div>
 
+            <div class="allocation-grid">
 
                 <div class="data-card">
 
@@ -78,31 +79,24 @@
 
                             <tr>
                                 <th>Class</th>
-                                <th>Level</th>
                                 <th>Subjects</th>
                                 <th>Teachers</th>
                                 <th>Configuration</th>
-                                <th></th>
+                                <th>Action</th>
                             </tr>
 
                             </thead>
 
                             <tbody>
 
-                            <% if (typeof stats.classStatuses !== 'undefined' && stats.classStatuses.length) { %>
+                            <% if (typeof allocations !== 'undefined' && allocations.length) { %>
 
-                                <% stats.classStatuses.forEach(item => { %>
+                                <% allocations.forEach(item => { %>
 
                                     <tr>
-
-                                        <td>
-                                            <strong>
-                                                <%= item.class %>
-                                            </strong>
-                                        </td>
-
                                         <td>
                                             <%= item.levelname %>
+                                            <%= item.class %>
                                         </td>
 
                                         <td>
@@ -154,15 +148,6 @@
 
                                 <% }) %>
 
-                            <% } else { %>
-
-                                <tr>
-                                    <td colspan="6"
-                                        class="empty-state">
-                                        No class data available.
-                                    </td>
-                                </tr>
-
                             <% } %>
 
                             </tbody>
@@ -173,6 +158,80 @@
 
                 </div>
 
+                    <div class="data-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h4>Department Subjects</h4>
+                                <p>subjects found in the department.</p>
+                            </div>
+
+                            <span class="danger-count">
+                                <%= departmentSubjects.length?? 0 %>
+                            </span>
+
+                        </div>
+
+
+                        <div class="attention-list">
+
+                            <% if (typeof departmentSubjects !== 'undefined' && departmentSubjects.length) { %>
+
+                                <% departmentSubjects.forEach(item => { %>
+
+                                    <div class="attention-item">
+
+                                        <div class="attention-icon">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                        </div>
+
+                                        <div class="attention-info">
+
+                                            <strong>
+                                                <%= item.subjectcode %>
+                                                <%= item.subjectname %>
+                                            </strong>
+
+                                            <small>
+                                                No teacher allocated
+                                            </small>
+
+                                        </div>
+
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            Allocate
+                                        </button>
+
+                                    </div>
+
+                                <% }) %>
+
+                            <% } else { %>
+
+                                <div class="success-message">
+
+                                    <i class="bi bi-check-circle"></i>
+
+                                    <div>
+                                        <strong>No Subjects configured for your department</strong>
+                                        <small>
+                                            Request Admin to allocate subjects to your department.
+                                        </small>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-success" id="sendDepartmentSubjectRequest">
+                                        Send Request
+                                    </button>
+
+                                </div>
+
+                            <% } %>
+
+                        </div>
+
+                    </div>
+            </div>
+
             </section>
 
             <footer class="dashboard-footer">
@@ -182,6 +241,6 @@
         </div>
     </main>
 </div>
-<%- include("../partials/hod/scripts") %>
+<%- include("../partials/scripts") %>
 </body>
 </html>

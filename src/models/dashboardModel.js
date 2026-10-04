@@ -182,7 +182,8 @@ exports.department_teaching_allocation = (termid, departmentid) =>
 
         ta.teacherid,
 
-        CONCAT(tchr.fname, ' ', tchr.lname) AS teacher_name,
+        tchr.fname,
+        tchr.lname,
 
         ta.end_date
 

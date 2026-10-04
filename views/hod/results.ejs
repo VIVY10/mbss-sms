@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include("../partials/hod/head", { pageTitle: "Search Pupil's Results" }) %>
+    <%- include("../partials/head", { pageTitle: "Search Pupil's Results" }) %>
 </head>
 <body>
 <div class="app-shell">
-    <%- include("../partials/hod/sidebar", { currentPage: "results" }) %>
+    <%- include("../partials/hod-sidebar", { currentPage: "results" }) %>
     <main class="main-content">
-        <%- include("../partials/hod/topbar", { pageTitle: "Search Pupil's Results", eyebrow: "RESULTS" }) %>
+        <%- include("../partials/topbar", { pageTitle: "Search Pupil's Results", eyebrow: "RESULTS" }) %>
         <div class="content-container">
             <section class="module-page-header">
                 <div>
@@ -16,7 +16,7 @@
                 </div>
                 <a href="/dashboard" class="btn btn-light"><i class="bi bi-arrow-left"></i> Dashboard</a>
             </section>
-                        <section id="results"
+            <section id="results"
                      class="dashboard-section">
 
                 <div class="section-heading">
@@ -157,6 +157,6 @@
         </div>
     </main>
 </div>
-<%- include("../partials/hod/scripts") %>
+<%- include("../partials/scripts") %>
 </body>
 </html>

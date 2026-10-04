@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include("../partials/hod/head", { pageTitle: "Subject & Teaching Allocations" }) %>
+    <%- include("../partials/head", { pageTitle: "Subject & Teaching Allocations" }) %>
 </head>
 <body>
 <div class="app-shell">
-    <%- include("../partials/hod/sidebar", { currentPage: "subject-allocations" }) %>
+    <%- include("../partials/hod-sidebar", { currentPage: "subject-allocations" }) %>
     <main class="main-content">
-        <%- include("../partials/hod/topbar", { pageTitle: "Subject & Teaching Allocations", eyebrow: "TEACHING STRUCTURE" }) %>
+        <%- include("../partials/topbar", { pageTitle: "Subject & Teaching Allocations", eyebrow: "TEACHING STRUCTURE" }) %>
         <div class="content-container">
             <section class="module-page-header">
                 <div>
@@ -104,6 +104,7 @@
 
                                                         <span>
                                                             <%= item.fname.charAt(0) %>
+                                                            <%= item.lname.charAt(0) %>
                                                         </span>
 
                                                         <%= item.fname %>
@@ -152,12 +153,12 @@
                         <div class="card-header">
 
                             <div>
-                                <h4>Classes Without Subjects</h4>
-                                <p>Classes requiring subject allocation.</p>
+                                <h4>Classes Without Teachers</h4>
+                                <p>Classes requiring teacher allocation.</p>
                             </div>
 
                             <span class="danger-count">
-                                <%= stats?.classesWithoutSubjects ?? 0 %>
+                                <%= subjectsWithoutTeacherAllocations.length?? 0 %>
                             </span>
 
                         </div>
@@ -165,10 +166,10 @@
 
                         <div class="attention-list">
 
-                            <% if (typeof classesWithoutSubjects !== 'undefined' &&
-                                   classesWithoutSubjects.length) { %>
+                            <% if (typeof subjectsWithoutTeacherAllocations !== 'undefined' &&
+                                   subjectsWithoutTeacherAllocations.length) { %>
 
-                                <% classesWithoutSubjects.forEach(item => { %>
+                                <% subjectsWithoutTeacherAllocations.forEach(item => { %>
 
                                     <div class="attention-item">
 
@@ -184,7 +185,7 @@
                                             </strong>
 
                                             <small>
-                                                No subjects allocated
+                                                No teacher allocated
                                             </small>
 
                                         </div>
@@ -206,7 +207,7 @@
                                     <div>
                                         <strong>All classes configured</strong>
                                         <small>
-                                            Every class has subjects allocated.
+                                            Every class has subjects allocated to teachers.
                                         </small>
                                     </div>
 
@@ -229,6 +230,6 @@
         </div>
     </main>
 </div>
-<%- include("../partials/hod/scripts") %>
+<%- include("../partials/scripts") %>
 </body>
 </html>

@@ -25,8 +25,8 @@
                     </div>
 
                     <h2>
-                        <%= typeof department !== 'undefined'
-                            ? department.departmentname
+                        <%= typeof stats.department !== 'undefined'
+                            ? stats.department.departmentname
                             : 'Department' %>
                     </h2>
 
@@ -105,7 +105,7 @@
                             Active
                         </span>
 
-                        <a href="#teachers"
+                        <a href="/hod/teachers"
                            data-section-target="teachers">
                             View teachers
                         </a>
@@ -150,7 +150,7 @@
                             Allocated subjects
                         </span>
 
-                        <a href="#allocations"
+                        <a href="/hod/subject-allocations"
                            data-section-target="allocations">
                             Manage
                         </a>
@@ -177,7 +177,7 @@
                         </div>
 
                         <span class="stat-label">
-                            Class Subjects
+                            Department Subjects
                         </span>
 
                     </div>
@@ -196,7 +196,7 @@
                             Allocated
                         </span>
 
-                        <a href="#classes"
+                        <a href="/hod/class-subjects"
                            data-section-target="classes">
                             View
                         </a>
@@ -223,7 +223,7 @@
                         </div>
 
                         <span class="stat-label">
-                            Classes Without Subjects
+                            Classes Without Teachers
                         </span>
 
                     </div>
@@ -355,6 +355,6 @@
     </main>
 </div>
 <%- include("../partials/scripts") %>
-<script src="/scripts/hod-dashboard.js"></script>
+<!-- <script src="/scripts/hod-dashboard.js"></script> -->
 </body>
 </html>
