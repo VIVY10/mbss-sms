@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../partials/hod/head", { pageTitle: "Subject & Teaching Allocations" }) %>
+</head>
+<body>
+<div class="app-shell">
+    <%- include("../partials/hod/sidebar", { currentPage: "subject-allocations" }) %>
+    <main class="main-content">
+        <%- include("../partials/hod/topbar", { pageTitle: "Subject & Teaching Allocations", eyebrow: "TEACHING STRUCTURE" }) %>
+        <div class="content-container">
+            <section class="module-page-header">
+                <div>
+                    <div class="breadcrumb">Dashboard <span>/</span> Subject & Teaching Allocations</div>
+                    <h2>Subject & Teaching Allocations</h2>
+                </div>
+                <a href="/dashboard" class="btn btn-light"><i class="bi bi-arrow-left"></i> Dashboard</a>
+            </section>
+                        <section id="allocations"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            TEACHING STRUCTURE
+                        </span>
+
+                        <h3>Subject & Teaching Allocations</h3>
+
+                        <p>
+                            View which subjects belong to classes and
+                            which teachers are assigned to teach them.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="allocation-grid">
+
+                    <!-- Subject Allocation -->
+
+                    <div class="data-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h4>Subject Allocations</h4>
+                                <p>Subjects assigned to classes.</p>
+                            </div>
+
+                            <button class="btn btn-sm btn-primary">
+                                Allocate
+                            </button>
+
+                        </div>
+
+
+                        <div class="table-responsive">
+
+                            <table class="table dashboard-table">
+
+                                <thead>
+
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Class</th>
+                                    <th>Teacher</th>
+                                </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                <% if (typeof allocations !== 'undefined' && allocations.length) { %>
+
+                                    <% allocations.slice(0, 8).forEach(item => { %>
+
+                                        <tr>
+
+                                            <td>
+                                                <strong>
+                                                    <%= item.subjectname %>
+                                                </strong>
+
+                                                <small class="table-subtext">
+                                                    <%= item.subjectcode %>
+                                                </small>
+                                            </td>
+
+                                            <td>
+                                                <%= item.levelname || '' %>
+                                                <%= item.class || '' %>
+                                            </td>
+
+                                            <td>
+
+                                                <% if (item.fname) { %>
+
+                                                    <div class="mini-person">
+
+                                                        <span>
+                                                            <%= item.fname.charAt(0) %>
+                                                        </span>
+
+                                                        <%= item.fname %>
+                                                        <%= item.lname %>
+
+                                                    </div>
+
+                                                <% } else { %>
+
+                                                    <span class="status-badge warning">
+                                                        Not Assigned
+                                                    </span>
+
+                                                <% } %>
+
+                                            </td>
+
+                                        </tr>
+
+                                    <% }) %>
+
+                                <% } else { %>
+
+                                    <tr>
+                                        <td colspan="3"
+                                            class="empty-state">
+                                            No allocations found.
+                                        </td>
+                                    </tr>
+
+                                <% } %>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Classes without subjects -->
+
+                    <div class="data-card">
+
+                        <div class="card-header">
+
+                            <div>
+                                <h4>Classes Without Subjects</h4>
+                                <p>Classes requiring subject allocation.</p>
+                            </div>
+
+                            <span class="danger-count">
+                                <%= stats?.classesWithoutSubjects ?? 0 %>
+                            </span>
+
+                        </div>
+
+
+                        <div class="attention-list">
+
+                            <% if (typeof classesWithoutSubjects !== 'undefined' &&
+                                   classesWithoutSubjects.length) { %>
+
+                                <% classesWithoutSubjects.forEach(item => { %>
+
+                                    <div class="attention-item">
+
+                                        <div class="attention-icon">
+                                            <i class="bi bi-exclamation-triangle"></i>
+                                        </div>
+
+                                        <div class="attention-info">
+
+                                            <strong>
+                                                <%= item.levelname %>
+                                                <%= item.class %>
+                                            </strong>
+
+                                            <small>
+                                                No subjects allocated
+                                            </small>
+
+                                        </div>
+
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            Allocate
+                                        </button>
+
+                                    </div>
+
+                                <% }) %>
+
+                            <% } else { %>
+
+                                <div class="success-message">
+
+                                    <i class="bi bi-check-circle"></i>
+
+                                    <div>
+                                        <strong>All classes configured</strong>
+                                        <small>
+                                            Every class has subjects allocated.
+                                        </small>
+                                    </div>
+
+                                </div>
+
+                            <% } %>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <footer class="dashboard-footer">
+                <span>© <%= new Date().getFullYear() %> School Management System</span>
+                <span>Department Academic Dashboard</span>
+            </footer>
+        </div>
+    </main>
+</div>
+<%- include("../partials/hod/scripts") %>
+</body>
+</html>

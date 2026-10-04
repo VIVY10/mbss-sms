@@ -44,7 +44,7 @@ module.exports = {
   },
 
   HOD: {
-    view: "hod/hod-dashboard",
+    view: "hod/dashboard",
     dataKey: "user",
 
     getStats: (user) =>

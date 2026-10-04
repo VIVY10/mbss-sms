@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../partials/hod/head", { pageTitle: "Search Pupil's Results" }) %>
+</head>
+<body>
+<div class="app-shell">
+    <%- include("../partials/hod/sidebar", { currentPage: "results" }) %>
+    <main class="main-content">
+        <%- include("../partials/hod/topbar", { pageTitle: "Search Pupil's Results", eyebrow: "RESULTS" }) %>
+        <div class="content-container">
+            <section class="module-page-header">
+                <div>
+                    <div class="breadcrumb">Dashboard <span>/</span> Search Pupil's Results</div>
+                    <h2>Search Pupil's Results</h2>
+                </div>
+                <a href="/dashboard" class="btn btn-light"><i class="bi bi-arrow-left"></i> Dashboard</a>
+            </section>
+                        <section id="results"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            RESULTS
+                        </span>
+
+                        <h3>Search Pupil's Results</h3>
+
+                        <p>
+                            Search academic results for students in
+                            your department subjects.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="result-search-card">
+
+                    <form id="resultSearchForm">
+
+                        <div class="row g-3">
+
+                            <div class="col-lg-4">
+
+                                <label>
+                                    Exam Number
+                                </label>
+
+                                <div class="input-icon">
+
+                                    <i class="bi bi-person-badge"></i>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="resultExamNo"
+                                           placeholder="Enter exam number">
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-lg-3">
+
+                                <label>
+                                    Academic Year
+                                </label>
+
+                                <select class="form-select"
+                                        id="resultYear">
+
+                                    <option value="">
+                                        Select year
+                                    </option>
+
+                                    <% if (typeof stats.currentYear !== 'undefined') { %>
+
+                                            <option value="<%= stats.currentYear.schoolyearid %>">
+                                                <%= stats.currentYear.yearname %>
+                                            </option>
+
+                                    <% } %>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="col-lg-3">
+
+                                <label>
+                                    Term
+                                </label>
+
+                                <select class="form-select"
+                                        id="resultTerm">
+
+                                    <option value="">
+                                        Select term
+                                    </option>
+
+                                    <% if (typeof stats.currentTerm !== 'undefined') { %>
+
+                                            <option value="<%= stats.currentTerm.termid %>">
+                                                <%= stats.currentTerm.termname %>
+                                            </option>
+
+                                    <% } %>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="col-lg-2 d-flex align-items-end">
+
+                                <button type="submit"
+                                        class="btn btn-primary w-100">
+
+                                    <i class="bi bi-search"></i>
+                                    Search
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+
+                    <div id="resultSearchMessage"
+                         class="search-message d-none">
+                    </div>
+
+
+                    <div id="resultContainer"
+                         class="result-container d-none">
+
+                        <!-- JavaScript populates this -->
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <footer class="dashboard-footer">
+                <span>© <%= new Date().getFullYear() %> School Management System</span>
+                <span>Department Academic Dashboard</span>
+            </footer>
+        </div>
+    </main>
+</div>
+<%- include("../partials/hod/scripts") %>
+</body>
+</html>

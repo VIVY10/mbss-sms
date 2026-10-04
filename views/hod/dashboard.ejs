@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../partials/head", { pageTitle: "Department Dashboard" }) %>
+</head>
+<body>
+<div class="app-shell">
+    <%- include("../partials/hod-sidebar", { currentPage: "dashboard" }) %>
+    <main class="main-content">
+        <% let department = [] %>
+        <%- include("../partials/topbar", { pageTitle: "Department Dashboard", eyebrow: "ACADEMIC MANAGEMENT" }) %>
+        <div class="content-container">
+            <!-- =================================================
+                 DEPARTMENT HEADER
+            ================================================== -->
+
+            <section class="department-header">
+
+                <div>
+
+                    <div class="breadcrumb">
+                        Dashboard
+                        <span>/</span>
+                        Department
+                    </div>
+
+                    <h2>
+                        <%= typeof department !== 'undefined'
+                            ? department.departmentname
+                            : 'Department' %>
+                    </h2>
+
+                    <p>
+                        Manage teachers, subjects, classes,
+                        marks and academic reports.
+                    </p>
+
+                </div>
+
+
+                <div class="header-actions">
+
+                    <button class="btn btn-light"
+                            id="refreshDashboard">
+
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Refresh
+
+                    </button>
+
+                    <button class="btn btn-primary"
+                            data-section-target="reports">
+
+                        <i class="bi bi-file-earmark-text"></i>
+                        Generate Report
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 STATISTICS CARDS
+            ================================================== -->
+
+            <section class="statistics-grid">
+
+
+                <!-- Teachers -->
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon teachers-icon">
+
+                            <svg viewBox="0 0 24 24">
+                                <path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4z"/>
+                                <path d="M8 11a3 3 0 1 0-3-3 3 3 0 0 0 3 3z"/>
+                                <path d="M16 13c-3.3 0-6 1.7-6 4v3h12v-3c0-2.3-2.7-4-6-4z"/>
+                            </svg>
+
+                        </div>
+
+                        <span class="stat-label">
+                            Department Teachers
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-value">
+
+                        <%= stats?.teachers ?? 0 %>
+
+                    </div>
+
+
+                    <div class="stat-footer">
+                        <span class="status-positive">
+                            <i class="bi bi-check-circle"></i>
+                            Active
+                        </span>
+
+                        <a href="#teachers"
+                           data-section-target="teachers">
+                            View teachers
+                        </a>
+                    </div>
+
+                </div>
+
+
+
+                <!-- Subjects -->
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon subjects-icon">
+
+                            <svg viewBox="0 0 24 24">
+                                <path d="M4 4h16v16H4z"/>
+                                <path d="M8 8h8M8 12h8M8 16h5"/>
+                            </svg>
+
+                        </div>
+
+                        <span class="stat-label">
+                            Department Subjects
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-value">
+
+                        <%= stats?.subjects ?? 0 %>
+
+                    </div>
+
+
+                    <div class="stat-footer">
+
+                        <span class="status-neutral">
+                            Allocated subjects
+                        </span>
+
+                        <a href="#allocations"
+                           data-section-target="allocations">
+                            Manage
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Class Subjects -->
+
+                <div class="stat-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon classes-icon">
+
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 5h18v14H3z"/>
+                                <path d="M7 9h10M7 13h7"/>
+                            </svg>
+
+                        </div>
+
+                        <span class="stat-label">
+                            Class Subjects
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-value">
+
+                        <%= stats?.classSubjects ?? 0 %>
+
+                    </div>
+
+
+                    <div class="stat-footer">
+
+                        <span class="status-positive">
+                            Allocated
+                        </span>
+
+                        <a href="#classes"
+                           data-section-target="classes">
+                            View
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Missing -->
+
+                <div class="stat-card alert-card">
+
+                    <div class="stat-card-top">
+
+                        <div class="stat-icon warning-icon">
+
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 3 2 21h20L12 3z"/>
+                                <path d="M12 9v5M12 18h.01"/>
+                            </svg>
+
+                        </div>
+
+                        <span class="stat-label">
+                            Classes Without Subjects
+                        </span>
+
+                    </div>
+
+
+                    <div class="stat-value">
+
+                        <%= stats?.classesWithoutSubjects ?? 0 %>
+
+                    </div>
+
+
+                    <div class="stat-footer">
+
+                        <span class="status-warning">
+                            Requires attention
+                        </span>
+
+                        <a href="#classes"
+                           data-section-target="classes">
+                            Resolve
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 QUICK ACTIONS
+            ================================================== -->
+
+            <section class="quick-actions">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="eyebrow">
+                            QUICK ACTIONS
+                        </span>
+
+                        <h3>Academic Management</h3>
+                    </div>
+
+                </div>
+
+
+                <div class="quick-action-grid">
+
+                    <button class="quick-action"
+                            data-section-target="teachers">
+
+                        <span class="quick-icon">
+                            <i class="bi bi-people"></i>
+                        </span>
+
+                        <span>
+                            <strong>Department Teachers</strong>
+                            <small>View assigned teachers</small>
+                        </span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </button>
+
+
+                    <button class="quick-action"
+                            data-section-target="allocations">
+
+                        <span class="quick-icon">
+                            <i class="bi bi-journal-bookmark"></i>
+                        </span>
+
+                        <span>
+                            <strong>Allocate Subjects</strong>
+                            <small>Manage class subjects</small>
+                        </span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </button>
+
+
+                    <button class="quick-action"
+                            data-section-target="marks">
+
+                        <span class="quick-icon">
+                            <i class="bi bi-pencil-square"></i>
+                        </span>
+
+                        <span>
+                            <strong>Marks Schedule</strong>
+                            <small>Review assessment schedule</small>
+                        </span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </button>
+
+
+                    <button class="quick-action"
+                            data-section-target="reports">
+
+                        <span class="quick-icon">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                        </span>
+
+                        <span>
+                            <strong>Generate Reports</strong>
+                            <small>Academic reports</small>
+                        </span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+            <footer class="dashboard-footer">
+                <span>© <%= new Date().getFullYear() %> School Management System</span>
+                <span>Department Academic Dashboard</span>
+            </footer>
+        </div>
+    </main>
+</div>
+<%- include("../partials/scripts") %>
+<script src="/scripts/hod-dashboard.js"></script>
+</body>
+</html>

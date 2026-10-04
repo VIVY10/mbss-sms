@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../partials/hod/head", { pageTitle: "Report Generation" }) %>
+</head>
+<body>
+<div class="app-shell">
+    <%- include("../partials/hod/sidebar", { currentPage: "reports" }) %>
+    <main class="main-content">
+        <%- include("../partials/hod/topbar", { pageTitle: "Report Generation", eyebrow: "ACADEMIC REPORTING" }) %>
+        <div class="content-container">
+            <% const hodDepartment = (typeof department !== 'undefined' ? department : {}); %>
+            <section class="module-page-header">
+                <div>
+                    <div class="breadcrumb">Dashboard <span>/</span> Report Generation</div>
+                    <h2>Report Generation</h2>
+                </div>
+                <a href="/dashboard" class="btn btn-light"><i class="bi bi-arrow-left"></i> Dashboard</a>
+            </section>
+                        <section id="reports"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            ACADEMIC REPORTING
+                        </span>
+
+                        <h3>Report Generation</h3>
+
+                        <p>
+                            Generate official academic reports for
+                            your department subjects.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="report-layout">
+
+
+                    <!-- Report form -->
+
+                    <div class="data-card report-form-card">
+
+                        <div class="card-header">
+
+                            <div>
+
+                                <h4>Generate Academic Report</h4>
+
+                                <p>
+                                    Select the report parameters.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <form id="reportForm">
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+                                    Report Type
+                                </label>
+
+                                <select class="form-select"
+                                        id="reportType"
+                                        required>
+
+                                    <option value="">
+                                        Select report type
+                                    </option>
+
+                                    <option value="midterm">
+                                        Mid-Term Report
+                                    </option>
+
+                                    <option value="termly">
+                                        Termly Academic Report
+                                    </option>
+
+                                    <option value="endyear">
+                                        End-of-Year Academic Report
+                                    </option>
+
+                                    <option value="subject">
+                                        Subject Performance Report
+                                    </option>
+
+                                    <option value="department">
+                                        Department Performance Report
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+                                        Academic Year
+                                    </label>
+
+                                    <select class="form-select"
+                                            id="reportYear"
+                                            required>
+
+                                        <option value="">
+                                            Select year
+                                        </option>
+
+                                        <% if (typeof schoolYears !== 'undefined') { %>
+
+                                            <% schoolYears.forEach(year => { %>
+
+                                                <option value="<%= year.schoolyearid %>">
+                                                    <%= year.yearname %>
+                                                </option>
+
+                                            <% }) %>
+
+                                        <% } %>
+
+                                    </select>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label">
+                                        Term
+                                    </label>
+
+                                    <select class="form-select"
+                                            id="reportTerm">
+
+                                        <option value="">
+                                            Select term
+                                        </option>
+
+                                        <% if (typeof terms !== 'undefined') { %>
+
+                                            <% terms.forEach(term => { %>
+
+                                                <option value="<%= term.termid %>">
+                                                    <%= term.termname %>
+                                                </option>
+
+                                            <% }) %>
+
+                                        <% } %>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="mb-3 mt-3">
+
+                                <label class="form-label">
+                                    Subject
+                                </label>
+
+                                <select class="form-select"
+                                        id="reportSubject">
+
+                                    <option value="">
+                                        All Department Subjects
+                                    </option>
+
+                                    <% if (typeof subjects !== 'undefined') { %>
+
+                                        <% subjects.forEach(subject => { %>
+
+                                            <option value="<%= subject.subjectcode %>">
+                                                <%= subject.subjectname %>
+                                            </option>
+
+                                        <% }) %>
+
+                                    <% } %>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Class
+                                </label>
+
+                                <select class="form-select"
+                                        id="reportClass">
+
+                                    <option value="">
+                                        All Classes
+                                    </option>
+
+                                    <% if (typeof classStatuses !== 'undefined') { %>
+
+                                        <% classStatuses.forEach(item => { %>
+
+                                            <option value="<%= item.classid %>">
+                                                <%= item.levelname %>
+                                                <%= item.class %>
+                                            </option>
+
+                                        <% }) %>
+
+                                    <% } %>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="report-options">
+
+                                <label class="form-check">
+
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           checked>
+
+                                    <span>
+                                        Include performance summary
+                                    </span>
+
+                                </label>
+
+
+                                <label class="form-check">
+
+                                    <input type="checkbox"
+                                           class="form-check-input"
+                                           checked>
+
+                                    <span>
+                                        Include progress chart
+                                    </span>
+
+                                </label>
+
+
+                                <label class="form-check">
+
+                                    <input type="checkbox"
+                                           class="form-check-input">
+
+                                    <span>
+                                        Include teacher comments
+                                    </span>
+
+                                </label>
+
+                            </div>
+
+
+                            <div class="report-actions">
+
+                                <button type="button"
+                                        id="previewReport"
+                                        class="btn btn-outline-primary">
+
+                                    <i class="bi bi-eye"></i>
+                                    Preview
+
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-primary">
+
+                                    <i class="bi bi-file-earmark-pdf"></i>
+                                    Generate PDF
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+
+
+                    <!-- Report preview -->
+
+                    <div class="data-card report-preview-card">
+
+                        <div class="card-header">
+
+                            <div>
+
+                                <h4>Report Preview</h4>
+
+                                <p>
+                                    Preview before generating the report.
+                                </p>
+
+                            </div>
+
+                            <span class="preview-status"
+                                  id="previewStatus">
+                                Draft
+                            </span>
+
+                        </div>
+
+
+                        <div class="report-paper"
+                             id="reportPreview">
+
+                            <div class="report-school-header">
+
+                                <div class="school-logo">
+
+                                    <svg viewBox="0 0 24 24">
+
+                                        <path d="M12 3 2 8l10 5 10-5-10-5z"/>
+                                        <path d="M5 11v5c0 2 3 4 7 4s7-2 7-4v-5"/>
+                                        <path d="M19 10v6"/>
+
+                                    </svg>
+
+                                </div>
+
+
+                                <div>
+
+                                    <strong>
+                                        SCHOOL MANAGEMENT SYSTEM
+                                    </strong>
+
+                                    <span>
+                                        Academic Department Report
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="report-title">
+
+                                <span>
+                                    ACADEMIC REPORT
+                                </span>
+
+                                <h3 id="previewReportTitle">
+                                    Report Preview
+                                </h3>
+
+                            </div>
+
+
+                            <div class="report-meta">
+
+                                <div>
+                                    <span>Department</span>
+                                    <strong>
+                                        <%= hodDepartment?.departmentname ||
+                                            'Department' %>
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Academic Year</span>
+                                    <strong id="previewYear">
+                                        —
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Term</span>
+                                    <strong id="previewTerm">
+                                        —
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Class</span>
+                                    <strong id="previewClass">
+                                        All Classes
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <div class="report-placeholder">
+
+                                <div class="placeholder-icon">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </div>
+
+                                <strong>
+                                    Report preview will appear here
+                                </strong>
+
+                                <span>
+                                    Select the report parameters and
+                                    click Preview.
+                                </span>
+
+                            </div>
+
+
+                            <div class="report-signatures">
+
+                                <div>
+                                    <span>Prepared By</span>
+                                    <strong>
+                                        HOD
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Approved By</span>
+                                    <strong>
+                                        —
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <footer class="dashboard-footer">
+                <span>© <%= new Date().getFullYear() %> School Management System</span>
+                <span>Department Academic Dashboard</span>
+            </footer>
+        </div>
+    </main>
+</div>
+<%- include("../partials/hod/scripts") %>
+</body>
+</html>

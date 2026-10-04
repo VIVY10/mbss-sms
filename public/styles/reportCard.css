@@ -157,4 +157,4 @@ body.rc-doc {
 @media print {
   body.rc-doc { background: #fff; padding: 0; }
   .rc-card { margin: 0; max-width: none; border: 2px solid #000; padding: 12mm 10mm; }
-}
+} 

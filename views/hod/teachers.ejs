@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../partials/hod/head", { pageTitle: "Department Teachers" }) %>
+</head>
+<body>
+<div class="app-shell">
+    <%- include("../partials/hod/sidebar", { currentPage: "teachers" }) %>
+    <main class="main-content">
+        <%- include("../partials/hod/topbar", { pageTitle: "Department Teachers", eyebrow: "STAFF" }) %>
+        <div class="content-container">
+            <section class="module-page-header">
+                <div>
+                    <div class="breadcrumb">Dashboard <span>/</span> Department Teachers</div>
+                    <h2>Department Teachers</h2>
+                </div>
+                <a href="/dashboard" class="btn btn-light"><i class="bi bi-arrow-left"></i> Dashboard</a>
+            </section>
+                        <section id="teachers"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            STAFF
+                        </span>
+
+                        <h3>Department Teachers</h3>
+
+                        <p>
+                            Teachers assigned to this department.
+                        </p>
+
+                    </div>
+
+                    <button class="btn btn-outline-primary">
+
+                        <i class="bi bi-person-plus"></i>
+                        View All Teachers
+
+                    </button>
+
+                </div>
+
+
+                <div class="data-card">
+
+                    <div class="table-toolbar">
+
+                        <div class="search-box">
+
+                            <i class="bi bi-search"></i>
+
+                            <input type="search"
+                                   id="teacherSearch"
+                                   placeholder="Search teacher...">
+
+                        </div>
+
+
+                        <select class="form-select"
+                                id="teacherStatusFilter">
+
+                            <option value="">All Teachers</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table dashboard-table"
+                               id="teacherTable">
+
+                            <thead>
+
+                            <tr>
+                                <th>Teacher</th>
+                                <th>Employee ID</th>
+                                <th>Subjects</th>
+                                <th>Classes</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                            <% if (typeof stats.departmentTeachers !== 'undefined' && stats.departmentTeachers.length) { %>
+
+                                <% stats.departmentTeachers.forEach(teacher => { %>
+
+                                    <tr>
+
+                                        <td>
+
+                                            <div class="person-cell">
+
+                                                <div class="table-avatar">
+                                                    <%= teacher.fname?.charAt(0) || 'T' %>
+                                                </div>
+
+                                                <div>
+                                                    <strong>
+                                                        <%= teacher.fname %>
+                                                        <%= teacher.lname %>
+                                                    </strong>
+
+                                                    <small>
+                                                        <%= teacher.email || 'No email' %>
+                                                    </small>
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+                                            <%= teacher.employee_no %>
+                                        </td>
+
+                                        <td>
+                                            <span class="count-badge">
+                                                <%= teacher.subject_count || 0 %>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="count-badge">
+                                                <%= teacher.class_count || 0 %>
+                                            </span>
+                                        </td>
+
+                                        <td>
+
+                                            <% if (teacher.status === 'active') { %>
+
+                                                <span class="status-badge success">
+                                                    Active
+                                                </span>
+
+                                            <% } else { %>
+
+                                                <span class="status-badge">
+                                                    <%= teacher.status || 'Inactive' %>
+                                                </span>
+
+                                            <% } %>
+
+                                        </td>
+
+                                        <td>
+
+                                            <a href="/teachers/<%= teacher.teacherid %>"
+                                               class="table-action">
+
+                                                <i class="bi bi-chevron-right"></i>
+
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+                                <% }) %>
+
+                            <% } else { %>
+
+                                <tr>
+
+                                    <td colspan="6"
+                                        class="empty-state">
+
+                                        <i class="bi bi-people"></i>
+
+                                        <strong>No teachers found</strong>
+
+                                        <span>
+                                            Teachers assigned to this department
+                                            will appear here.
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            <% } %>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <footer class="dashboard-footer">
+                <span>© <%= new Date().getFullYear() %> School Management System</span>
+                <span>Department Academic Dashboard</span>
+            </footer>
+        </div>
+    </main>
+</div>
+<%- include("../partials/hod/scripts") %>
+</body>
+</html>

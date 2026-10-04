@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../partials/hod/head", { pageTitle: "Class Subject Status" }) %>
+</head>
+<body>
+<div class="app-shell">
+    <%- include("../partials/hod/sidebar", { currentPage: "class-subjects" }) %>
+    <main class="main-content">
+        <%- include("../partials/hod/topbar", { pageTitle: "Class Subject Status", eyebrow: "CLASS CONFIGURATION" }) %>
+        <div class="content-container">
+            <section class="module-page-header">
+                <div>
+                    <div class="breadcrumb">Dashboard <span>/</span> Class Subject Status</div>
+                    <h2>Class Subject Status</h2>
+                </div>
+                <a href="/dashboard" class="btn btn-light"><i class="bi bi-arrow-left"></i> Dashboard</a>
+            </section>
+                        <section id="classes"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            CLASS CONFIGURATION
+                        </span>
+
+                        <h3>Class Subject Status</h3>
+
+                    </div>
+
+                </div>
+
+
+                <div class="data-card">
+
+                    <div class="table-toolbar">
+
+                        <div class="search-box">
+
+                            <i class="bi bi-search"></i>
+
+                            <input type="search"
+                                   id="classSearch"
+                                   placeholder="Search class...">
+
+                        </div>
+
+
+                        <select class="form-select">
+
+                            <option>All Levels</option>
+
+                            <% if (typeof levels !== 'undefined') { %>
+
+                                <% levels.forEach(level => { %>
+
+                                    <option value="<%= level.levelorder %>">
+                                        <%= level.levelname %>
+                                    </option>
+
+                                <% }) %>
+
+                            <% } %>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table class="table dashboard-table">
+
+                            <thead>
+
+                            <tr>
+                                <th>Class</th>
+                                <th>Level</th>
+                                <th>Subjects</th>
+                                <th>Teachers</th>
+                                <th>Configuration</th>
+                                <th></th>
+                            </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                            <% if (typeof stats.classStatuses !== 'undefined' && stats.classStatuses.length) { %>
+
+                                <% stats.classStatuses.forEach(item => { %>
+
+                                    <tr>
+
+                                        <td>
+                                            <strong>
+                                                <%= item.class %>
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            <%= item.levelname %>
+                                        </td>
+
+                                        <td>
+                                            <!-- <%= item.subject_count || 0 %> -->
+                                              <%= item.subjectname || '' %>
+                                        </td>
+
+                                        <td>
+                                            <!-- <%= item.teacher_count || 0 %> -->
+                                             <%= item.allocation_status || '' %>
+                                        </td>
+
+                                        <td>
+
+                                            
+                                              <% if (!item.allocation_status) { %>
+                                                <span class="status-badge danger">
+                                                    No Subjects
+                                                </span>
+
+                                               <% } else if (item.allocation_status === 'Not Allocated') { %>
+
+                                                <span class="status-badge warning">
+                                                    <%= item.unassigned_count %>
+                                                    Unassigned
+                                                </span>
+
+                                            <% } else { %>
+
+                                                <span class="status-badge success">
+                                                    Complete
+                                                </span>
+
+                                            <% } %>
+
+                                        </td>
+
+                                        <td>
+
+                                            <button class="table-action">
+
+                                                <i class="bi bi-chevron-right"></i>
+
+                                            </button>
+
+                                        </td>
+
+                                    </tr>
+
+                                <% }) %>
+
+                            <% } else { %>
+
+                                <tr>
+                                    <td colspan="6"
+                                        class="empty-state">
+                                        No class data available.
+                                    </td>
+                                </tr>
+
+                            <% } %>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <footer class="dashboard-footer">
+                <span>© <%= new Date().getFullYear() %> School Management System</span>
+                <span>Department Academic Dashboard</span>
+            </footer>
+        </div>
+    </main>
+</div>
+<%- include("../partials/hod/scripts") %>
+</body>
+</html>

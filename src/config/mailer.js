@@ -20,7 +20,7 @@ const sendContactEmail = async (
   return transporter.sendMail({
     // Your authenticated email should normally be the sender
     from: `"School Website" <${emailAddress}>`,
-
+ 
     // Visitor's email goes here so you can reply directly
     replyTo: emailAddress,
 
@@ -39,7 +39,7 @@ const sendContactEmail = async (
 const sendCleanupNotification = async ({ success, message }) => {
   return transporter.sendMail({
     from: process.env.CONTACTEMAIL,
-    to: process.env.REPLYTO_ADDRESS,
+    to: process.env.SCHOOL_EMAIL,
     subject: success ? "Parent Cleanup Success" : "Parent Cleanup Error",
     text: success
       ? message

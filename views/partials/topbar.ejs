@@ -1,0 +1,27 @@
+<header class="topbar">
+    <button type="button" id="menuBtn" class="mobile-menu-button" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div class="topbar-title">
+        <span class="eyebrow"><%= eyebrow || 'ACADEMIC MANAGEMENT' %></span>
+        <h1><%= pageTitle || 'Department Dashboard' %></h1>
+    </div>
+
+    <div class="topbar-actions">
+        <div class="academic-period">
+            <span>Academic Year</span>
+            <strong><%= stats?.currentYear?.yearname || '' %></strong>
+        </div>
+        <div class="academic-period">
+            <span>Term</span>
+            <strong><%= stats?.currentTerm?.termname || '' %></strong>
+        </div>
+        <button type="button" class="icon-button notification-button" aria-label="Notifications">
+            <i class="bi bi-bell"></i>
+            <span class="notification-dot"></span>
+        </button>
+    </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>

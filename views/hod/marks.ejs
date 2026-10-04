@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../partials/hod/head", { pageTitle: "Marks Schedule" }) %>
+</head>
+<body>
+<div class="app-shell">
+    <%- include("../partials/hod/sidebar", { currentPage: "marks" }) %>
+    <main class="main-content">
+        <%- include("../partials/hod/topbar", { pageTitle: "Marks Schedule", eyebrow: "ASSESSMENTS" }) %>
+        <div class="content-container">
+            <section class="module-page-header">
+                <div>
+                    <div class="breadcrumb">Dashboard <span>/</span> Marks Schedule</div>
+                    <h2>Marks Schedule</h2>
+                </div>
+                <a href="/dashboard" class="btn btn-light"><i class="bi bi-arrow-left"></i> Dashboard</a>
+            </section>
+                        <section id="marks"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            ASSESSMENTS
+                        </span>
+
+                        <h3>Marks Schedule</h3>
+
+                        <p>
+                            Monitor assessment and marks-entry progress.
+                        </p>
+
+                    </div>
+
+                    <button class="btn btn-primary">
+
+                        <i class="bi bi-calendar-plus"></i>
+                        Create Schedule
+
+                    </button>
+
+                </div>
+
+
+                <div class="data-card">
+
+                    <div class="schedule-header">
+
+                        <div class="schedule-period">
+
+                            <button class="period-arrow">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+
+                            <div>
+                                <strong>
+                                    <%= stats.currentTerm.termname || '' %>
+                                </strong>
+
+                                <span>
+                                    Academic Year
+                                    <%= stats.currentYear.yearname || '' %>
+                                </span>
+                            </div>
+
+                            <button class="period-arrow">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+
+                        </div>
+
+
+                        <div class="legend">
+
+                            <span>
+                                <i class="legend-dot completed"></i>
+                                Completed
+                            </span>
+
+                            <span>
+                                <i class="legend-dot pending"></i>
+                                Pending
+                            </span>
+
+                            <span>
+                                <i class="legend-dot upcoming"></i>
+                                Upcoming
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="schedule-list">
+
+                        <% if (typeof marksSchedule !== 'undefined' &&
+                               marksSchedule.length) { %>
+
+                            <% marksSchedule.forEach(item => { %>
+
+                                <div class="schedule-row">
+
+                                    <div class="schedule-date">
+
+                                        <strong>
+                                            <%= item.day || '15' %>
+                                        </strong>
+
+                                        <span>
+                                            <%= item.month || 'SEP' %>
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="schedule-info">
+
+                                        <strong>
+                                            <%= item.assessment_name ||
+                                                'Assessment' %>
+                                        </strong>
+
+                                        <span>
+                                            <%= item.subjectname || '' %>
+                                            ·
+                                            <%= item.class || '' %>
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="schedule-teacher">
+
+                                        <span>
+                                            Teacher
+                                        </span>
+
+                                        <strong>
+                                            <%= item.fname || '-' %>
+                                            <%= item.lname || '' %>
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <% if (item.status === 'completed') { %>
+
+                                            <span class="status-badge success">
+                                                Completed
+                                            </span>
+
+                                        <% } else if (item.status === 'pending') { %>
+
+                                            <span class="status-badge warning">
+                                                Pending
+                                            </span>
+
+                                        <% } else { %>
+
+                                            <span class="status-badge">
+                                                Upcoming
+                                            </span>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </div>
+
+                            <% }) %>
+
+                        <% } else { %>
+
+                            <div class="empty-state">
+
+                                <i class="bi bi-calendar3"></i>
+
+                                <strong>
+                                    No marks schedule
+                                </strong>
+
+                                <span>
+                                    Assessment schedules will appear here.
+                                </span>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <footer class="dashboard-footer">
+                <span>© <%= new Date().getFullYear() %> School Management System</span>
+                <span>Department Academic Dashboard</span>
+            </footer>
+        </div>
+    </main>
+</div>
+<%- include("../partials/hod/scripts") %>
+</body>
+</html>

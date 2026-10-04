@@ -1,54 +1,901 @@
-.rc-admin { background: #f1f5f9; min-height: 100vh; font-family: "Segoe UI", Arial, sans-serif; color: #0f172a; }
-.rc-header { max-width: 1100px; margin: 0 auto; padding: 32px 24px 12px; }
-.rc-eyebrow { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #2563eb; }
-.rc-header h1 { margin: 6px 0; font-size: 28px; }
-.rc-sub { margin: 0; color: #64748b; }
+/* =========================================================
+   GLOBAL RESET
+   ========================================================= */
 
-.rc-panel { max-width: 1100px; margin: 0 auto 48px; padding: 0 24px; }
-
-.rc-form { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 24px; box-shadow: 0 6px 20px rgba(0,0,0,.04); }
-.rc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-.rc-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
-.rc-field--wide { grid-column: 1 / -1; }
-.rc-field span { font-weight: 600; color: #334155; }
-.rc-field span em { font-weight: 400; color: #94a3b8; font-style: normal; font-size: 12px; }
-.rc-field select, .rc-field input {
-  border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 12px;
-  font-size: 14px; background: #fff; color: #0f172a;
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
-.rc-field select:focus, .rc-field input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
 
-.rc-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+html {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+
+body.rc-admin {
+    width: 100%;
+    min-width: 0;
+    min-height: 100vh;
+
+    margin: 0;
+    padding: 0;
+
+    background: #f1f5f9;
+
+    color: #0f172a;
+
+    font-family:
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.rc-header {
+    width: 100%;
+
+    padding: 32px 20px 16px;
+}
+
+.rc-header-inner {
+    width: 100%;
+    max-width: 1100px;
+
+    margin: 0 auto;
+}
+
+.rc-eyebrow {
+    margin: 0 0 6px;
+
+    color: #2563eb;
+
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.4;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.rc-header h1 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: clamp(24px, 4vw, 30px);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.rc-sub {
+    max-width: 680px;
+
+    margin: 8px 0 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.rc-panel {
+    width: 100%;
+    max-width: 1100px;
+
+    margin: 0 auto;
+
+    padding:
+        0
+        20px
+        48px;
+}
+
+
+/* =========================================================
+   FORM CARD
+   ========================================================= */
+
+.rc-form {
+    width: 100%;
+    min-width: 0;
+
+    padding: 24px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+
+    box-shadow:
+        0 6px 20px rgba(15, 23, 42, 0.04);
+}
+
+
+/* =========================================================
+   FORM GRID
+   ========================================================= */
+
+.rc-grid {
+    width: 100%;
+    min-width: 0;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+/* =========================================================
+   FORM FIELD
+   ========================================================= */
+
+.rc-field {
+    width: 100%;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    margin: 0;
+
+    color: #334155;
+
+    font-size: 13px;
+}
+
+.rc-field--wide {
+    grid-column: 1 / -1;
+}
+
+.rc-field > span {
+    display: block;
+
+    color: #334155;
+
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+
+/* OPTIONAL TEXT */
+
+.rc-field > span em {
+    color: #94a3b8;
+
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   INPUTS + SELECTS
+   ========================================================= */
+
+.rc-field input,
+.rc-field select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    height: 44px;
+
+    margin: 0;
+    padding: 0 12px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #0f172a;
+
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background-color 0.15s ease;
+}
+
+
+/* SELECT */
+
+.rc-field select {
+    cursor: pointer;
+}
+
+
+/* PLACEHOLDER */
+
+.rc-field input::placeholder {
+    color: #94a3b8;
+    opacity: 1;
+}
+
+
+/* HOVER */
+
+.rc-field input:hover,
+.rc-field select:hover {
+    border-color: #94a3b8;
+}
+
+
+/* FOCUS */
+
+.rc-field input:focus,
+.rc-field select:focus {
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+.rc-actions {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    margin-top: 22px;
+    padding-top: 18px;
+
+    border-top: 1px solid #f1f5f9;
+}
+
+
+/* =========================================================
+   BUTTON BASE
+   ========================================================= */
+
 .rc-btn {
-  border: 1px solid transparent; border-radius: 10px; padding: 10px 18px;
-  font-size: 14px; font-weight: 600; cursor: pointer;
-  transition: background .15s ease, border-color .15s ease, transform .1s ease;
+    min-width: 120px;
+    min-height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 10px 18px;
+
+    border: 1px solid transparent;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: inherit;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.1s ease;
 }
-.rc-btn--primary { background: #2563eb; color: #fff; }
-.rc-btn--primary:hover { background: #1d4ed8; }
-.rc-btn--ghost { background: #fff; color: #1e293b; border-color: #cbd5e1; }
-.rc-btn--ghost:hover { border-color: #2563eb; color: #2563eb; }
-.rc-btn:active { transform: scale(.98); }
-.rc-btn:disabled { opacity: .65; cursor: not-allowed; }
 
-.rc-status { margin-top: 16px; padding: 12px 16px; border-radius: 10px; font-size: 14px; }
-.rc-status--info { background: #eff6ff; color: #1e3a8a; border: 1px solid #bfdbfe; }
-.rc-status--success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-.rc-status--error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
 
-.rc-preview { margin-top: 24px; }
-.rc-preview-title { font-size: 16px; margin: 0 0 12px; }
-.rc-preview-content { display: grid; gap: 16px; }
-.rc-preview-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; }
-.rc-preview-header h3 { margin: 0; font-size: 16px; }
-.rc-preview-header p { margin: 2px 0 10px; color: #64748b; font-size: 13px; }
-.rc-preview-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.rc-preview-table th, .rc-preview-table td { border: 1px solid #e2e8f0; padding: 6px 8px; text-align: left; }
-.rc-preview-table .num { text-align: right; }
-.rc-preview-summary { display: flex; gap: 16px; margin-top: 10px; font-size: 13px; color: #334155; }
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
 
-@media (max-width: 640px) {
-  .rc-grid { grid-template-columns: 1fr; }
-  .rc-actions { flex-direction: column-reverse; }
-  .rc-btn { width: 100%; }
+.rc-btn--primary {
+    background: #2563eb;
+    border-color: #2563eb;
+
+    color: #ffffff;
+}
+
+.rc-btn--primary:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+.rc-btn--primary:focus-visible {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+
+/* =========================================================
+   GHOST BUTTON
+   ========================================================= */
+
+.rc-btn--ghost {
+    background: #ffffff;
+    border-color: #cbd5e1;
+
+    color: #1e293b;
+}
+
+.rc-btn--ghost:hover {
+    border-color: #2563eb;
+
+    color: #2563eb;
+}
+
+.rc-btn--ghost:focus-visible {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+
+/* ACTIVE */
+
+.rc-btn:active {
+    transform: translateY(1px);
+}
+
+
+/* DISABLED */
+
+.rc-btn:disabled {
+    opacity: 0.65;
+
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   STATUS MESSAGE
+   ========================================================= */
+
+.rc-status {
+    width: 100%;
+
+    margin-top: 16px;
+    padding: 12px 16px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.rc-status--info {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+
+    color: #1e3a8a;
+}
+
+.rc-status--success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+
+    color: #166534;
+}
+
+.rc-status--error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+
+    color: #991b1b;
+}
+
+
+/* =========================================================
+   PREVIEW
+   ========================================================= */
+
+.rc-preview {
+    width: 100%;
+    min-width: 0;
+
+    margin-top: 24px;
+}
+
+.rc-preview-title {
+    margin: 0 0 12px;
+
+    color: #0f172a;
+
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.rc-preview-content {
+    width: 100%;
+    min-width: 0;
+
+    display: grid;
+
+    gap: 16px;
+}
+
+
+/* =========================================================
+   PREVIEW CARD
+   ========================================================= */
+
+.rc-preview-card {
+    width: 100%;
+    min-width: 0;
+
+    padding: 16px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 2px 8px rgba(15, 23, 42, 0.02);
+}
+
+
+/* =========================================================
+   PREVIEW HEADER
+   ========================================================= */
+
+.rc-preview-header {
+    width: 100%;
+    min-width: 0;
+}
+
+.rc-preview-header h3 {
+    margin: 0;
+
+    color: #0f172a;
+
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+}
+
+.rc-preview-header p {
+    margin: 3px 0 12px;
+
+    color: #64748b;
+
+    font-size: 13px;
+    line-height: 1.5;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   PREVIEW TABLE WRAPPER
+
+   IMPORTANT:
+   The table can remain wide, but ONLY the table scrolls
+   horizontally on small screens.
+   ========================================================= */
+
+.rc-preview-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    -webkit-overflow-scrolling: touch;
+
+    scrollbar-width: thin;
+}
+
+
+/* =========================================================
+   PREVIEW TABLE
+   ========================================================= */
+
+.rc-preview-table {
+    width: 100%;
+    min-width: 600px;
+
+    border-collapse: collapse;
+
+    font-size: 13px;
+}
+
+.rc-preview-table th,
+.rc-preview-table td {
+    padding: 8px 10px;
+
+    border: 1px solid #e2e8f0;
+
+    text-align: left;
+
+    white-space: nowrap;
+}
+
+.rc-preview-table th {
+    background: #f8fafc;
+
+    color: #334155;
+
+    font-weight: 700;
+}
+
+.rc-preview-table td {
+    color: #475569;
+}
+
+.rc-preview-table .num {
+    text-align: right;
+}
+
+
+/* =========================================================
+   PREVIEW SUMMARY
+   ========================================================= */
+
+.rc-preview-summary {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 10px 16px;
+
+    margin-top: 12px;
+
+    color: #334155;
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 840px) {
+
+    .rc-header {
+        padding: 28px 18px 14px;
+    }
+
+    .rc-panel {
+        padding:
+            0
+            18px
+            40px;
+    }
+
+    .rc-form {
+        padding: 20px;
+    }
+
+    .rc-grid {
+        grid-template-columns: 1fr;
+
+        gap: 16px;
+    }
+
+    .rc-field--wide {
+        grid-column: auto;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .rc-header {
+        padding:
+            22px
+            14px
+            12px;
+    }
+
+    .rc-panel {
+        padding:
+            0
+            14px
+            32px;
+    }
+
+
+    /* HEADER */
+
+    .rc-eyebrow {
+        font-size: 11px;
+        letter-spacing: 0.8px;
+    }
+
+    .rc-header h1 {
+        font-size: 24px;
+    }
+
+    .rc-sub {
+        margin-top: 6px;
+
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+
+    /* FORM */
+
+    .rc-form {
+        padding: 16px;
+
+        border-radius: 12px;
+    }
+
+    .rc-grid {
+        grid-template-columns: 1fr;
+
+        gap: 14px;
+    }
+
+    .rc-field--wide {
+        grid-column: auto;
+    }
+
+
+    /* INPUTS */
+
+    .rc-field input,
+    .rc-field select {
+        height: 46px;
+
+        padding-left: 11px;
+        padding-right: 11px;
+
+        /*
+         * 16px prevents automatic zooming on iOS.
+         */
+        font-size: 16px;
+    }
+
+
+    /* ACTIONS */
+
+    .rc-actions {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 10px;
+
+        margin-top: 18px;
+        padding-top: 16px;
+    }
+
+    .rc-btn {
+        width: 100%;
+        min-width: 0;
+        min-height: 46px;
+    }
+
+
+    /* PREVIEW */
+
+    .rc-preview {
+        margin-top: 20px;
+    }
+
+    .rc-preview-card {
+        padding: 12px;
+
+        border-radius: 10px;
+    }
+
+    .rc-preview-title {
+        font-size: 16px;
+    }
+
+    .rc-preview-table {
+        min-width: 560px;
+    }
+
+    .rc-preview-table th,
+    .rc-preview-table td {
+        padding: 7px 8px;
+    }
+
+    .rc-preview-summary {
+        flex-direction: column;
+
+        gap: 6px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .rc-header {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .rc-panel {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .rc-form {
+        padding: 13px;
+    }
+
+    .rc-header h1 {
+        font-size: 22px;
+    }
+
+    .rc-sub {
+        font-size: 12px;
+    }
+
+    .rc-field > span {
+        font-size: 12px;
+    }
+
+    .rc-field > span em {
+        display: block;
+
+        margin-top: 2px;
+
+        font-size: 11px;
+    }
+
+    .rc-field input,
+    .rc-field select {
+        height: 44px;
+    }
+
+    .rc-btn {
+        font-size: 13px;
+    }
+}
+
+
+/* =========================================================
+   EXTRA-SMALL DEVICES
+   ========================================================= */
+
+@media (max-width: 320px) {
+
+    .rc-header {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .rc-panel {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .rc-form {
+        padding: 11px;
+    }
+
+    .rc-header h1 {
+        font-size: 21px;
+    }
+
+    .rc-form,
+    .rc-preview-card {
+        border-radius: 9px;
+    }
+
+    .rc-btn {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .rc-btn,
+    .rc-field input,
+    .rc-field select {
+        transition: none;
+    }
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+
+    body.rc-admin {
+        background: #ffffff;
+    }
+
+    .rc-header {
+        padding: 0 0 15px;
+    }
+
+    .rc-panel {
+        max-width: none;
+
+        padding: 0;
+    }
+
+    .rc-form,
+    .rc-status {
+        display: none !important;
+    }
+
+    .rc-preview {
+        margin-top: 0;
+    }
+
+    .rc-preview-card {
+        border: 1px solid #cbd5e1;
+
+        box-shadow: none;
+
+        break-inside: avoid;
+    }
+
+    .rc-preview-table-wrapper {
+        overflow: visible;
+    }
+
+    .rc-preview-table {
+        min-width: 0;
+    }
 }

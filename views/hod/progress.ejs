@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../partials/hod/head", { pageTitle: "Progress Chart" }) %>
+</head>
+<body>
+<div class="app-shell">
+    <%- include("../partials/hod/sidebar", { currentPage: "progress" }) %>
+    <main class="main-content">
+        <%- include("../partials/hod/topbar", { pageTitle: "Progress Chart", eyebrow: "PERFORMANCE" }) %>
+        <div class="content-container">
+            <section class="module-page-header">
+                <div>
+                    <div class="breadcrumb">Dashboard <span>/</span> Progress Chart</div>
+                    <h2>Progress Chart</h2>
+                </div>
+                <a href="/dashboard" class="btn btn-light"><i class="bi bi-arrow-left"></i> Dashboard</a>
+            </section>
+                        <section id="progress"
+                     class="dashboard-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <span class="eyebrow">
+                            PERFORMANCE
+                        </span>
+
+                        <h3>Progress Chart</h3>
+
+                        <p>
+                            Track pupil performance across academic terms.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="data-card">
+
+                    <div class="chart-controls">
+
+                        <div>
+
+                            <label>Student</label>
+
+                            <select class="form-select"
+                                    id="progressStudent">
+
+                                <option value="">
+                                    Select student
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div>
+
+                            <label>Subject</label>
+
+                            <select class="form-select"
+                                    id="progressSubject">
+
+                                <option value="">
+                                    Select subject
+                                </option>
+
+                                <% if (typeof subjects !== 'undefined') { %>
+
+                                    <% subjects.forEach(subject => { %>
+
+                                        <option value="<%= subject.subjectcode %>">
+                                            <%= subject.subjectname %>
+                                        </option>
+
+                                    <% }) %>
+
+                                <% } %>
+
+                            </select>
+
+                        </div>
+
+
+                        <button id="loadProgress"
+                                class="btn btn-primary">
+
+                            View Progress
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="chart-area">
+
+                        <div class="chart-y-labels">
+
+                            <span>100</span>
+                            <span>80</span>
+                            <span>60</span>
+                            <span>40</span>
+                            <span>20</span>
+                            <span>0</span>
+
+                        </div>
+
+
+                        <div class="chart-content">
+
+                            <div class="chart-grid">
+
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+
+                            </div>
+
+
+                            <svg id="progressChart"
+                                 class="progress-svg"
+                                 viewBox="0 0 900 320"
+                                 preserveAspectRatio="none">
+
+                                <polyline
+                                    id="progressLine"
+                                    points=""
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="4"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"/>
+
+                                <g id="progressPoints"></g>
+
+                            </svg>
+
+
+                            <div class="chart-x-labels">
+
+                                <span>Term 1</span>
+                                <span>Term 2</span>
+                                <span>Term 3</span>
+                                <span>End Year</span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-summary">
+
+                        <div>
+                            <span>Term 1</span>
+                            <strong id="term1Score">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Term 2</span>
+                            <strong id="term2Score">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Term 3</span>
+                            <strong id="term3Score">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Final</span>
+                            <strong id="finalScore">—</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <footer class="dashboard-footer">
+                <span>© <%= new Date().getFullYear() %> School Management System</span>
+                <span>Department Academic Dashboard</span>
+            </footer>
+        </div>
+    </main>
+</div>
+<%- include("../partials/hod/scripts") %>
+</body>
+</html>

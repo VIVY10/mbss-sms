@@ -144,7 +144,7 @@
       el(
         "p",
         null,
-        `Exam No. ${card.student.examno} · ${card.student.grade}${card.student.section}`
+        `Exam No. ${card.student.examno} · ${card.student.level}${card.student.className}`
       )
     );
     wrap.appendChild(header);

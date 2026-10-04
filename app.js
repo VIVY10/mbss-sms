@@ -103,6 +103,7 @@ const statisticsRoutes = require('./src/routes/statisticsRoutes.js');
 const smsRoutes = require('./src/routes/smsRoutes.js');
 const reportCardRoutes = require('./src/routes/reportCards.js');
 const marksMonitoringRoutes = require("./src/routes/marksMonitoringRoutes");
+const hodRoutes = require('./src/routes/hodRoutes');
 
 
 // =======================
@@ -125,6 +126,7 @@ app.use('/', forgotPasswordRoutes);
 app.use('/', examRoutes);
 app.use('/', statisticsRoutes);
 app.use('/', smsRoutes);
+app.use('/', hodRoutes);
 app.use('/', routes);
 
 

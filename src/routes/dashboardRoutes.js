@@ -31,6 +31,6 @@ router.post(
 router.get('/logout', controller.logout);
 
 router.get('/dashboard', authChecker, dashboardController.showDashboard);
-router.get('/myClasses', authChecker, dashboardController.showHodClasses);
+
 
 module.exports = router;
