@@ -257,27 +257,35 @@
                     .getElementById('resultTerm')
                     ?.value;
 
+            const className =
+                document
+                    .getElementById('resultClassFilter')
+                    ?.value;
 
-            if (!examno) {
+            
+            const params = new URLSearchParams({
 
-                showResultMessage(
-                    'Enter a pupil exam number.',
-                    'error'
-                );
+                class_subject_id:
+                    classSubjectId,
 
-                return;
+                classId: 
+                    selectedClass.dataset.classid,
 
-            }
+                examid:
+                    examId
+            });
 
 
-            /*
-             * Replace this endpoint with your
-             * actual controller route.
-             *
-             * Example:
-             *
-             * /hod/results/search
-             */
+            // if (!examno) {
+
+            //     showResultMessage(
+            //         'Enter a pupil exam number.',
+            //         'error'
+            //     );
+
+            //     return;
+
+            // }
 
             try {
 
@@ -285,26 +293,30 @@
                     'Searching results...',
                     'success'
                 );
+ 
+            const response = await fetch(
+                `/teacher/marks/students?${params.toString()}`,
+                {
+                    method: 'GET',
 
-
-                /*
-                const response = await fetch(
-                    '/hod/results/search',
-                    {
-                        method: 'POST',
-
-                        headers: {
-                            'Content-Type':
-                                'application/json'
-                        },
-
-                        body: JSON.stringify({
-                            examno,
-                            year,
-                            term
-                        })
+                    headers: {
+                        'Accept': 'application/json'
                     }
+                }
+            ); 
+
+
+            const result =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    result.message ||
+                    'Unable to load students.'
                 );
+            }
 
 
                 const data =
@@ -322,7 +334,7 @@
 
 
                 renderResults(data);
-                */
+                
 
 
                 /*

@@ -40,7 +40,7 @@ exports.search = async (req, res) => {
   const results = await resultService.getStudentResults(
     termid,
     classid,
-    subjectcode,
+    subjectcode, 
     examid
   );
 
@@ -50,12 +50,6 @@ exports.search = async (req, res) => {
 
   return res.json(results)
 
-
-
-  // res.render("./pupil/resultsReport1", {
-  //   results,
-  //   user: req.user,
-  // });
 };
 
 // ==================== PUPIL PROFILE ====================

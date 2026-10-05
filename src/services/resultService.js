@@ -8,7 +8,7 @@ const {
 
 const getFilters = () => resultModel.getResultFilters();
 
-const getStudentResults = (termid, classid, subjectcode, examid) =>
+const getStudentResults = (termid, classid, subjectcode, examid) => 
   resultModel.getStudentResults(termid, classid, subjectcode, examid);
 
 const getProfile = (examno) => resultModel.getProfile(examno);

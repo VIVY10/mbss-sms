@@ -516,11 +516,11 @@
                 data: {
 
                     labels: [
-                        'Grade 8A',
-                        'Grade 8B',
-                        'Grade 9A',
-                        'Grade 9B',
-                        'Grade 10A'
+                        'Form 1A',
+                        'Form 1B',
+                        'Form 1C',
+                        'Form 1D',
+                        'Form 2A'
                     ],
 
                     datasets: [
@@ -886,10 +886,10 @@
              */
 
 
-            console.log(
-                'Search pupil:',
-                query
-            );
+            // console.log(
+            //     'Search pupil:',
+            //     query
+            // );
 
         }
     );
@@ -1073,7 +1073,7 @@
                         'Accept': 'application/json'
                     }
                 }
-            );
+            ); 
 
 
             const result =

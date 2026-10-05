@@ -38,10 +38,10 @@
 
                 </div>
 
-
+ 
                 <div class="result-search-card">
 
-                    <form id="resultSearchForm">
+                    <!-- <form id="resultSearchForm">
 
                         <div class="row g-3">
 
@@ -115,6 +115,104 @@
                                 </select>
 
                             </div>
+                            <div class="col-lg-3">
+                                <select
+                                    name="className"
+                                    id="resultClassFilter"
+                                    class="form-select filter-control">
+
+                                    <option value="">
+                                        All Classes
+                                    </option>
+
+                                    <% if (typeof allocations !== 'undefined') { %>
+
+                                        <% 
+                                            // Create a Set to track unique class+level combinations
+                                            const uniqueClasses = new Set();
+                                            allocations.forEach(item => {
+                                                const key = `${item.levelname}-${item.class}`;
+                                                if (!uniqueClasses.has(key)) {
+                                                    uniqueClasses.add(key);
+                                        %>
+                                                    <option
+                                                        value="<%= item.classid %>"
+                                                        >
+
+                                                        <%= item.levelname %>
+                                                        <%= item.class %>
+
+                                                    </option> 
+                                        <%
+                                                }
+                                            });
+                                        %>
+
+                                    <% } %>
+
+                                </select>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <select
+                                    id="resultSubjectFilter"
+                                    class="form-select filter-control">
+
+                                    <option value="">
+                                        All Subjects
+                                    </option>
+
+                                    <% if (typeof stats.allocations !== 'undefined') { %>
+
+                                        <% 
+                                            // Create a Set to track unique subjects
+                                            const uniqueSubjects = new Set();
+                                            stats.allocations.forEach(item => {
+                                                const key = item.subjectname;
+                                                if (!uniqueSubjects.has(key)) {
+                                                    uniqueSubjects.add(key);
+                                        %>
+                                                    <option
+                                                        value="<%= item.subjectcode %>"
+                                                        data-subjectname="<%= item.subjectname %>">
+
+                                                        <%= item.subjectname %>
+
+                                                    </option>
+                                        <%
+                                                }
+                                            });
+                                        %>
+
+                                    <% } %>
+
+                                </select>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <select
+                                    id="resultExamFilter"
+                                    class="form-select filter-control">
+
+                                    <option value="">
+                                        Select Exam
+                                    </option>
+
+                                    <% if (typeof stats.examtype !== 'undefined') { %>
+
+                                            <% stats.examtype.forEach(item => { %>
+
+                                                <option
+                                                    value="<%= item.examid %>">
+                                                    <%= item.exam_title %>
+                                                </option>
+
+                                            <% }) %>
+
+                                        <% } %>
+
+                                </select>
+                            </div>
 
 
                             <div class="col-lg-2 d-flex align-items-end">
@@ -131,7 +229,209 @@
 
                         </div>
 
-                    </form>
+                    </form>  -->
+
+        <div class="result-search-card">
+
+            <!-- <div class="search-box result-search-box">
+
+                <i class="bi bi-search"></i>
+
+                <input
+                    type="search"
+                    id="pupilSearch"
+                    class="form-control"
+                    placeholder="Search by exam number or pupil name...">
+
+            </div> -->
+
+            <div class="row g-3">
+                <div class="col-lg-4">
+
+                <label>
+                    Exam Number
+                </label>
+                    <div class="input-icon">
+                        <i class="bi bi-person-badge"></i>
+                        <input type="text"
+                            class="form-control"
+                            id="resultExamNo"
+                            placeholder="Enter exam number">
+
+                        </div>
+
+            </div>
+
+           <div class="col-lg-3">
+             <label>
+                class
+            </label>
+             <select
+                id="resultClassFilter"
+                class="form-select">
+
+                <option value="">
+                    All Classes
+                </option>
+
+                <% if (typeof stats.allocations !== 'undefined') { %>
+
+                    <% 
+                        // Create a Set to track unique class+level combinations
+                        const uniqueClasses = new Set();
+                        stats.allocations.forEach(item => {
+                            const key = `${item.levelname}-${item.class}`;
+                            if (!uniqueClasses.has(key)) {
+                                uniqueClasses.add(key);
+                    %>
+                                <option
+                                    value="<%= item.classid %>"
+                                    data-levelname="<%= item.levelname %>"
+                                    data-classname="<%= item.class %>">
+
+                                    <%= item.levelname %>
+                                    <%= item.class %>
+
+                                </option>
+                    <%
+                            }
+                        });
+                    %>
+
+                <% } %>
+
+            </select>
+           </div>
+
+           <div class="col-lg-3">
+            <label>
+                Subject
+            </label>
+            <select
+                id="resultSubjectFilter"
+                class="form-select">
+
+                <option value="">
+                    All Subjects
+                </option>
+
+                <% if (typeof stats.allocations !== 'undefined') { %>
+
+                    <% 
+                        // Create a Set to track unique subjects
+                        const uniqueSubjects = new Set();
+                        stats.allocations.forEach(item => {
+                            const key = item.subjectname;
+                            if (!uniqueSubjects.has(key)) {
+                                uniqueSubjects.add(key);
+                    %>
+                                <option
+                                    value="<%= item.subjectcode %>"
+                                    data-subjectname="<%= item.subjectname %>">
+
+                                    <%= item.subjectname %>
+
+                                </option>
+                    <%
+                            }
+                        });
+                    %>
+
+                <% } %>
+
+            </select>
+           </div>
+
+           <div class="col-lg-3">
+            <label>
+                Term
+            </label>
+            <select
+                id="resultTermFilter"
+                class="form-select">
+
+                <option value="">
+                    Select Term
+                </option>
+
+                <% if (typeof stats.allocations !== 'undefined' && stats.allocations.length) { %>
+
+                    <% 
+                        // Create a Set to track unique terms
+                        const uniqueTerms = new Set();
+                        stats.allocations.forEach(a => {
+                            const key = `${a.termid}-${a.termname}`;
+                            if (!uniqueTerms.has(key)) {
+                                uniqueTerms.add(key);
+                    %>
+                                <option value="<%= a.termid %>">
+                                    <%= a.termname %>
+                                </option>
+                    <%
+                            }
+                        });
+                    %>
+
+                <% } %>
+
+            </select>
+           </div>
+
+           <div class="col-lg-3">
+            <label>
+                Exam
+            </label>
+                <select
+                id="resultExamFilter"
+                class="form-select">
+
+                <option value="">
+                    Select Exam
+                </option>
+
+                <% if (typeof stats.examtype !== 'undefined') { %>
+
+                        <% stats.examtype.forEach(item => { %>
+
+                            <option
+                                value="<%= item.examid %>">
+                                <%= item.exam_title %>
+                            </option>
+
+                        <% }) %>
+
+                    <% } %>
+
+            </select>
+           </div>
+            <div class="col-lg-2 d-flex align-items-end">
+                <button
+                    class="btn btn-primary w-100"
+                    id="resultSearchBtn">
+
+                    <i class="bi bi-search me-1"></i>
+
+                    Search
+
+                </button>
+            </div>
+
+            <div class="col-lg-2 d-flex align-items-end">
+                <button
+                    class="btn btn-outline-secondary"
+                    id="resultClearBtn">
+
+                    <i class="bi bi-x-circle me-1"></i>
+
+                    Clear
+
+                </button>
+            </div>
+        
+
+            </div>
+
+        </div>
 
 
                     <div id="resultSearchMessage"

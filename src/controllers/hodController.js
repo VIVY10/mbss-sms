@@ -199,6 +199,11 @@ exports.results = async (req, res) => {
 
     const termid = currentTerm[0].termid;
 
+    const allocations = await hodService.getClassAllocations(
+      termid,
+      departmentid,
+    );
+
     const stats = {
       currentYear: currentYear[0],
       currentTerm: currentTerm[0],
@@ -207,6 +212,7 @@ exports.results = async (req, res) => {
 
     res.render("./hod/results", {
       stats,
+      allocations,
       user: req.user,
     });
   } catch (err) {
