@@ -177,6 +177,108 @@ exports.getStudentResultsByLevel = (
 };
 
 
+// ==================== GET STUDENT RESULTS ====================
+exports.getStudentResultsByClass = (
+  schoolyear,
+  term,
+  subjectcode,
+  classid,
+  examid,
+  examno
+) => {
+  let sql = `
+    SELECT
+        cs.subjectcode,
+        su.subjectname,
+
+        s.examno,
+        s.fname,
+        s.middlename,
+        s.lname,
+        s.gender,
+
+        g.phonenumber,
+        g.guardian_alt_phone,
+
+        yl.levelname,
+        c.class,
+
+        ex.examid,
+        ex.exam_title,
+
+        tm.termid,
+        tm.termname,
+
+        sy.schoolyearid,
+        sy.yearname,
+
+        sr.score
+
+    FROM studentclass sc
+
+    INNER JOIN students s
+        ON s.examno = sc.examno
+
+    INNER JOIN class c
+        ON c.classid = sc.classid
+
+    INNER JOIN yearlevel yl
+        ON yl.levelorder = c.levelid
+
+    INNER JOIN terms tm
+        ON tm.termid = sc.termid
+
+    INNER JOIN schoolyear sy
+        ON sy.schoolyearid = tm.yearid
+
+    INNER JOIN class_subjects cs
+        ON cs.classid = sc.classid
+
+    INNER JOIN subjects su
+        ON su.subjectcode = cs.subjectcode
+
+    INNER JOIN exams ex
+        ON ex.examid = ?
+
+    LEFT JOIN student_results sr
+        ON sr.studentclassid = sc.studentclassid
+        AND sr.subjectcode = cs.subjectcode
+        AND sr.examid = ex.examid
+
+    LEFT JOIN studentguardian stg
+        ON stg.examno = s.examno
+
+    LEFT JOIN guardian g
+        ON g.guardian_nrc_no = stg.guardianid
+
+    WHERE sc.termid = ?
+      AND sc.yearid = ?
+      AND sc.classid = ?
+      AND cs.subjectcode = ?
+  `;
+
+  const params = [
+    examid,
+    term,
+    schoolyear,
+    classid,
+    subjectcode
+  ];
+
+  // Optional pupil filter
+  if (examno != null && examno !== "") {
+    sql += ` AND s.examno = ?`;
+    params.push(examno);
+  }
+
+  sql += `
+    ORDER BY
+        s.fname ASC,
+        s.lname ASC;
+  `;
+
+  return query(sql, params);
+};
 
 //=====================GET MISSING MARKS TO BE DELETED========================
 exports.getSubjectsMissingMarks = () =>

@@ -1,21 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <%- include("../partials/head", { pageTitle: "Search Pupil's Results" }) %>
+    <%- include("../partials/head", {
+        pageTitle: "Search Pupil's Results"
+    }) %>
 </head>
+
 <body>
+
 <div class="app-shell">
-    <%- include("../partials/hod-sidebar", { currentPage: "results" }) %>
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <%- include("../partials/hod-sidebar", {
+        currentPage: "results"
+    }) %>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
     <main class="main-content">
-        <%- include("../partials/topbar", { pageTitle: "Search Pupil's Results", eyebrow: "RESULTS" }) %>
+
+        <%- include("../partials/topbar", {
+            pageTitle: "Search Pupil's Results",
+            eyebrow: "RESULTS"
+        }) %>
+
+
         <div class="content-container">
+
+            <!-- =================================================
+                 PAGE HEADER
+            ================================================== -->
             <section class="module-page-header">
+
                 <div>
-                    <div class="breadcrumb">Dashboard <span>/</span> Search Pupil's Results</div>
-                    <h2>Search Pupil's Results</h2>
+
+                    <div class="breadcrumb">
+                        <a href="/dashboard">Dashboard</a>
+                        <span>/</span>
+                        Search Pupil's Results
+                    </div>
+
+                    <h2>
+                        Search Pupil's Results
+                    </h2>
+
+                    <p class="module-description">
+                        Search and review academic results for pupils
+                        within your department.
+                    </p>
+
                 </div>
-                <a href="/dashboard" class="btn btn-light"><i class="bi bi-arrow-left"></i> Dashboard</a>
+
+
+                <div class="module-page-actions">
+
+                    <a href="/dashboard"
+                       class="btn btn-light">
+
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Dashboard
+
+                    </a>
+
+                </div>
+
             </section>
+
+
+            <!-- =================================================
+                 RESULTS SEARCH
+            ================================================== -->
             <section id="results"
                      class="dashboard-section">
 
@@ -27,201 +86,336 @@
                             RESULTS
                         </span>
 
-                        <h3>Search Pupil's Results</h3>
+                        <h3>
+                            Search Pupil's Results
+                        </h3>
 
                         <p>
-                            Search academic results for students in
-                            your department subjects.
+                            Search academic results using an exam number,
+                            class, subject, term and examination.
                         </p>
 
                     </div>
 
                 </div>
 
- 
+
+                <!-- =================================================
+                     SEARCH CARD
+                ================================================== -->
                 <div class="result-search-card">
 
-                    <!-- <form id="resultSearchForm">
+                    <form id="resultSearchForm"
+                          autocomplete="off">
 
                         <div class="row g-3">
 
-                            <div class="col-lg-4">
+                            <!-- Exam Number -->
+                            <div class="col-12 col-lg-4">
 
-                                <label>
+                                <label for="resultExamNo"
+                                       class="form-label">
+
                                     Exam Number
+
                                 </label>
 
                                 <div class="input-icon">
 
                                     <i class="bi bi-person-badge"></i>
 
-                                    <input type="text"
-                                           class="form-control"
-                                           id="resultExamNo"
-                                           placeholder="Enter exam number">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="resultExamNo"
+                                        name="examno"
+                                        placeholder="Enter exam number"
+                                        autocomplete="off"
+                                    >
 
                                 </div>
 
                             </div>
 
 
-                            <div class="col-lg-3">
+                            <!-- Class -->
+                            <div class="col-12 col-md-6 col-lg-2">
 
-                                <label>
-                                    Academic Year
+                                <label for="resultClassFilter"
+                                       class="form-label">
+
+                                    Class
+
                                 </label>
 
-                                <select class="form-select"
-                                        id="resultYear">
-
-                                    <option value="">
-                                        Select year
-                                    </option>
-
-                                    <% if (typeof stats.currentYear !== 'undefined') { %>
-
-                                            <option value="<%= stats.currentYear.schoolyearid %>">
-                                                <%= stats.currentYear.yearname %>
-                                            </option>
-
-                                    <% } %>
-
-                                </select>
-
-                            </div>
-
-
-                            <div class="col-lg-3">
-
-                                <label>
-                                    Term
-                                </label>
-
-                                <select class="form-select"
-                                        id="resultTerm">
-
-                                    <option value="">
-                                        Select term
-                                    </option>
-
-                                    <% if (typeof stats.currentTerm !== 'undefined') { %>
-
-                                            <option value="<%= stats.currentTerm.termid %>">
-                                                <%= stats.currentTerm.termname %>
-                                            </option>
-
-                                    <% } %>
-
-                                </select>
-
-                            </div>
-                            <div class="col-lg-3">
                                 <select
-                                    name="className"
                                     id="resultClassFilter"
-                                    class="form-select filter-control">
+                                    class="form-select"
+                                    name="classid"
+                                >
 
                                     <option value="">
                                         All Classes
                                     </option>
 
-                                    <% if (typeof allocations !== 'undefined') { %>
+                                    <% if (
+                                        typeof stats.allocations !== 'undefined' &&
+                                        stats.allocations &&
+                                        stats.allocations.length
+                                    ) { %>
 
-                                        <% 
-                                            // Create a Set to track unique class+level combinations
-                                            const uniqueClasses = new Set();
-                                            allocations.forEach(item => {
-                                                const key = `${item.levelname}-${item.class}`;
-                                                if (!uniqueClasses.has(key)) {
-                                                    uniqueClasses.add(key);
-                                        %>
-                                                    <option
-                                                        value="<%= item.classid %>"
-                                                        >
-
-                                                        <%= item.levelname %>
-                                                        <%= item.class %>
-
-                                                    </option> 
                                         <%
+                                            const uniqueClasses = new Map();
+
+                                            stats.allocations.forEach(item => {
+
+                                                const key =
+                                                    `${item.classid}-${item.levelname}-${item.class}`;
+
+                                                if (!uniqueClasses.has(key)) {
+                                                    uniqueClasses.set(key, item);
                                                 }
+
                                             });
                                         %>
+
+                                        <% uniqueClasses.forEach(item => { %>
+
+                                            <option
+                                                value="<%= item.classid %>"
+                                            >
+                                                <%= item.levelname || '' %>
+                                                <%= item.class || '' %>
+                                            </option>
+
+                                        <% }) %>
 
                                     <% } %>
 
                                 </select>
+
                             </div>
 
-                            <div class="col-lg-3">
+
+                            <!-- Subject -->
+                            <div class="col-12 col-md-6 col-lg-2">
+
+                                <label for="resultSubjectFilter"
+                                       class="form-label">
+
+                                    Subject
+
+                                </label>
+
                                 <select
                                     id="resultSubjectFilter"
-                                    class="form-select filter-control">
+                                    class="form-select"
+                                    name="subjectcode"
+                                >
 
                                     <option value="">
                                         All Subjects
                                     </option>
 
-                                    <% if (typeof stats.allocations !== 'undefined') { %>
+                                    <% if (
+                                        typeof stats !== 'undefined' &&
+                                        stats.allocations &&
+                                        stats.allocations.length
+                                    ) { %>
 
-                                        <% 
-                                            // Create a Set to track unique subjects
-                                            const uniqueSubjects = new Set();
-                                            stats.allocations.forEach(item => {
-                                                const key = item.subjectname;
-                                                if (!uniqueSubjects.has(key)) {
-                                                    uniqueSubjects.add(key);
-                                        %>
-                                                    <option
-                                                        value="<%= item.subjectcode %>"
-                                                        data-subjectname="<%= item.subjectname %>">
-
-                                                        <%= item.subjectname %>
-
-                                                    </option>
                                         <%
+                                            const uniqueSubjects = new Map();
+
+                                            stats.allocations.forEach(item => {
+
+                                                const key =
+                                                    item.subjectcode ||
+                                                    item.subjectname;
+
+                                                if (!uniqueSubjects.has(key)) {
+                                                    uniqueSubjects.set(key, item);
                                                 }
+
                                             });
                                         %>
+
+                                        <% uniqueSubjects.forEach(item => { %>
+
+                                            <option
+                                                value="<%= item.subjectcode || '' %>"
+                                                data-subjectname="<%= item.subjectname || '' %>"
+                                            >
+                                                <%= item.subjectname || item.subjectcode || '' %>
+                                            </option>
+
+                                        <% }) %>
 
                                     <% } %>
 
                                 </select>
+
                             </div>
 
-                            <div class="col-lg-3">
+
+                            <!-- Term -->
+                            <div class="col-12 col-md-6 col-lg-2">
+
+                                <label for="resultTermFilter"
+                                       class="form-label">
+
+                                    Term
+
+                                </label>
+
+                                <select
+                                    id="resultTermFilter"
+                                    class="form-select"
+                                    name="termid"
+                                >
+
+                                    <option value="">
+                                        Select Term
+                                    </option>
+
+                                    <% if (
+                                        typeof stats !== 'undefined' &&
+                                        stats.currentTerm &&
+                                        stats.currentTerm.length
+                                    ) { %>
+
+
+                                        <% stats.currentTerm.forEach(item => { %>
+
+                                            <option
+                                                value="<%= item.termid %>"
+                                            >
+                                                <%= item.termname || '' %>
+                                            </option>
+
+                                        <% }) %>
+
+                                    <% } %>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- Year -->
+                            <div class="col-12 col-md-6 col-lg-2">
+
+                                <label for="resultYearFilter"
+                                       class="form-label">
+
+                                    Year
+
+                                </label>
+
+                                <select
+                                    id="resultYearFilter"
+                                    class="form-select"
+                                    name="schoolyear"
+                                >
+
+                                    <option value="">
+                                        Select Year
+                                    </option>
+
+                                    <% if (
+                                        typeof stats !== 'undefined' &&
+                                        stats.currentYear &&
+                                        stats.currentYear.length
+                                    ) { %>
+
+
+                                        <% stats.currentYear.forEach(item => { %>
+
+                                            <option
+                                                value="<%= item.schoolyearid %>"
+                                            >
+                                                <%= item.yearname || '' %>
+                                            </option>
+
+                                        <% }) %>
+
+                                    <% } %>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- Exam -->
+                            <div class="col-12 col-md-6 col-lg-2">
+
+                                <label for="resultExamFilter"
+                                       class="form-label">
+
+                                    Exam
+
+                                </label>
+
                                 <select
                                     id="resultExamFilter"
-                                    class="form-select filter-control">
+                                    class="form-select"
+                                    name="examid"
+                                >
 
                                     <option value="">
                                         Select Exam
                                     </option>
 
-                                    <% if (typeof stats.examtype !== 'undefined') { %>
+                                    <% if (
+                                        typeof stats !== 'undefined' &&
+                                        stats.examtype &&
+                                        stats.examtype.length
+                                    ) { %>
 
-                                            <% stats.examtype.forEach(item => { %>
+                                        <% stats.examtype.forEach(item => { %>
 
-                                                <option
-                                                    value="<%= item.examid %>">
-                                                    <%= item.exam_title %>
-                                                </option>
+                                            <option
+                                                value="<%= item.examid %>"
+                                            >
+                                                <%= item.exam_title || '' %>
+                                            </option>
 
-                                            <% }) %>
+                                        <% }) %>
 
-                                        <% } %>
+                                    <% } %>
 
                                 </select>
+
                             </div>
 
 
-                            <div class="col-lg-2 d-flex align-items-end">
+                            <!-- Search -->
+                            <div class="col-12 col-md-6 col-lg-2 d-flex align-items-end">
 
-                                <button type="submit"
-                                        class="btn btn-primary w-100">
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary w-100"
+                                    id="resultSearchBtn"
+                                >
 
-                                    <i class="bi bi-search"></i>
+                                    <i class="bi bi-search me-1"></i>
                                     Search
+
+                                </button>
+
+                            </div>
+
+
+                            <!-- Clear -->
+                            <div class="col-12 col-md-6 col-lg-2 d-flex align-items-end">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-secondary w-100"
+                                    id="resultClearBtn"
+                                >
+
+                                    <i class="bi bi-x-circle me-1"></i>
+                                    Clear
 
                                 </button>
 
@@ -229,234 +423,66 @@
 
                         </div>
 
-                    </form>  -->
-
-        <div class="result-search-card">
-
-            <!-- <div class="search-box result-search-box">
-
-                <i class="bi bi-search"></i>
-
-                <input
-                    type="search"
-                    id="pupilSearch"
-                    class="form-control"
-                    placeholder="Search by exam number or pupil name...">
-
-            </div> -->
-
-            <div class="row g-3">
-                <div class="col-lg-4">
-
-                <label>
-                    Exam Number
-                </label>
-                    <div class="input-icon">
-                        <i class="bi bi-person-badge"></i>
-                        <input type="text"
-                            class="form-control"
-                            id="resultExamNo"
-                            placeholder="Enter exam number">
-
-                        </div>
-
-            </div>
-
-           <div class="col-lg-3">
-             <label>
-                class
-            </label>
-             <select
-                id="resultClassFilter"
-                class="form-select">
-
-                <option value="">
-                    All Classes
-                </option>
-
-                <% if (typeof stats.allocations !== 'undefined') { %>
-
-                    <% 
-                        // Create a Set to track unique class+level combinations
-                        const uniqueClasses = new Set();
-                        stats.allocations.forEach(item => {
-                            const key = `${item.levelname}-${item.class}`;
-                            if (!uniqueClasses.has(key)) {
-                                uniqueClasses.add(key);
-                    %>
-                                <option
-                                    value="<%= item.classid %>"
-                                    data-levelname="<%= item.levelname %>"
-                                    data-classname="<%= item.class %>">
-
-                                    <%= item.levelname %>
-                                    <%= item.class %>
-
-                                </option>
-                    <%
-                            }
-                        });
-                    %>
-
-                <% } %>
-
-            </select>
-           </div>
-
-           <div class="col-lg-3">
-            <label>
-                Subject
-            </label>
-            <select
-                id="resultSubjectFilter"
-                class="form-select">
-
-                <option value="">
-                    All Subjects
-                </option>
-
-                <% if (typeof stats.allocations !== 'undefined') { %>
-
-                    <% 
-                        // Create a Set to track unique subjects
-                        const uniqueSubjects = new Set();
-                        stats.allocations.forEach(item => {
-                            const key = item.subjectname;
-                            if (!uniqueSubjects.has(key)) {
-                                uniqueSubjects.add(key);
-                    %>
-                                <option
-                                    value="<%= item.subjectcode %>"
-                                    data-subjectname="<%= item.subjectname %>">
-
-                                    <%= item.subjectname %>
-
-                                </option>
-                    <%
-                            }
-                        });
-                    %>
-
-                <% } %>
-
-            </select>
-           </div>
-
-           <div class="col-lg-3">
-            <label>
-                Term
-            </label>
-            <select
-                id="resultTermFilter"
-                class="form-select">
-
-                <option value="">
-                    Select Term
-                </option>
-
-                <% if (typeof stats.allocations !== 'undefined' && stats.allocations.length) { %>
-
-                    <% 
-                        // Create a Set to track unique terms
-                        const uniqueTerms = new Set();
-                        stats.allocations.forEach(a => {
-                            const key = `${a.termid}-${a.termname}`;
-                            if (!uniqueTerms.has(key)) {
-                                uniqueTerms.add(key);
-                    %>
-                                <option value="<%= a.termid %>">
-                                    <%= a.termname %>
-                                </option>
-                    <%
-                            }
-                        });
-                    %>
-
-                <% } %>
-
-            </select>
-           </div>
-
-           <div class="col-lg-3">
-            <label>
-                Exam
-            </label>
-                <select
-                id="resultExamFilter"
-                class="form-select">
-
-                <option value="">
-                    Select Exam
-                </option>
-
-                <% if (typeof stats.examtype !== 'undefined') { %>
-
-                        <% stats.examtype.forEach(item => { %>
-
-                            <option
-                                value="<%= item.examid %>">
-                                <%= item.exam_title %>
-                            </option>
-
-                        <% }) %>
-
-                    <% } %>
-
-            </select>
-           </div>
-            <div class="col-lg-2 d-flex align-items-end">
-                <button
-                    class="btn btn-primary w-100"
-                    id="resultSearchBtn">
-
-                    <i class="bi bi-search me-1"></i>
-
-                    Search
-
-                </button>
-            </div>
-
-            <div class="col-lg-2 d-flex align-items-end">
-                <button
-                    class="btn btn-outline-secondary"
-                    id="resultClearBtn">
-
-                    <i class="bi bi-x-circle me-1"></i>
-
-                    Clear
-
-                </button>
-            </div>
-        
-
-            </div>
-
-        </div>
-
-
-                    <div id="resultSearchMessage"
-                         class="search-message d-none">
-                    </div>
-
-
-                    <div id="resultContainer"
-                         class="result-container d-none">
-
-                        <!-- JavaScript populates this -->
-
-                    </div>
+                    </form>
 
                 </div>
 
+
+                <!-- =================================================
+                     SEARCH MESSAGE
+                ================================================== -->
+                <div
+                    id="resultSearchMessage"
+                    class="search-message d-none"
+                    role="status"
+                    aria-live="polite"
+                >
+                </div>
+
+
+                <!-- =================================================
+                     RESULTS
+                ================================================== -->
+                <div
+                    id="resultContainer"
+                    class="result-container d-none"
+                >
+                    <!-- JavaScript populates this -->
+
+                </div>
+
+                
+
             </section>
 
+
+            <!-- =================================================
+                 FOOTER
+            ================================================== -->
             <footer class="dashboard-footer">
-                <span>© <%= new Date().getFullYear() %> School Management System</span>
-                <span>Department Academic Dashboard</span>
+
+                <span>
+                    © <%= new Date().getFullYear() %>
+                    School Management System
+                </span>
+
+                <span>
+                    Department Academic Dashboard
+                </span>
+
             </footer>
+
         </div>
+
     </main>
+
 </div>
+
+
+<!-- =========================================================
+     SCRIPTS
+========================================================== -->
 <%- include("../partials/scripts") %>
+
 </body>
 </html>

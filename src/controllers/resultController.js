@@ -287,7 +287,7 @@ exports.getResults = async (req, res) => {
     });
   }
 };
-
+ 
 
 exports.getStudents = async(req, res) => {
   const {class_subject_id, examid, classId} = req.query
@@ -300,9 +300,9 @@ exports.getStudents = async(req, res) => {
 
   // const findClassId = await subjectModel.findClassIdInClassSubject(class_subject_id)
 
-    const results = await resultModel.getMissingMarks(examid, termid, yearid, class_subject_id)
+  const results = await resultModel.getMissingMarks(examid, termid, yearid, class_subject_id)
 
-    return res.status(201).json(results)
+  return res.status(201).json(results)
 }
 
 

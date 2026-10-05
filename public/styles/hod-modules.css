@@ -1,19 +1,70 @@
-/* HOD modular shell: shared mobile navigation and module header */
-.sidebar-close { display:none; }
-.sidebar-overlay { display:none; }
-.module-page-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1.5rem; }
-.module-page-header h2 { margin:.25rem 0 0; }
+.sidebar-close {
+  display: none;
+}
+.sidebar-overlay {
+  display: none;
+}
+.module-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.module-page-header h2 {
+  margin: 0.25rem 0 0;
+}
 @media (max-width: 900px) {
-  .sidebar-close { display:grid; position:absolute; top:14px; right:14px; width:36px; height:36px; place-items:center; border:0; border-radius:10px; background:rgba(255,255,255,.08); color:#fff; z-index:2; }
-  .sidebar-overlay { position:fixed; inset:0; z-index:999; background:rgba(15,23,42,.48); opacity:0; visibility:hidden; pointer-events:none; display:block; transition:opacity .25s ease, visibility .25s ease; }
-  .sidebar-overlay.visible { opacity:1; visibility:visible; pointer-events:auto; }
-  .sidebar.open { z-index:1000; }
-  body.sidebar-open { overflow:hidden; }
+  .sidebar-close {
+    display: grid;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    z-index: 2;
+  }
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: rgba(15, 23, 42, 0.48);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    display: block;
+    transition:
+      opacity 0.25s ease,
+      visibility 0.25s ease;
+  }
+  .sidebar-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .sidebar.open {
+    z-index: 1000;
+  }
+  body.sidebar-open {
+    overflow: hidden;
+  }
 }
-@media (min-width:901px) {
-  .sidebar-overlay { display:none !important; }
+@media (min-width: 901px) {
+  .sidebar-overlay {
+    display: none !important;
+  }
 }
-@media (max-width:600px) {
-  .module-page-header { align-items:flex-start; flex-direction:column; }
-  .module-page-header .btn { width:100%; }
+@media (max-width: 600px) {
+  .module-page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .module-page-header .btn {
+    width: 100%;
+  }
 }

@@ -6,7 +6,7 @@
     --surface: #ffffff;
 
     --text: #172033;
-    --muted: #6b7280;
+    --muted: #6b7280; 
 
     --border: #e5e7eb;
 
@@ -1023,6 +1023,21 @@ a {
     font-weight: 700;
 
     font-size: 12px;
+}
+
+.success-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    border-radius: 50%;
+    background: #ecfdf3;
+    color: #198754;
+    font-size: 1rem;
+    font-weight: 700;
+    flex-shrink: 0;
 }
 
 .attention-list {

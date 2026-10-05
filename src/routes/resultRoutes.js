@@ -16,7 +16,7 @@ router.get('/classResults', authChecker, resultController.page);
 router.post('/classResults', authChecker, resultController.getResults);
 router.post("/enterMarks", authChecker, enterMarksValidationRules(), validate, resultController.enterMarks);
  
-router.get('/teacher/marks/students', authChecker, controller.getStudents)
+router.get('/teacher/marks/students', authChecker, controller.getStudents) 
 router.post('/teacher/marks/draft', authChecker, controller.saveMarks)
 router.post('/teacher/marks/submit', authChecker,  controller.submitMarks)
 

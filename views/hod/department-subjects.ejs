@@ -164,12 +164,20 @@
 
                             <div>
                                 <h4>Department Subjects</h4>
-                                <p>subjects found in the department.</p>
+                                <p>subjects found in this department.</p>
                             </div>
 
-                            <span class="danger-count">
-                                <%= departmentSubjects.length?? 0 %>
+                            <% if(departmentSubjects.length > 0) { %>
+                            <span class="success-count">
+                                <%= departmentSubjects.length %>
                             </span>
+                            <% } else { %>
+                            <span class="danger-count">
+                                0
+                            </span>
+                            <% } %>
+
+                            
 
                         </div>
 
@@ -183,7 +191,7 @@
                                     <div class="attention-item">
 
                                         <div class="attention-icon">
-                                            <i class="bi bi-exclamation-triangle"></i>
+                                            <i class="bi bi-journal-bookmark-fill"></i>
                                         </div>
 
                                         <div class="attention-info">
@@ -198,10 +206,6 @@
                                             </small>
 
                                         </div>
-
-                                        <button class="btn btn-sm btn-outline-primary">
-                                            Allocate
-                                        </button>
 
                                     </div>
 

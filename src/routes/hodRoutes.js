@@ -24,6 +24,8 @@ router.get("/hod/marks", authChecker, controller.marks);
 
 router.get("/hod/results", authChecker, controller.results);
 
+router.post("/hod/results", authChecker, controller.getResults)
+
 // router.get("/hod/progress", authChecker, controller.progress);
 
 // router.get("/hod/reports", authChecker, controller.reports);

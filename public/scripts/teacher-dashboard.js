@@ -814,24 +814,6 @@
                     '<span class="spinner-border spinner-border-sm me-2"></span>' +
                     'Generating...';
 
-
-                /*
-                 * backend:
-                 *
-                 * POST /teacher/reports/generate
-                 *
-                 * The server should verify:
-                 *
-                 * teacherid
-                 * classid
-                 * subject/class allocation
-                 * termid
-                 * yearid
-                 *
-                 * before generating the report.
-                 */
-
-
                 setTimeout(() => {
 
                     button.disabled = false;
