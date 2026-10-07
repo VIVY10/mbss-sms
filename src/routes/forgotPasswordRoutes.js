@@ -14,7 +14,7 @@ const router = express.Router();
 router.get(
   '/forgotPassword',
   controller.showForgotPassword
-);
+); 
 
 router.post(
   '/forgot-password',
