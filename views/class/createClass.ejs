@@ -9,19 +9,10 @@
           <div class="col-md-5">
             <div class="card-body">
               <form class="row g-0" action="addClass" method="post">
-              <% if(locals.termData && locals.yearLevelData){ %>
-                           <h3>Class Data</h3>
-                              <div class="col-md-12 mb-4">
-                                <select class="select" name="termid">
-                                  <option selected disabled value="">Term...</option>
-                                  <% termData.forEach(element => { %>
-                                    <option value="<%= element.termid %>"> <%= element.termnumber %></option>                              
-                                  <% }); %>
-                                </select>
-                              </div>
-                
+              <% if(locals.yearLevelData){ %>
+                           <h3>Class Data</h3>                
                             <div class="col-md-12 mb-4">
-                              <select class="select" name="grade">
+                              <select class="select" name="levelorder">
                                 <option selected disabled value="">Grade...</option>
                                 <% yearLevelData.forEach(element => { %>
                                   <option value="<%= element.levelorder %>"> <%= element.levelname %></option>                              
@@ -31,7 +22,7 @@
                           <% } %>
 
                 <div class="col-md-12 mb-4">
-                  <select class="select" name="class" required>
+                  <select class="select" name="className" required>
                     <option selected disabled value="">Class...</option>
                     <option>A</option>
                     <option>B</option>

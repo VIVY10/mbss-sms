@@ -27,14 +27,11 @@ async function createTerm(data) {
 }
 
 async function createClass(data) {
-  if ((await model.findClass(data.grade, data.class, data.termid)).length) {
+  if ((await model.findClass(data.levelorder, data.className)).length) {
     throw new Error("Class already in the system.");
   }
 
-  return model.createClass({
-    ...data,
-    section: data.class,
-  });
+  return model.createClass(data);
 }
 
 async function createSubject(data) {

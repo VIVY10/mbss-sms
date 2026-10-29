@@ -26,6 +26,8 @@ router.get('/schoolYears', ...adminOnly, controller.schoolYears);
 router.get('/schoolYear', ...adminOnly, controller.schoolYearPage);
 router.post('/schoolYear', ...adminOnly, schoolyearValidationRules(), validate, controller.createSchoolYear);
 router.post('/deleteYear', ...adminOnly, controller.deleteYear);
+router.get('/openYear', ...adminOnly, controller.openSchoolYear) 
+router.get('/closeYear', ...adminOnly, controller.closeSchoolYear)
  
 router.get('/terms', ...adminOnly, controller.terms);
 router.get('/fetchTerms', ...adminOnly, controller.get_terms);

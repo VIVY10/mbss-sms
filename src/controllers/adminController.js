@@ -163,6 +163,84 @@ exports.closeTerm = async (req, res) => {
   }
 };
 
+
+// ================= open and close school year ====
+exports.openSchoolYear = async (req, res) => {
+  try {
+    const opened_by = req.user.teacherid;
+    const { yearid } = req.query;
+
+    if (!yearid) {
+      return response(res, "Yearid ID is required.");
+    }
+
+    const year = await model.findSchoolYear(yearid);
+ 
+    // No term found
+    if (!year || year.length === 0) {
+      return response(res, "Year does not exist.");
+    }
+
+    const currentYear = year[0];
+
+    // Already open
+    if (currentYear.status === "open") {
+      return response(res, "School Year is already open.");
+    }
+
+    // Allow opening only if status is "closed" or "upcoming"
+    if (!["closed", "upcoming"].includes(currentYear.status)) {
+      return response(res, "Year cannot be opened. Only closed or upcoming years can be opened.");
+    }
+
+    await model.openYear(yearid, opened_by);
+
+    return res.redirect("/schoolyears");
+  } catch (err) {
+    console.error(err);
+
+    return response(res, "Database error.");
+  }
+};
+
+exports.closeSchoolYear = async (req, res) => {
+  try {
+    const closed_by = req.user.id;
+    const { yearid } = req.query;
+
+    if (!yearid) {
+      return response(res, "Year ID is required.");
+    }
+
+    const year = await model.findSchoolYear(yearid);
+
+    // No term found
+    if (!year || year.length === 0) {
+      return response(res, "Term does not exist.");
+    }
+
+    const currentYear = year[0];
+
+    // Already open
+    if (currentYear.status === "closed") {
+      return response(res, "Year is already closed.");
+    }
+
+    // Only open terms can be closed
+    if (currentYear.status !== "open") {
+      return response(res, "Year cannot be closed.");
+    }
+
+    await model.closeYear(yearid, closed_by);
+
+    return res.redirect("/schoolyears");
+  } catch (err) {
+    console.error(err);
+
+    return response(res, "Database error.");
+  }
+};
+
 // ==================== CLASSES ====================
 
 exports.classes = async (req, res) => {
@@ -175,21 +253,13 @@ exports.classes = async (req, res) => {
 };
 
 exports.addClassPage = async (req, res) => {
-  const [termData, yearLevelData] = await model.getClassOptions();
-
-  if (!termData.length) {
-    return response(
-      res,
-      "No School Term Registered. Create school term to create a class.",
-    );
-  }
+  const [yearLevelData] = await model.getClassOptions();
 
   if (!yearLevelData.length) {
     return response(res, "Register School Year level First");
   }
 
   res.render("./class/createClass", {
-    termData,
     yearLevelData,
     user: req.user,
   });
@@ -197,7 +267,7 @@ exports.addClassPage = async (req, res) => {
 
 exports.addClass = async (req, res) => {
   try {
-    await service.createClass(matchedData(req));
+    await service.createClass(req.body);
     res.redirect("/get_class");
   } catch (e) {
     response(res, e.message || "Database error.");
@@ -239,11 +309,6 @@ exports.createSubject = async (req, res) => {
 
 exports.viewSubjects = async (req, res) => {
   const results = await subjectModel.getAll();
-
-  if (!results.length) {
-    return res.send("No subjects found");
-  }
-
   res.render("./admin/viewSubjects", {
     results,
     user: req.user,

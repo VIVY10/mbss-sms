@@ -105,8 +105,8 @@ exports.openTerm = (termid, opened_by) =>
     `UPDATE terms
       SET
         status = 'open',
-        closed_at = CURRENT_TIMESTAMP,
-        closed_by = ?
+        opened_at = CURRENT_TIMESTAMP,
+        opened_by = ?
       WHERE termid = ?
         AND (status = 'closed' OR status = 'upcoming')`,
     [opened_by, termid],
@@ -122,6 +122,27 @@ exports.closeTerm = (termid, closed_by) =>
       WHERE termid = ?
         AND status = 'open'`,
     [closed_by, termid],
+  );
+
+// ============== Open and Close School Year =======
+exports.openYear = (yearid, opened_by) =>
+  query(
+    `UPDATE schoolyear
+      SET
+        status = 'open'
+      WHERE schoolyearid = ?
+        AND (status = 'closed' OR status = 'upcoming')`,
+    [yearid],
+  );
+
+exports.closeYear = (yearid, closed_by) =>
+  query(
+    `UPDATE schoolyear
+      SET
+        status = 'closed'
+      WHERE schoolyearid = ?
+        AND status = 'open'`,
+    [yearid],
   );
 
 // ==================== CLASSES ====================
@@ -142,26 +163,24 @@ exports.getClasses = () =>
 
 exports.getClassOptions = () =>
   Promise.all([
-    query("SELECT termid, termnumber FROM terms"),
     query("SELECT * FROM yearlevel"),
   ]);
 
-exports.findClass = (grade, section, termid) =>
+exports.findClass = (levelorder, className) =>
   query(
     `SELECT *
      FROM class
-     WHERE grade = ?
-       AND section = ?
-       AND termid = ?`,
-    [grade, section, termid],
+     WHERE levelid = ?
+       AND class = ?`,
+    [levelorder, className],
   );
 
 exports.createClass = (data) =>
   query(
     `INSERT INTO class
-     (termid, grade, section)
-     VALUES (?, ?, ?)`,
-    [data.termid, data.grade, data.section],
+     (levelid, class)
+     VALUES (?, ?)`,
+    [data.levelorder, data.className],
   );
 
 exports.deleteClass = (id) =>

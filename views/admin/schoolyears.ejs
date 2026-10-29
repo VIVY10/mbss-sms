@@ -31,7 +31,7 @@
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody> 
 
                         <% if (locals.results && results.length > 0) { %>
 
@@ -76,15 +76,38 @@
                                         </form>
                                     </td>
 
+                                    <!-- Open / Close -->
                                     <td>
-                                        <button
-                                            type="button"
-                                            class="btn btn-danger"
-                                        >
-                                            Test
-                                        </button>
-                                    </td>
 
+                                        <% if (element.status === 'closed' || element.status === 'upcoming') { %>
+
+                                            <a
+                                                href="/openYear?yearid=<%= encodeURIComponent(element.schoolyearid) %>"
+                                            >
+                                                <i
+                                                    class="material-icons"
+                                                    title="Open school year"
+                                                >
+                                                    lock
+                                                </i>
+                                            </a>
+
+                                        <% } else { %>
+
+                                            <a
+                                                href="/closeYear?yearid=<%= encodeURIComponent(element.schoolyearid) %>"
+                                            >
+                                                <i
+                                                    class="material-icons"
+                                                    title="Close school year"
+                                                >
+                                                    lock_open
+                                                </i>
+                                            </a>
+
+                                        <% } %>
+
+                                    </td>
                                 </tr>
 
                             <% }) %>
