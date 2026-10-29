@@ -1,0 +1,266 @@
+<%- include('../partials/teacher-page-start', {
+    stats,
+    teacher,
+    currentYear: '2026',
+    activePage: 'results',
+    pageTitle: 'Pupil Results',
+    pageSubtitle: 'Search and review academic results'
+}) %>
+
+<div class="page-heading">
+
+    <div>
+
+        <span class="eyebrow">
+            RESULTS
+        </span>
+
+        <h1>Pupil Results</h1>
+
+        <p>
+            Search and review pupil academic results.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="content-card mb-4">
+
+    <div class="result-search">
+
+        <div class="search-box result-search-box">
+
+            <i class="bi bi-search"></i>
+
+            <input
+                type="search"
+                id="pupilSearch"
+                class="form-control"
+                placeholder="Search by exam number or pupil name...">
+
+        </div>
+
+
+        <select
+            id="resultClassFilter"
+            class="form-select filter-control">
+
+            <option value="">
+                All Classes
+            </option>
+
+            <%
+                const uniqueClasses = new Set();
+
+                (stats?.allocations || []).forEach(item => {
+                    if (!uniqueClasses.has(item.classid)) {
+                        uniqueClasses.add(item.classid);
+            %>
+
+                <option value="<%= item.classid %>">
+                    <%= item.levelname %> <%= item.class %>
+                </option>
+
+            <%
+                    }
+                });
+            %>
+
+        </select>
+
+
+        <select
+            id="resultSubjectFilter"
+            class="form-select filter-control">
+
+            <option value="">
+                All Subjects
+            </option>
+
+            <%
+                const uniqueSubjects = new Set();
+
+                (stats?.allocations || []).forEach(item => {
+                    if (!uniqueSubjects.has(item.subjectcode)) {
+                        uniqueSubjects.add(item.subjectcode);
+            %>
+
+                <option value="<%= item.subjectcode %>">
+                    <%= item.subjectname %>
+                </option>
+
+            <%
+                    }
+                });
+            %>
+
+        </select>
+
+
+        <select
+            id="resultTermFilter"
+            class="form-select filter-control">
+
+            <option value="">
+                Select Term
+            </option>
+
+            <%
+                const uniqueResultTerms = new Set();
+
+                (stats?.allocations || []).forEach(item => {
+                    if (!uniqueResultTerms.has(item.termid)) {
+                        uniqueResultTerms.add(item.termid);
+            %>
+
+                <option value="<%= item.termid %>">
+                    <%= item.termname %>
+                </option>
+
+            <%
+                    }
+                });
+            %>
+
+        </select>
+
+
+        <select
+            id="resultExamFilter"
+            class="form-select filter-control">
+
+            <option value="">
+                Select Exam
+            </option>
+
+            <% (stats?.examtype || []).forEach(item => { %>
+
+                <option value="<%= item.examid %>">
+                    <%= item.exam_title %>
+                </option>
+
+            <% }) %>
+
+        </select>
+
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            id="resultSearchBtn">
+
+            <i class="bi bi-search me-1"></i>
+            Search
+
+        </button>
+
+
+        <button
+            type="button"
+            class="btn btn-outline-secondary"
+            id="resultClearBtn">
+
+            <i class="bi bi-x-circle me-1"></i>
+            Clear
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<div class="content-card">
+
+    <div class="card-header-custom">
+
+        <div>
+
+            <div class="d-flex align-items-center gap-2 mb-1">
+
+                <h3>Results</h3>
+
+                <span
+                    id="resultCount"
+                    class="badge bg-light text-dark">
+
+                    0 results
+
+                </span>
+
+            </div>
+
+            <p id="resultSubtitle">
+                Search results will appear here.
+            </p>
+
+        </div>
+
+
+        <div
+            id="resultActions"
+            class="d-none">
+
+            <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                id="exportResultsBtn">
+
+                <i class="bi bi-download"></i>
+                Export
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="resultsLoading"
+        class="marks-loading d-none">
+
+        <div
+            class="spinner-border text-primary"
+            role="status">
+
+            <span class="visually-hidden">
+                Loading...
+            </span>
+
+        </div>
+
+        <span>
+            Searching for results...
+        </span>
+
+    </div>
+
+
+    <div id="resultsContainer">
+
+        <div class="empty-large">
+
+            <i class="bi bi-search"></i>
+
+            <h4>Search for a pupil</h4>
+
+            <p>
+                Enter an exam number or pupil name above,
+                or use the filters to narrow your search.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%
+    const pageScript =
+        '/scripts/teacher-results.js';
+%>
+
+<%- include('../partials/teacher-page-end', { pageScript }) %>

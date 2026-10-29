@@ -41,12 +41,12 @@ async function registerTeacher({ data, file }) {
     const existingEmployeeNo = await teacherModel.findByEmployeeNo(
       data.employee_no
     );
-
+ 
     if (data.usertype === "ADMIN") {
       const admins = await teacherModel.countAdmins();
 
-      if (admins.length) {
-        throw new Error("You must have only one Admin in the system.");
+      if (admins.length > 3) {
+        throw new Error("maximum number of Admins reached.");
       }
     }
 
@@ -134,7 +134,7 @@ async function getSubjectAllocation(teacherId, allocated) {
     records,
   };
 }
-
+ 
 async function create_teaching_allocations(
   teacherid,
   class_subject_id,

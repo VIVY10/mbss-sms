@@ -1,0 +1,200 @@
+<%- include('../partials/teacher-page-start', {
+    stats,
+    currentYear,
+    activePage: 'allocations',
+    pageTitle: 'My Teaching Allocations',
+    pageSubtitle: 'Classes and subjects assigned to you'
+}) %>
+
+<div class="page-heading">
+
+    <div>
+
+        <span class="eyebrow">
+            ACADEMIC
+        </span>
+
+        <h1>My Teaching Allocations</h1>
+
+        <p>
+            Every class and subject assigned to you.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="content-card">
+
+    <div class="filter-bar">
+
+        <div class="search-box">
+
+            <i class="bi bi-search"></i>
+
+            <input
+                id="allocationSearch"
+                class="form-control"
+                placeholder="Search class or subject...">
+
+        </div>
+
+
+        <select
+            id="allocationTermFilter"
+            class="form-select filter-control">
+
+            <option value="">
+                All Terms
+            </option>
+
+            <%
+                const uniqueTerms = new Set();
+
+                (stats?.allocations || []).forEach(item => {
+                    if (!uniqueTerms.has(item.termid)) {
+                        uniqueTerms.add(item.termid);
+            %>
+
+                <option value="<%= item.termid %>">
+                    <%= item.termname %>
+                </option>
+
+            <%
+                    }
+                });
+            %>
+
+        </select>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table
+            class="table professional-table"
+            id="allocationTable">
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>CLASS</th>
+                    <th>LEVEL</th>
+                    <th>SUBJECT</th>
+                    <th>SUBJECT CODE</th>
+                    <th>TERM</th>
+                    <th>STATUS</th>
+                    <th>ACTIONS</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <% if (stats?.allocations?.length) { %>
+
+                    <% stats.allocations.forEach((item, index) => { %>
+
+                        <tr data-termid="<%= item.termid %>">
+
+                            <td>
+                                <%= index + 1 %>
+                            </td>
+
+                            <td>
+                                <strong>
+                                    <%= item.class %>
+                                </strong>
+                            </td>
+
+                            <td>
+                                <%= item.levelname %>
+                            </td>
+
+                            <td>
+                                <%= item.subjectname %>
+                            </td>
+
+                            <td>
+                                <span class="code-badge">
+                                    <%= item.subjectcode %>
+                                </span>
+                            </td>
+
+                            <td>
+                                <%= item.termname %>
+                            </td>
+
+                            <td>
+                                <span class="status-badge success">
+                                    Allocated
+                                </span>
+                            </td>
+
+                            <td>
+
+                                <div class="table-actions">
+
+                                    <a
+                                        href="/teacher/marks?allocation=<%= item.class_subject_id %>"
+                                        class="btn btn-sm btn-light"
+                                        title="Enter marks">
+
+                                        <i class="bi bi-pencil-square"></i>
+
+                                    </a>
+
+                                    <a
+                                        href="/viewClassPupils?classid=<%= item.classid %>"
+                                        class="btn btn-sm btn-light"
+                                        title="View pupils">
+
+                                        <i class="bi bi-people"></i>
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    <% }) %>
+
+                <% } else { %>
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="empty-state">
+
+                            <i class="bi bi-inbox"></i>
+
+                            <span>
+                                No teaching allocations found.
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                <% } %>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<%
+    const pageScript =
+        '/scripts/teacher/allocations.js';
+%>
+
+<%- include('../partials/teacher-page-end', { pageScript }) %>

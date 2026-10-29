@@ -1,0 +1,74 @@
+<header class="teacher-topbar">
+
+    <div class="topbar-left">
+
+        <button
+            type="button"
+            id="sidebarToggle"
+            class="sidebar-toggle">
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
+        <div>
+
+            <h5 id="pageTitle">
+                <%= pageTitle %>
+            </h5>
+
+            <small id="pageSubtitle">
+                <%= pageSubtitle %>
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="topbar-right">
+
+        <div class="academic-context">
+
+            <i class="bi bi-calendar3"></i>
+
+            <span>
+                <%= currentYear?.yearname || 'Academic Year' %>
+            </span>
+
+        </div>
+
+
+        <button
+            type="button"
+            class="top-icon-button"
+            title="Notifications">
+
+            <i class="bi bi-bell"></i>
+
+            <span class="notification-dot"></span>
+
+        </button>
+
+
+        <div class="top-user">
+
+            <div class="top-avatar">
+                <%= teacher?.fname?.charAt(0) || 'T' %>
+            </div>
+
+            <div class="top-user-info">
+
+                <strong>
+                    <%= `${teacher?.fname || ''} ${teacher?.lname || ''}` %>
+                </strong>
+
+                <span>Teacher</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>

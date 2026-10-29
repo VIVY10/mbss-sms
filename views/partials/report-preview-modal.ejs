@@ -1,0 +1,156 @@
+<div
+    class="modal fade"
+    id="reportPreviewModal"
+    tabindex="-1">
+
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h5 class="modal-title">
+                        Report Preview
+                    </h5>
+
+                    <small>
+                        Review the report before generating.
+                    </small>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"></button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div
+                    id="reportPreview"
+                    class="report-preview">
+
+                    <div class="report-school-header">
+
+                        <h2>
+                            SCHOOL MANAGEMENT SYSTEM
+                        </h2>
+
+                        <p>
+                            Academic Performance Report
+                        </p>
+
+                    </div>
+
+                    <hr>
+
+                    <div class="report-student-info">
+
+                        <div>
+                            <span>Pupil</span>
+                            <strong id="previewPupil">
+                                -
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Class</span>
+                            <strong id="previewClass">
+                                -
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Academic Year</span>
+                            <strong id="previewYear">
+                                -
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Term</span>
+                            <strong id="previewTerm">
+                                -
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <table class="table report-table">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>SUBJECT</th>
+                            <th>MARK</th>
+                            <th>GRADE</th>
+                            <th>REMARK</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <tr>
+                            <td>Mathematics</td>
+                            <td>78</td>
+                            <td>B+</td>
+                            <td>Very Good</td>
+                        </tr>
+
+                        <tr>
+                            <td>English</td>
+                            <td>72</td>
+                            <td>B</td>
+                            <td>Good</td>
+                        </tr>
+
+                        <tr>
+                            <td>Science</td>
+                            <td>84</td>
+                            <td>A</td>
+                            <td>Excellent</td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    class="btn btn-outline-secondary"
+                    data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+                <button
+                    class="btn btn-primary"
+                    id="generateReportBtn">
+
+                    <i class="bi bi-file-earmark-pdf"></i>
+
+                    Generate PDF
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

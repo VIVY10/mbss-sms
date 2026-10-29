@@ -1237,12 +1237,11 @@
                 <td>
 
                     <input
-                        type="number"
+                        type="text"
                         class="form-control mark-input"
                         min="0"
                         max="100"
-                        step="0.01"
-                        inputmode="decimal"
+                        step="1"
                         data-examno="${escapeHtml(result.examno)}"
                         data-studentclassid="${result.studentclassid}"
                         value="${mark}"

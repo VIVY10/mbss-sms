@@ -1,0 +1,16 @@
+<%- include('teacher-head', { pageTitle }) %>
+
+<div class="teacher-app">
+
+    <%- include('teacher-sidebar', { activePage }) %>
+
+    <main class="teacher-main">
+
+        <%- include('teacher-topbar', {
+            teacher,
+            currentYear,
+            pageTitle,
+            pageSubtitle
+        }) %>
+
+        <div class="page-content">

@@ -1,0 +1,38 @@
+<%- include('../partials/page-start', {
+    teacher,
+    currentYear,
+    activePage: 'midterm',
+    pageTitle: 'Mid-Term Reports',
+    pageSubtitle: 'Generate mid-term academic reports'
+}) %>
+
+<div class="page-heading">
+
+    <div>
+
+        <span class="eyebrow">
+            REPORTS
+        </span>
+
+        <h1>Mid-Term Reports</h1>
+
+        <p>
+            Generate academic mid-term reports.
+        </p>
+
+    </div>
+
+</div>
+
+<%- include('../../partials/report-generator', {
+    reportType: 'midterm'
+}) %>
+
+<%- include('../partials/report-preview-modal') %>
+
+<%
+    const pageScript =
+        '/scripts/teacher/reports.js';
+%>
+
+<%- include('../partials/page-end', { pageScript }) %>

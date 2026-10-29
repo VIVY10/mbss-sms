@@ -2,10 +2,12 @@ const { matchedData } = require("express-validator");
 
 const teacherModel = require("../models/teacherModel.js");
 const teacherService = require("../services/teacherService.js");
+const dashboardService = require("../services/dashboardService.js");
 const adminModel = require("../models/adminModel.js");
 const subjectModel = require("../models/subjectModel.js");
 // ==================== DIRECTORIES ====================
 const path = require("path");
+const { stat } = require("fs");
 
 const profileDirectory = path.join(__dirname, "../../public/images/profile");
 
@@ -32,9 +34,9 @@ exports.register = async (req, res) => {
 
 exports.viewTeachers = async (req, res) => {
   const teachers = await teacherModel.getAll();
-  const activeTeachers = await teacherModel.getAllActiveTeachers()
-  const hodCount = await teacherModel.hodCount()
-  const departments = await adminModel.getAllActiveDepartment()
+  const activeTeachers = await teacherModel.getAllActiveTeachers();
+  const hodCount = await teacherModel.hodCount();
+  const departments = await adminModel.getAllActiveDepartment();
 
   res.render("./teacher/index", {
     teachers,
@@ -52,16 +54,16 @@ exports.findTeacher = async (req, res) => {
   const [teacher] = await teacherModel.findById(teacherid);
   const departments = await teacherModel.findTeacherDepartment(teacherid);
   const subjects = await teacherModel.getTeacherSubjects(teacherid);
-  const allocations = await teacherModel.getTeacherSubjectAllocations(teacherid);
-  const allocationHistory = await teacherModel.getTeacherSubjectAllocationsHistory(teacherid);
+  const allocations =
+    await teacherModel.getTeacherSubjectAllocations(teacherid);
+  const allocationHistory =
+    await teacherModel.getTeacherSubjectAllocationsHistory(teacherid);
   const availableClasses = [];
   const availableClassSubjects = await subjectModel.getClassSubjects();
   const availableDepartments = await adminModel.getDepartments();
   const availableSubjects = await subjectModel.getAll();
 
-  const teacherSubjectCodes = new Set(
-    subjects.map((ts) => ts.subjectcode),
-  );
+  const teacherSubjectCodes = new Set(subjects.map((ts) => ts.subjectcode));
 
   const availableTeacherClassSubjects = availableClassSubjects.filter((cs) =>
     teacherSubjectCodes.has(cs.subjectcode),
@@ -81,52 +83,41 @@ exports.findTeacher = async (req, res) => {
   });
 };
 
-// exports.viewTeachers2 = async (req, res) => {
-//   const results = await teacherModel.getAll();
-
-//   res.render("./teacher/viewRegTeachers", {
-//     results,
-//     user: req.user,
-//   });
-// };
-
 // ==================== SUBJECTS TAUGHT ====================
 exports.createTeachingAllocation = async (req, res) => {
-    try {
-        const { teacherid, class_subject_id } = req.body;
+  try {
+    const { teacherid, class_subject_id } = req.body;
 
-        // Get the currently open term
-        const foundTerm = await adminModel.get_Open_Terms();
+    // Get the currently open term
+    const foundTerm = await adminModel.get_Open_Terms();
 
-        if (!foundTerm || foundTerm.length === 0) {
-            return res.status(400).json({
-                success: false,
-                message: "There is currently no open term."
-            });
-        }
-
-        const termid = foundTerm[0].termid;
-
-        // Create teaching allocation
-        const result = await teacherService.create_teaching_allocations(
-            teacherid,
-            class_subject_id,
-            termid,
-            req.user.teacherid
-        );
-
-        return res.status(result.status).json(result);
-
-    } catch (err) {
-        console.error("Create teaching allocation error:", err);
-
-        return res.status(500).json({
-            success: false,
-            message: "Failed to create teaching allocation."
-        });
+    if (!foundTerm || foundTerm.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "There is currently no open term.",
+      });
     }
-};
 
+    const termid = foundTerm[0].termid;
+
+    // Create teaching allocation
+    const result = await teacherService.create_teaching_allocations(
+      teacherid,
+      class_subject_id,
+      termid,
+      req.user.teacherid,
+    );
+
+    return res.status(result.status).json(result);
+  } catch (err) {
+    console.error("Create teaching allocation error:", err);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create teaching allocation.",
+    });
+  }
+};
 
 exports.subjectsTaught = async (req, res) => {
   const response = await teacherModel.getSubjectsTaught(req.user.id);
@@ -141,22 +132,20 @@ exports.subjectsTaught = async (req, res) => {
   });
 };
 
-
 exports.removeTeacherSubject = async (req, res) => {
-  const {teacher_subjectid} = req.params
+  const { teacher_subjectid } = req.params;
 
-  await teacherModel.removeTeacherSubject(teacher_subjectid)
+  await teacherModel.removeTeacherSubject(teacher_subjectid);
 
-  res.redirect('/viewTeachers'); 
+  res.redirect("/viewTeachers");
 };
 
-
 exports.removeTeacherDepartment = async (req, res) => {
-  const {teacher_departmentid, teacherid} = req.query;
+  const { teacher_departmentid, teacherid } = req.query;
 
-  await teacherModel.removeTeacherInDepartment(teacher_departmentid)
+  await teacherModel.removeTeacherInDepartment(teacher_departmentid);
 
-  res.redirect(`/teachers/${teacherid}`); 
+  res.redirect(`/teachers/${teacherid}`);
 };
 
 // ==================== UNALLOCATED SUBJECT ALLOCATION ====================
@@ -236,7 +225,6 @@ exports.assignTeacherSubject = async (req, res) => {
 };
 
 // ==================== REGISTERED PUPILS ====================
-
 exports.registeredPupils = async (req, res) => {
   const { subjectcode, classid } = req.body;
 
@@ -248,23 +236,131 @@ exports.registeredPupils = async (req, res) => {
   });
 };
 
+// ==================== teacher classes ===================
+exports.classes = async (req, res) => {
+  const teacherid = req.user.teacherid
+  try {
+    const stats = await dashboardService.getTeacherDashboardStats(teacherid);
+    const [currentYear] = await adminModel.get_Open_schoolYear()
+   
+    res.render("./teacher/classes", {
+      stats,
+      currentYear,
+      teacher: req.user,
+    });
+  } catch (err) {
+    // console.log(err)
+    throw err;
+  }
+};
+
+
+// ==================== teacher allocations ===================
+exports.allocations = async (req, res) => {
+  const teacherid = req.user.teacherid
+  try {
+    const stats = await dashboardService.getTeacherDashboardStats(teacherid);
+    const [currentYear] = await adminModel.get_Open_schoolYear()
+
+    res.render("./teacher/allocations", {
+      stats,
+      currentYear,
+      teacher: req.user,
+    });
+  } catch (err) {
+    // console.log(err)
+    throw err;
+  }
+};
+
+// ==================== teacher marks entry ===================
+exports.teacherMarksEntry = async (req, res) => {
+  const teacherid = req.user.teacherid
+  try {
+    const stats = await dashboardService.getTeacherDashboardStats(teacherid);
+    const [currentYear] = await adminModel.get_Open_schoolYear()
+
+    res.render("./teacher/marks", {
+      stats,
+      currentYear,
+      teacher: req.user,
+    });
+  } catch (err) {
+    // console.log(err)
+    throw err;
+  }
+};
+
+// ==================== teacher results ===================
+exports.teacherResults = async (req, res) => {
+  const teacherid = req.user.teacherid
+  try {
+    const stats = await dashboardService.getTeacherDashboardStats(teacherid);
+    const [currentYear] = await adminModel.get_Open_schoolYear()
+
+    res.render("./teacher/results", {
+      stats,
+      currentYear,
+      teacher: req.user,
+    });
+  } catch (err) {
+    throw err;
+  }
+};
+
+
+// ================ teacher profile =======================
+exports.teacherProfile = async (req, res) => {
+  const teacherid = req.user.teacherid;
+
+  const [teacher] = await teacherModel.findById(teacherid);
+  const departments = await teacherModel.findTeacherDepartment(teacherid);
+  const subjects = await teacherModel.getTeacherSubjects(teacherid);
+  const allocations =
+    await teacherModel.getTeacherSubjectAllocations(teacherid);
+  const allocationHistory =
+    await teacherModel.getTeacherSubjectAllocationsHistory(teacherid);
+  const availableClasses = [];
+  const availableClassSubjects = await subjectModel.getClassSubjects();
+  const availableDepartments = await adminModel.getDepartments();
+  const availableSubjects = await subjectModel.getAll();
+
+  const teacherSubjectCodes = new Set(subjects.map((ts) => ts.subjectcode));
+
+  const availableTeacherClassSubjects = availableClassSubjects.filter((cs) =>
+    teacherSubjectCodes.has(cs.subjectcode),
+  );
+
+  const [currentYear] = await adminModel.get_Open_schoolYear();
+
+  res.render("./teacher/teacher-profile", {
+    teacher,
+    currentYear,
+    departments,
+    subjects,
+    allocations,
+    allocationHistory,
+    availableClasses,
+    availableTeacherClassSubjects,
+    availableDepartments,
+    availableSubjects,
+    user: req.user,
+  });
+};
+
+
 // ==================== DELETE TEACHER ====================
 
 exports.deactivateTeacher = async (req, res) => {
-  await teacherService.softDeleteTeacher(
-    req.query.teacherid
-  );
+  await teacherService.softDeleteTeacher(req.query.teacherid);
   res.redirect("/viewTeachers");
 };
 
 // ==================== ACTIVATE TEACHER ====================
 exports.reactivateTeacher = async (req, res) => {
-  await teacherService.reactivate_teacher(
-    req.query.teacherid
-  );
+  await teacherService.reactivate_teacher(req.query.teacherid);
   res.redirect("/viewTeachers");
 };
-
 
 // ==================== UPDATE TEACHER ====================
 
@@ -304,4 +400,14 @@ exports.unlockTeacherAccount = async (req, res, next) => {
     return res.redirect("/viewTeachers");
   }
 };
- 
+
+exports.showEditPage = async (req, res) => {
+  const { teacherid } = req.params;
+  const results = await teacherModel.findById(teacherid);
+
+  console.log(results);
+  res.render("./teacher/edit-teacher", {
+    results,
+    user: req.user,
+  });
+};

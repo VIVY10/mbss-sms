@@ -1,0 +1,38 @@
+<%- include('../partials/page-start', {
+    teacher,
+    currentYear,
+    activePage: 'termly',
+    pageTitle: 'Termly Reports',
+    pageSubtitle: 'Generate term academic reports'
+}) %>
+
+<div class="page-heading">
+
+    <div>
+
+        <span class="eyebrow">
+            REPORTS
+        </span>
+
+        <h1>Termly Reports</h1>
+
+        <p>
+            Generate reports for the selected term.
+        </p>
+
+    </div>
+
+</div>
+
+<%- include('../../partials/report-generator', {
+    reportType: 'termly'
+}) %>
+
+<%- include('../partials/report-preview-modal') %>
+
+<%
+    const pageScript =
+        '/scripts/teacher/reports.js';
+%>
+
+<%- include('../partials/page-end', { pageScript }) %>

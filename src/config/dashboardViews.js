@@ -12,7 +12,7 @@ module.exports = {
   },
 
   teacher: {
-    view: "teacher/teacher-dashboard",
+    view: "teacher/dashboard",
     dataKey: "teacher",
 
     getStats: (teacher) =>

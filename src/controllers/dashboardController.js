@@ -40,7 +40,7 @@ exports.showHodClasses = async (req, res) => {
   const user = req.user;
 
   const dashboard = dashboardViews["teacher"];
-
+ 
   if (!dashboard) {
     return res.redirect("/");
   }

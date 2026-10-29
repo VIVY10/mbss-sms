@@ -1,0 +1,198 @@
+<div
+    id="sidebarOverlay"
+    class="sidebar-overlay">
+</div>
+
+<aside
+    id="teacherSidebar"
+    class="teacher-sidebar">
+
+    <div class="sidebar-header">
+
+        <div class="brand-icon">
+            <i class="bi bi-mortarboard-fill"></i>
+        </div>
+
+        <div class="brand-text">
+            <strong>MBSS SMS</strong>
+            <small>Teacher Portal</small>
+        </div>
+
+        <button
+            type="button"
+            id="sidebarClose"
+            class="sidebar-close d-lg-none">
+
+            <i class="bi bi-x-lg"></i>
+
+        </button>
+
+    </div>
+
+
+    <div class="teacher-mini-profile">
+
+        <div class="teacher-avatar">
+
+            <% if (teacher?.profilePicture) { %>
+
+                <img
+                    src="/images/profile/<%= teacher.profilePicture %>"
+                    alt="Teacher">
+
+            <% } else { %>
+
+                <span>
+                    <%= teacher?.fname?.charAt(0) || 'T' %>
+                </span>
+
+            <% } %>
+
+        </div>
+
+        <div class="teacher-mini-info">
+
+            <strong>
+                <%= `${teacher?.fname || ''} ${teacher?.lname || ''}` %>
+            </strong>
+
+            <span>Teacher</span>
+
+        </div>
+
+    </div>
+
+
+    <nav class="sidebar-navigation">
+
+        <div class="nav-label">
+            MAIN
+        </div>
+
+        <a
+            href="/dashboard"
+            class="sidebar-link <%= activePage === 'dashboard' ? 'active' : '' %>">
+
+            <i class="bi bi-grid-1x2-fill"></i>
+            <span>Dashboard</span>
+
+        </a>
+
+
+        <div class="nav-label">
+            ACADEMIC
+        </div>
+
+        <a
+            href="/teacher/classes"
+            class="sidebar-link <%= activePage === 'classes' ? 'active' : '' %>">
+
+            <i class="bi bi-easel2-fill"></i>
+            <span>My Classes</span>
+
+        </a>
+
+        <a
+            href="/teacher/allocations"
+            class="sidebar-link <%= activePage === 'allocations' ? 'active' : '' %>">
+
+            <i class="bi bi-diagram-3-fill"></i>
+            <span>My Allocations</span>
+
+        </a>
+
+        <a
+            href="/teacher/marks"
+            class="sidebar-link <%= activePage === 'marks' ? 'active' : '' %>">
+
+            <i class="bi bi-pencil-square"></i>
+            <span>Marks Entry</span>
+
+        </a>
+
+        <a
+            href="/teacher/results"
+            class="sidebar-link <%= activePage === 'results' ? 'active' : '' %>">
+
+            <i class="bi bi-bar-chart-fill"></i>
+            <span>Pupil Results</span>
+
+        </a>
+
+        <a
+            href="#"
+            class="sidebar-link <%= activePage === 'progress' ? 'active' : '' %>">
+
+            <i class="bi bi-graph-up-arrow"></i>
+            <span>Progress Analysis</span>
+
+        </a>
+
+
+        <div class="nav-label">
+            REPORTS
+        </div>
+
+        <a
+            href="#"
+            class="sidebar-link <%= activePage === 'midterm' ? 'active' : '' %>">
+
+            <i class="bi bi-file-earmark-text-fill"></i>
+            <span>Mid-Term Reports</span>
+
+        </a>
+
+        <a
+            href="#"
+            class="sidebar-link <%= activePage === 'termly' ? 'active' : '' %>">
+
+            <i class="bi bi-file-earmark-bar-graph-fill"></i>
+            <span>Termly Reports</span>
+
+        </a>
+
+        <a
+            href="#"
+            class="sidebar-link <%= activePage === 'annual' ? 'active' : '' %>">
+
+            <i class="bi bi-award-fill"></i>
+            <span>End-of-Year Reports</span>
+
+        </a>
+
+        <a
+            href="#"
+            class="sidebar-link <%= activePage === 'history' ? 'active' : '' %>">
+
+            <i class="bi bi-clock-history"></i>
+            <span>Report History</span>
+
+        </a>
+
+
+        <div class="nav-label">
+            ACCOUNT
+        </div>
+        <a
+            href="/teacher/profile"
+            class="sidebar-link <%= activePage === 'profile' ? 'active' : '' %>">
+
+            <i class="bi bi-person-circle"></i>
+            <span>My Profile</span>
+
+        </a>
+    </nav>
+
+
+    <div class="sidebar-footer">
+
+        <a href="/logout" class="logout-link">
+
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Sign Out</span>
+
+        </a>
+
+    </div>
+
+</aside>

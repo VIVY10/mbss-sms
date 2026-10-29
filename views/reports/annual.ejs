@@ -1,0 +1,38 @@
+<%- include('../partials/page-start', {
+    teacher,
+    currentYear,
+    activePage: 'annual',
+    pageTitle: 'End-of-Year Reports',
+    pageSubtitle: 'Generate annual academic reports'
+}) %>
+
+<div class="page-heading">
+
+    <div>
+
+        <span class="eyebrow">
+            REPORTS
+        </span>
+
+        <h1>End-of-Year Reports</h1>
+
+        <p>
+            Generate complete annual academic reports.
+        </p>
+
+    </div>
+
+</div>
+
+<%- include('../../partials/report-generator', {
+    reportType: 'annual'
+}) %>
+
+<%- include('../partials/report-preview-modal') %>
+
+<%
+    const pageScript =
+        '/scripts/teacher/reports.js';
+%>
+
+<%- include('../partials/page-end', { pageScript }) %>

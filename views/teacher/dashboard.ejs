@@ -1,0 +1,664 @@
+<%- include('../partials/teacher-page-start', { 
+    teacher, 
+    currentYear: '2026', 
+    activePage: 'dashboard', 
+    pageTitle: 'Teacher Dashboard', 
+    pageSubtitle: 'Academic overview and teaching activities' 
+}) %>
+
+ 
+<!-- =========================================================
+     PAGE HEADING
+========================================================== -->
+
+<div class="page-heading">
+
+    <div>
+
+        <span class="eyebrow">
+            OVERVIEW
+        </span>
+
+        <h1>
+            Hi,
+            <%= teacher?.fname || 'Teacher' %>
+        </h1>
+
+        <p>
+            Here's what's happening with your classes
+            and academic activities.
+        </p>
+
+    </div>
+
+
+    <div class="heading-date">
+
+        <i class="bi bi-calendar-event"></i>
+
+        <span id="currentDate"></span>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     STATISTICS
+========================================================== -->
+
+<div class="row g-4 mb-4">
+
+    <!-- Classes -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon icon-blue">
+
+                <i class="bi bi-easel2-fill"></i>
+
+            </div>
+
+            <div class="stat-content">
+
+                <span>
+                    My Classes
+                </span>
+
+                <strong>
+                    <%= typeof statistics !== 'undefined'
+                                        ? statistics.classes || 0
+                                        : 0 %>
+                </strong>
+
+                <small>
+                    Active classes
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Subjects -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon icon-purple">
+
+                <i class="bi bi-book-fill"></i>
+
+            </div>
+
+            <div class="stat-content">
+
+                <span>
+                    Subjects
+                </span>
+
+                <strong>
+                   <%= typeof statistics !== 'undefined'
+                                        ? statistics.subjects || 0
+                                        : 0 %>
+                </strong>
+
+                <small>
+                    Currently teaching
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Pupils -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon icon-green">
+
+                <i class="bi bi-people-fill"></i>
+
+            </div>
+
+            <div class="stat-content">
+
+                <span>
+                    Total Pupils
+                </span>
+
+                <strong>
+                   <%= typeof statistics !== 'undefined'
+                    ? statistics.pupils || 0
+                    : 0 %>
+                </strong>
+
+                <small>
+                    Across your classes
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Marks -->
+
+    <div class="col-xl-3 col-md-6">
+
+        <div class="stat-card">
+
+            <div class="stat-icon icon-orange">
+
+                <i class="bi bi-check2-circle"></i>
+
+            </div>
+
+            <div class="stat-content">
+
+                <span>
+                    Marks Completed
+                </span>
+
+                <strong>
+                    <%= typeof statistics !== 'undefined'
+                        ? statistics.marksCompleted || 0
+                        : 0 %>
+                </strong>
+
+                <small>
+                    This term
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     DASHBOARD GRID
+========================================================== -->
+
+<div class="row g-4">
+
+
+    <!-- =====================================================
+         TEACHING ALLOCATIONS
+    ====================================================== -->
+
+    <div class="col-xl-8">
+
+        <div class="content-card">
+
+            <div class="card-header-custom">
+
+                <div>
+
+                    <h3>
+                        My Teaching Allocations
+                    </h3>
+
+                    <p>
+                        Classes and subjects assigned to you
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="/teacher/allocations"
+                    class="btn btn-sm btn-light">
+
+                    View All
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table professional-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>CLASS</th>
+                            <th>SUBJECT</th>
+                            <th>LEVEL</th>
+                            <th>TERM</th>
+                            <th>STATUS</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <% if (stats?.allocations?.length) { %>
+
+                            <%
+                                const dashboardAllocations =
+                                    stats.allocations.slice(0, 5);
+                            %>
+
+                            <% dashboardAllocations.forEach(item => { %>
+
+                                <tr>
+
+                                    <td>
+
+                                        <strong>
+                                            <%= item.class %>
+                                        </strong>
+
+                                    </td>
+
+                                    <td>
+                                        <%= item.subjectname %>
+                                    </td>
+
+                                    <td>
+                                        <%= item.levelname %>
+                                    </td>
+
+                                    <td>
+                                        <%= item.termname %>
+                                    </td>
+
+                                    <td>
+
+                                        <span class="status-badge success">
+                                            Allocated
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            <% }) %>
+
+                        <% } else { %>
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="empty-state">
+
+                                    <i class="bi bi-inbox"></i>
+
+                                    <span>
+                                        No teaching allocations found.
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        <% } %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         QUICK ACTIONS
+    ====================================================== -->
+
+    <div class="col-xl-4">
+
+        <div class="content-card">
+
+            <div class="card-header-custom">
+
+                <div>
+
+                    <h3>
+                        Quick Actions
+                    </h3>
+
+                    <p>
+                        Common academic tasks
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-actions">
+
+
+                <!-- Enter Marks -->
+
+                <a
+                    href="/teacher/marks"
+                    class="quick-action text-decoration-none">
+
+                    <span class="quick-icon blue">
+
+                        <i class="bi bi-pencil-square"></i>
+
+                    </span>
+
+                    <span>
+
+                        <strong>
+                            Enter Marks
+                        </strong>
+
+                        <small>
+                            Record pupil marks
+                        </small>
+
+                    </span>
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </a>
+
+
+                <!-- Search Results -->
+
+                <a
+                    href="/teacher/results"
+                    class="quick-action text-decoration-none">
+
+                    <span class="quick-icon purple">
+
+                        <i class="bi bi-search"></i>
+
+                    </span>
+
+                    <span>
+
+                        <strong>
+                            Search Results
+                        </strong>
+
+                        <small>
+                            Find pupil results
+                        </small>
+
+                    </span>
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </a>
+
+
+                <!-- Progress -->
+
+                <a
+                    href="/teacher/progress"
+                    class="quick-action text-decoration-none">
+
+                    <span class="quick-icon green">
+
+                        <i class="bi bi-graph-up"></i>
+
+                    </span>
+
+                    <span>
+
+                        <strong>
+                            View Progress
+                        </strong>
+
+                        <small>
+                            Analyse performance
+                        </small>
+
+                    </span>
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </a>
+
+
+                <!-- Reports -->
+
+                <a
+                    href="/teacher/reports/termly"
+                    class="quick-action text-decoration-none">
+
+                    <span class="quick-icon orange">
+
+                        <i class="bi bi-file-earmark-text"></i>
+
+                    </span>
+
+                    <span>
+
+                        <strong>
+                            Generate Report
+                        </strong>
+
+                        <small>
+                            Create academic report
+                        </small>
+
+                    </span>
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     PERFORMANCE
+========================================================== -->
+
+<div class="row g-4 mt-1">
+
+
+    <!-- Performance Chart -->
+
+    <div class="col-xl-8">
+
+        <div class="content-card">
+
+            <div class="card-header-custom">
+
+                <div>
+
+                    <h3>
+                        Class Performance
+                    </h3>
+
+                    <p>
+                        Average performance across your subjects
+                    </p>
+
+                </div>
+
+
+                <select
+                    id="performanceTerm"
+                    class="form-select form-select-sm filter-select">
+                    <option>choose</option>
+
+                    <% if (stats?.allocations?.length) { %>
+
+                        <% stats.allocations.forEach(item => { %>
+
+                            <option
+                                value="<%= item.class_subject_id %>"
+                                data-classid="<%= item.classid %>"
+                                data-subjectcode="<%= item.subjectcode %>"
+                                data-levelname="<%= item.levelname %>"
+                                data-classname="<%= item.class %>"
+                                data-subjectname="<%= item.subjectname %>">
+
+                                <%= item.levelname %>
+                                <%= item.class %>
+                                -
+                                <%= item.subjectname %>
+
+                            </option>
+
+                        <% }) %>
+
+                    <% } else { %>
+
+                        <option value="">
+                            No allocations available
+                        </option>
+
+                    <% } %>
+
+                </select>
+
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas id="performanceChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Marks Progress -->
+
+    <div class="col-xl-4">
+
+        <div class="content-card">
+
+            <div class="card-header-custom">
+
+                <div>
+
+                    <h3>
+                        Marks Progress
+                    </h3>
+
+                    <p>
+                        Current term
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <%
+                const marksCompleted = 78
+                    <!-- Number(statistics?.marksCompleted || 0); -->
+
+                const marksPending =
+                    Math.max(0, 100 - marksCompleted);
+            %>
+
+
+            <div class="progress-summary">
+
+                <div class="progress-circle">
+
+                    <div>
+
+                        <strong>
+                            <%= marksCompleted %>%
+                        </strong>
+
+                        <span>
+                            Completed
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="progress-legend">
+
+                    <div>
+
+                        <span class="legend-dot completed"></span>
+
+                        Completed
+
+                        <strong>
+                            <%= marksCompleted %>%
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span class="legend-dot pending"></span>
+
+                        Pending
+
+                        <strong>
+                            <%= marksPending %>%
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CHART.JS
+========================================================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js">
+</script>
+
+<%
+    const pageScript =
+        '/scripts/teacher-dashboard2.js';
+%>
+
+<%- include('../partials/teacher-page-end', { pageScript }) %>

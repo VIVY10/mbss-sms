@@ -45,7 +45,7 @@ async function requestReset(email) {
         `&email=${encodeURIComponent(email)}`;
 
     await transporter.sendMail({
-        from: process.env.CONTACTEMAIL,
+        from: process.env.CONTACT_EMAIL,
         to: email,
         subject: 'Reset Password',
         text:

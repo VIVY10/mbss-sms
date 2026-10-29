@@ -1,0 +1,180 @@
+<%- include('../partials/teacher-page-start', {
+    stats,
+    currentYear,
+    activePage: 'classes',
+    pageTitle: 'My Classes',
+    pageSubtitle: 'Classes assigned to you'
+}) %>
+
+<div class="page-heading">
+
+    <div>
+
+        <span class="eyebrow">
+            ACADEMIC
+        </span>
+
+        <h1>My Classes</h1>
+
+        <p>
+            Classes assigned to you for the current academic year.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="content-card">
+
+    <div class="filter-bar">
+
+        <div class="search-box">
+
+            <i class="bi bi-search"></i>
+
+            <input
+                type="search"
+                id="classSearch"
+                class="form-control"
+                placeholder="Search class...">
+
+        </div>
+
+
+        <select
+            id="classLevelFilter"
+            class="form-select filter-control">
+
+            <option value="">
+                All Levels
+            </option>
+
+            <%
+                const uniqueLevels = new Set();
+
+                (stats?.allocations || []).forEach(item => {
+                    if (!uniqueLevels.has(item.levelname)) {
+                        uniqueLevels.add(item.levelname);
+            %>
+
+                <option value="<%= item.levelname %>">
+                    <%= item.levelname %>
+                </option>
+
+            <%
+                    }
+                });
+            %>
+
+        </select>
+
+    </div>
+
+
+    <div
+        class="row g-4"
+        id="classesGrid">
+
+        <% if (stats?.allocations?.length) { %>
+
+            <% stats.allocations.forEach(item => { %>
+
+                <div
+                    class="col-xl-4 col-md-6 class-item"
+                    data-level="<%= item.levelname %>">
+
+                    <div class="class-card">
+
+                        <div class="class-card-top">
+
+                            <div class="class-icon">
+                                <i class="bi bi-easel2-fill"></i>
+                            </div>
+
+                            <span class="status-badge success">
+                                Active
+                            </span>
+
+                        </div>
+
+                        <h3>
+                            <%= item.class %>
+                        </h3>
+
+                        <p>
+                            <%= item.levelname %>
+                        </p>
+
+
+                        <div class="class-details">
+
+                            <span>
+                                <i class="bi bi-book"></i>
+                                <%= item.subjectname %>
+                            </span>
+
+                            <span>
+                                <i class="bi bi-calendar3"></i>
+                                <%= item.termname %>
+                            </span>
+
+                        </div>
+
+
+                        <div class="class-card-actions">
+
+                            <a
+                                href="/viewClassPupils?classid=<%= item.classid %>"
+                                class="btn btn-primary btn-sm">
+
+                                View Pupils
+
+                            </a>
+
+                            <a
+                                href="/teacher/results?classid=<%= item.classid %>&subjectcode=<%= item.subjectcode %>"
+                                class="btn btn-outline-secondary btn-sm">
+
+                                Results
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        <% } else { %>
+
+            <div class="col-12">
+
+                <div class="empty-large">
+
+                    <i class="bi bi-easel"></i>
+
+                    <h4>No classes assigned</h4>
+
+                    <p>
+                        Your teaching allocations will appear here.
+                    </p>
+
+                </div>
+
+            </div>
+
+        <% } %>
+
+    </div>
+
+</div>
+
+<%
+    const pageScript =
+        '/scripts/teacher-classes.js';
+%>
+
+<%- include('../partials/teacher-page-end', { pageScript }) %>

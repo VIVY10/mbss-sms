@@ -1,0 +1,415 @@
+<%- include('partials/page-start', {
+    teacher,
+    currentYear,
+    activePage: 'progress',
+    pageTitle: 'Progress Analysis',
+    pageSubtitle: 'Analyse pupil and class academic performance'
+}) %>
+
+
+<!-- =========================================================
+     PAGE HEADING
+========================================================== -->
+
+<div class="page-heading">
+
+    <div>
+
+        <span class="eyebrow">
+            ANALYTICS
+        </span>
+
+        <h1>
+            Progress Analysis
+        </h1>
+
+        <p>
+            Analyse pupil and class academic performance.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     FILTERS
+========================================================== -->
+
+<div class="content-card mb-4">
+
+    <div class="filter-bar">
+
+
+        <!-- Class -->
+
+        <select
+            id="progressClass"
+            class="form-select filter-control">
+
+            <option value="">
+                Select Class
+            </option>
+
+            <%
+                const progressClasses = new Set();
+
+                (stats?.allocations || []).forEach(item => {
+
+                    if (!progressClasses.has(item.classid)) {
+
+                        progressClasses.add(item.classid);
+            %>
+
+                <option
+                    value="<%= item.classid %>"
+                    data-levelname="<%= item.levelname %>"
+                    data-classname="<%= item.class %>">
+
+                    <%= item.levelname %>
+                    <%= item.class %>
+
+                </option>
+
+            <%
+                    }
+                });
+            %>
+
+        </select>
+
+
+        <!-- Subject -->
+
+        <select
+            id="progressSubject"
+            class="form-select filter-control">
+
+            <option value="">
+                Select Subject
+            </option>
+
+            <%
+                const progressSubjects = new Set();
+
+                (stats?.allocations || []).forEach(item => {
+
+                    if (!progressSubjects.has(item.subjectcode)) {
+
+                        progressSubjects.add(item.subjectcode);
+            %>
+
+                <option
+                    value="<%= item.subjectcode %>"
+                    data-subjectname="<%= item.subjectname %>">
+
+                    <%= item.subjectname %>
+
+                </option>
+
+            <%
+                    }
+                });
+            %>
+
+        </select>
+
+
+        <!-- Term -->
+
+        <select
+            id="progressTerm"
+            class="form-select filter-control">
+
+            <option value="">
+                Select Term
+            </option>
+
+            <%
+                const progressTerms = new Set();
+
+                (stats?.allocations || []).forEach(item => {
+
+                    if (!progressTerms.has(item.termid)) {
+
+                        progressTerms.add(item.termid);
+            %>
+
+                <option value="<%= item.termid %>">
+
+                    <%= item.termname %>
+
+                </option>
+
+            <%
+                    }
+                });
+            %>
+
+        </select>
+
+
+        <!-- Exam -->
+
+        <select
+            id="progressExam"
+            class="form-select filter-control">
+
+            <option value="">
+                Select Assessment
+            </option>
+
+            <% (stats?.examtype || []).forEach(item => { %>
+
+                <option value="<%= item.examid %>">
+
+                    <%= item.exam_title %>
+
+                </option>
+
+            <% }) %>
+
+        </select>
+
+
+        <!-- Analysis Type -->
+
+        <select
+            id="progressScope"
+            class="form-select filter-control">
+
+            <option value="pupil">
+                Individual Pupil
+            </option>
+
+            <option value="class">
+                Whole Class
+            </option>
+
+        </select>
+
+
+        <!-- Analyse -->
+
+        <button
+            type="button"
+            id="analyseProgressBtn"
+            class="btn btn-primary">
+
+            <i class="bi bi-bar-chart me-1"></i>
+
+            Analyse
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     LOADING
+========================================================== -->
+
+<div
+    id="progressLoading"
+    class="content-card marks-loading d-none mb-4">
+
+    <div
+        class="spinner-border text-primary"
+        role="status">
+
+        <span class="visually-hidden">
+            Loading...
+        </span>
+
+    </div>
+
+    <span>
+        Analysing academic performance...
+    </span>
+
+</div>
+
+
+<!-- =========================================================
+     ANALYSIS CONTENT
+========================================================== -->
+
+<div
+    id="progressContent"
+    class="row g-4">
+
+
+    <!-- =====================================================
+         PERFORMANCE TREND
+    ====================================================== -->
+
+    <div class="col-xl-8">
+
+        <div class="content-card">
+
+            <div class="card-header-custom">
+
+                <div>
+
+                    <h3>
+                        Performance Trend
+                    </h3>
+
+                    <p id="progressChartSubtitle">
+                        Academic performance over time.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-container large">
+
+                <canvas id="progressChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PERFORMANCE SUMMARY
+    ====================================================== -->
+
+    <div class="col-xl-4">
+
+        <div class="content-card">
+
+            <div class="card-header-custom">
+
+                <div>
+
+                    <h3>
+                        Performance Summary
+                    </h3>
+
+                    <p>
+                        Current analysis
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="analytics-list">
+
+
+                <!-- Average -->
+
+                <div class="analytics-item">
+
+                    <span>
+                        Class Average
+                    </span>
+
+                    <strong id="progressAverage">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <!-- Highest -->
+
+                <div class="analytics-item">
+
+                    <span>
+                        Highest Mark
+                    </span>
+
+                    <strong id="progressHighest">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <!-- Lowest -->
+
+                <div class="analytics-item">
+
+                    <span>
+                        Lowest Mark
+                    </span>
+
+                    <strong id="progressLowest">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <!-- Pass Rate -->
+
+                <div class="analytics-item">
+
+                    <span>
+                        Pass Rate
+                    </span>
+
+                    <strong id="progressPassRate">
+                        -
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     EMPTY STATE
+========================================================== -->
+
+<div
+    id="progressEmptyState"
+    class="content-card mt-4">
+
+    <div class="empty-large">
+
+        <i class="bi bi-graph-up-arrow"></i>
+
+        <h4>
+            Select analysis criteria
+        </h4>
+
+        <p>
+            Select a class, subject, term and assessment
+            above to analyse academic performance.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CHART.JS
+========================================================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js">
+</script>
+
+<%
+    const pageScript =
+        '/scripts/teacher/progress.js';
+%>
+
+<%- include('partials/page-end', { pageScript }) %>

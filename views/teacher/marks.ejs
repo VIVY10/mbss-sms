@@ -1,0 +1,277 @@
+<%- include('../partials/teacher-page-start', {
+    stats,
+    teacher,
+    currentYear,
+    activePage: 'marks',
+    pageTitle: 'Marks Schedule',
+    pageSubtitle: 'Enter and manage pupil marks'
+}) %>
+
+<div class="page-heading">
+
+    <div>
+
+        <span class="eyebrow">
+            ASSESSMENT
+        </span>
+
+        <h1>Marks Schedule</h1>
+
+        <p>
+            Manage and submit marks for your allocated classes.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="content-card mb-4">
+
+    <div class="filter-bar marks-filter">
+
+        <div class="filter-field">
+
+            <label for="marksClass">
+                Class &amp; Subject
+            </label>
+
+            <select
+                id="marksClass"
+                class="form-select">
+
+                <option value="">
+                    Select class &amp; subject
+                </option>
+
+                <% (stats?.allocations || []).forEach(item => { %>
+
+                    <option
+                        value="<%= item.class_subject_id %>"
+                        data-classid="<%= item.classid %>"
+                        data-subjectcode="<%= item.subjectcode %>"
+                        data-levelname="<%= item.levelname %>"
+                        data-classname="<%= item.class %>"
+                        data-subjectname="<%= item.subjectname %>">
+
+                        <%= item.levelname %>
+                        <%= item.class %>
+                        -
+                        <%= item.subjectname %>
+
+                    </option>
+
+                <% }) %>
+
+            </select>
+
+            <small class="text-muted">
+                Select one of your allocated class subjects.
+            </small>
+
+        </div>
+
+
+        <div class="filter-field">
+
+            <label for="marksExamType">
+                Assessment
+            </label>
+
+            <select
+                id="marksExamType"
+                name="examType"
+                class="form-select">
+
+                <option value="">
+                    Select assessment
+                </option>
+
+                <% (stats?.examtype || []).forEach(item => { %>
+
+                    <option value="<%= item.examid %>">
+                        <%= item.exam_title %>
+                    </option>
+
+                <% }) %>
+
+            </select>
+
+            <small class="text-muted">
+                Select assessment type.
+            </small>
+
+        </div>
+
+
+        <div class="filter-action">
+
+            <button
+                type="button"
+                id="loadMarksBtn"
+                class="btn btn-primary marks-load-btn">
+
+                <i class="bi bi-arrow-repeat me-1"></i>
+                Load Marks
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="content-card">
+
+    <div class="card-header-custom">
+
+        <div>
+
+            <div class="d-flex align-items-center gap-2 mb-1">
+
+                <h3 id="marksScheduleTitle">
+                    Marks Schedule
+                </h3>
+
+                <span
+                    id="marksStudentCount"
+                    class="badge bg-light text-dark">
+
+                    0 pupils
+
+                </span>
+
+            </div>
+
+            <p id="marksScheduleSubtitle">
+                Select a class and assessment to load pupils.
+            </p>
+
+        </div>
+
+
+        <span
+            id="marksStatus"
+            class="status-badge warning">
+
+            Draft
+
+        </span>
+
+    </div>
+
+
+    <div
+        id="marksLoading"
+        class="marks-loading d-none">
+
+        <div
+            class="spinner-border text-primary"
+            role="status">
+
+            <span class="visually-hidden">
+                Loading...
+            </span>
+
+        </div>
+
+        <span>Loading pupils...</span>
+
+    </div>
+
+
+    <div
+        id="marksEmptyState"
+        class="marks-empty-state">
+
+        <div class="empty-icon">
+            <i class="bi bi-people"></i>
+        </div>
+
+        <h5>No marks schedule loaded</h5>
+
+        <p>
+            Select your class, subject and assessment above,
+            then click <strong>Load Marks</strong>.
+        </p>
+
+    </div>
+
+
+    <div
+        id="marksTableContainer"
+        class="table-responsive d-none">
+
+        <table class="table professional-table marks-table">
+
+            <thead>
+
+                <tr>
+                    <th>#</th>
+                    <th>EXAM NO.</th>
+                    <th>PUPIL</th>
+                    <th>MARK</th>
+                    <th>GRADE</th>
+                    <th>REMARK</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="marksTableBody"></tbody>
+
+        </table>
+
+    </div>
+
+
+    <div
+        id="marksFooter"
+        class="marks-footer d-none">
+
+        <div>
+
+            <span>Last saved:</span>
+
+            <strong id="lastSaved">
+                Not saved
+            </strong>
+
+        </div>
+
+
+        <div class="d-flex gap-2">
+
+            <button
+                type="button"
+                id="saveDraftBtn"
+                class="btn btn-outline-secondary">
+
+                <i class="bi bi-save me-1"></i>
+                Save Draft
+
+            </button>
+
+            <button
+                type="button"
+                id="submitMarksBtn"
+                class="btn btn-primary">
+
+                <i class="bi bi-check-circle me-1"></i>
+                Submit Marks
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%
+    const pageScript =
+        '/scripts/teacher-marks.js';
+%>
+
+<%- include('../partials/teacher-page-end', { pageScript }) %>
